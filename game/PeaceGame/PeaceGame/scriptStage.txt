@@ -1,0 +1,50 @@
+﻿on:1.0
+{
+	action:create
+	{
+		[type = Fairies; position = (200, -170); destination = (200, 50) ; speed = 2; health = 50; fdirection = (1,1); fspeed = 2;]
+		[type = Fairies; position = (190, -140); destination = (190, 80) ; speed = 2; health = 50; fdirection = (1,1); fspeed = 2;]
+		[type = Fairies; position = (180, -110); destination = (180, 110) ; speed = 2; health = 50; fdirection = (1,1); fspeed = 2;]
+		[type = Fairies; position = (170, -80); destination = (170, 140) ; speed = 2; health = 50; fdirection = (1,1); fspeed = 2;]
+		[type = Fairies; position = (160, -50); destination = (160, 170) ; speed = 2; health = 50; fdirection = (1,1); fspeed = 2;]
+	}
+}
+
+on:4.0
+{
+	action:create
+	{
+		[type = Fairies; position = (410,-170); destination = (410,50) ; speed = 2; health = 50; fdirection = (-1,1); fspeed = 2;]
+		[type = Fairies; position = (400,-140); destination = (400,80); speed = 2; health = 50; fdirection = (-1,1); fspeed = 2;]
+		[type = Fairies; position = (390,-110); destination =(390,110) ; speed = 2; health = 50; fdirection = (-1,1); fspeed = 2;]
+		[type = Fairies; position = (380,-80); destination = (380,140) ; speed = 2; health = 50; fdirection = (-1,1); fspeed = 2;]
+		[type = Fairies; position = (370,-50); destination = (370, 170) ; speed = 2; health = 50; fdirection = (-1,1); fspeed = 2;]
+	}
+}
+
+on:7.0
+{
+	action:create
+	{
+		[type = Fairies; position = (65, -50); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (85,-80); direction = (0,1); speed = 2; health = 50;]
+		[type = Fairies; position = (105,-110); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (125,-140); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (145,-170); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (165,-200); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (185,-230); direction = (0,1); speed = 2; health = 50;]
+		[type = Fairies; position = (205,-260); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (225, -290); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (245, -320); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (475,-50); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (455,-80); direction = (0,1); speed = 2; health = 50;]
+		[type = Fairies; position = (435,-110); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (415,-140); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (395, -170); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (375, -200); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (355,-230); direction = (0,1); speed = 2; health = 50;]
+		[type = Fairies; position = (335,-260); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (315, -290); direction = (0,1) ; speed = 2; health = 50;]
+		[type = Fairies; position = (295, -320); direction = (0,1) ; speed = 2; health = 50;]
+	}
+}

@@ -1,0 +1,2 @@
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGameContent\obj\x86\Debug\PeaceGameContent.contentprojResolveAssemblyReference.cache
+D:\git\danmaku-game\game\PeaceGame\PeaceGameContent\obj\x86\Debug\PeaceGameContent.contentprojResolveAssemblyReference.cache

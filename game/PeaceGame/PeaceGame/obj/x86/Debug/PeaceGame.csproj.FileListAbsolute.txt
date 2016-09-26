@@ -1,0 +1,104 @@
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\spritefonts\menuFont.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\alpha\AlphaMap.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\background\black.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2_a.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm_a.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\menu\menuBackground.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3_a.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00_a.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\enemy\enemyDamage.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\menu\selectMenu.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\particle\playerShoot.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\player\playerDead.xnb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\spritefonts\menuFont.spritefont
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\alpha\AlphaMap.fx
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\background\black.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2_a.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm_a.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\menu\menuBackground.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3_a.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00_a.png
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\enemy\enemyDamage.wav
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\menu\selectMenu.wav
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\particle\playerShoot.wav
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\player\playerDead.wav
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\PeaceGame.exe
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\PeaceGame.pdb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Game.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.csprojResolveAssemblyReference.cache
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.exe
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.pdb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\compiler.exe
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\scriptStage.txt
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.pdb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\PeaceGame\PeaceGame\PeaceGame\bin\x86\Debug\stage_compiler.exe
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.csprojResolveAssemblyReference.cache
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.exe
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.pdb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\compiler.exe
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\scriptStage.txt
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\spritefonts\menuFont.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\alpha\AlphaMap.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\background\black.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2_a.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm_a.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\menu\menuBackground.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3_a.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00_a.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\enemy\enemyDamage.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\menu\selectMenu.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\particle\playerShoot.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\player\playerDead.xnb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\spritefonts\menuFont.spritefont
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\alpha\AlphaMap.fx
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\background\black.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm2_a.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\enemy\stg1enm_a.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\menu\menuBackground.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\particles\etama3_a.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\player\player00_a.png
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\enemy\enemyDamage.wav
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\menu\selectMenu.wav
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\particle\playerShoot.wav
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\sounds\player\playerDead.wav
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\PeaceGame.exe
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\PeaceGame.pdb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Game.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.pdb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.xml
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.xml
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.xml

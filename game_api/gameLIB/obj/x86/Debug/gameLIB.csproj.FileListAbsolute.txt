@@ -1,0 +1,34 @@
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\gameLIB.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\gameLIB.pdb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Game.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.xml
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Debug\gameLIB.dll
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Debug\gameLIB.pdb
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Debug\gameLIB.csprojResolveAssemblyReference.cache
+C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\stage_compiler.exe
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\stage_compiler.exe
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\gameLIB.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\gameLIB.pdb
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Game.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.xml
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.xml
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.xml
+D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\gameLIB.csprojResolveAssemblyReference.cache
+D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\gameLIB.dll
+D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\gameLIB.pdb
