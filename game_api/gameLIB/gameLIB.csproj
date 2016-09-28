@@ -99,11 +99,6 @@
     <Compile Include="components\stage\Task.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="stage_compiler.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

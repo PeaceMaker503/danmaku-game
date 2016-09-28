@@ -55,8 +55,6 @@ D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.csprojResol
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.exe
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\obj\x86\Debug\PeaceGame.pdb
-D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\compiler.exe
-D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\scriptStage.txt
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\spritefonts\menuFont.xnb
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\alpha\AlphaMap.xnb
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Content\images\background\black.xnb
@@ -105,3 +103,4 @@ D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.dll
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Newtonsoft.Json.dll
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.pdb
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Newtonsoft.Json.xml
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\script.json
