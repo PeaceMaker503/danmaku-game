@@ -7,59 +7,20 @@ using gameLIB.components.stage;
 
 namespace gameLIB.main
 {
-    public class CommonComponents
+    public class CommonComponents //singleton
     {
-        private static Menu _currentMenu;
-        private static ScreenMenu _screenMenu;
-        private static PauseMenu _pauseMenu;
-        private static Stage _currentStage;
-        public Stage CurrentStage
-        {
-            get
-            {
-                return _currentStage;
-            }
+        public Menu currentMenu { get; set; }
+        public ScreenMenu screenMenu { get; set; }
+        public PauseMenu pauseMenu { get; set; }
+        public Stage currentStage { get; set; }
+        private static CommonComponents _instance;
 
-            set
-            {
-                _currentStage = value;
-            }
-        }
-        public Menu CurrentMenu
+        public static CommonComponents getInstance()
         {
-            get
-            {
-                return _currentMenu;
-            }
-
-            set
-            {
-                _currentMenu = value;
-            }
-        }
-        public ScreenMenu ScreenMenu
-        {
-            get
-            {
-                return _screenMenu;
-            }
-
-            set
-            {
-                _screenMenu = value;
-            }
-        }
-        public PauseMenu PauseMenu
-        {
-            get
-            {
-                return _pauseMenu;
-            }
-
-            set
-            {
-                _pauseMenu = value;
-            }
+            if(_instance == null) 
+                _instance = new CommonComponents();
+           
+            return _instance;
         }
     }
 }

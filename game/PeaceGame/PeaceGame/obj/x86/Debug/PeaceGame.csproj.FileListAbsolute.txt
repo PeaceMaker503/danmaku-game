@@ -96,9 +96,12 @@ D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framewo
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.dll
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
-D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.pdb
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.xml
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.xml
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.xml
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Newtonsoft.Json.dll
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.pdb
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Newtonsoft.Json.xml

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using gameLIB.utils;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace gameLIB.components.sprites

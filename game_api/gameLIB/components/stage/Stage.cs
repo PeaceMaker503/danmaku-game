@@ -8,27 +8,27 @@ namespace gameLIB.components.stage
 {
     public sealed class Stage
     {
-        private double _time;
+        public double time;
         private List<Task> _tasks;
-        private Player _player;
+        public Player player { get; set; }
         private double _timerPlayerRespawn;
-        private Dictionary<String, Particle> _particlesPrototypes;
-        private Dictionary<String, Enemy> _enemiesPrototypes;
-        private Dictionary<String, Enemy> _enemies;
-        private Dictionary<String, Particle> _particles;
+        public Dictionary<string, Particle> particlesPrototypes { get; set; }
+        public Dictionary<string, Enemy> enemiesPrototypes { get; set; }
+        public Dictionary<int, Enemy> enemies { get; set; }
+        public Dictionary<int, Particle> particles { get; set; }
         private List<Task> _tasksInit;
+        private int _playerParticlesId;
 
-        private static int _particlesID;
         public Stage()
         {
-            Enemies = new Dictionary<String, Enemy>();
-            ParticlesPrototypes = new Dictionary<String, Particle>();
-            EnemiesPrototypes = new Dictionary<string, Enemy>();
-            Particles = new Dictionary<string, Particle>();
+            enemies = new Dictionary<int, Enemy>();
+            particlesPrototypes = new Dictionary<string, Particle>();
+            enemiesPrototypes = new Dictionary<string, Enemy>();
+            particles = new Dictionary<int, Particle>();
             _tasks = new List<Task>();
-            _time = 0;
+            time = 0;
             _timerPlayerRespawn = 0;
-            _particlesID = 0;
+            _playerParticlesId = 0;
         }
 
         public void addTask(Task task)
@@ -38,41 +38,41 @@ namespace gameLIB.components.stage
 
         public void addNewParticlePrototype(String name, Particle part)
         {
-            ParticlesPrototypes[name] = part;
+            particlesPrototypes[name] = part;
         }
 
         public void addNewEnemyPrototype(String name, Enemy enemy)
         {
-            EnemiesPrototypes[name] = enemy;
+            enemiesPrototypes[name] = enemy;
         }
 
         public void run()
         {
             foreach (Task task in _tasks)
             {
-                if (Time >= task.Time)
+                if (time >= task.time)
                 {
                     task.run(this);
                 }
             }
             _tasks.RemoveAll(item => item.hasRun == true);
-            if (_timerPlayerRespawn == 0 && Player.isAlive == false) //player vient de mourir
+            if (_timerPlayerRespawn == 0 && player.isAlive == false) //player vient de mourir
             {
-                _timerPlayerRespawn = _time;
+                _timerPlayerRespawn = time;
             }
-            else if (Player.isAlive == false && _time - _timerPlayerRespawn > 1.5) //on sait que le player deja mort et il est temps de le ressusciter
+            else if (player.isAlive == false && time - _timerPlayerRespawn > 1.5) //on sait que le player deja mort et il est temps de le ressusciter
             {
-                Player.isAlive = true;
+                player.isAlive = true;
                 _timerPlayerRespawn = 0;
             }
         }
 
         public void initialize()
         {
-            Enemies.Clear();
-            Particles.Clear();
-            _player.initPlayer();
-            _time = 0;
+            enemies.Clear();
+            particles.Clear();
+            player.initPlayer();
+            time = 0;
             _timerPlayerRespawn = 0;
             if(_tasksInit == null)
             {
@@ -88,7 +88,7 @@ namespace gameLIB.components.stage
             }
         }
 
-        public void instantiateEnemy(String enemyType, String id, Vector2 position, Vector2 direction, Vector2 destination, Vector2 fdirection, int health, float speed, float fspeed)
+        public void instantiateEnemy(String enemyType, int id, Vector2 position, Vector2 direction, Vector2 destination, Vector2 fdirection, int health, float speed, float fspeed)
         {
             Enemy e = this.getEnemyInstanceOf(enemyType);
             e.health = health;
@@ -104,13 +104,13 @@ namespace gameLIB.components.stage
             {
                 e.direction = direction;
             }
-            Enemies.Add(id, e);
+            enemies.Add(id, e);
         }
 
-        public void orderToMove(String id, Vector2 destination, Vector2 direction, Vector2 fdirection, float speed, float fspeed)
+        public void orderToMove(int id, Vector2 destination, Vector2 direction, Vector2 fdirection, float speed, float fspeed)
         {
             Enemy e;
-            if (_enemies.TryGetValue(id, out e) && e.isAlive)
+            if (enemies.TryGetValue(id, out e) && e.isAlive)
             {
                 if (direction == Vector2.Zero)
                 {
@@ -126,10 +126,10 @@ namespace gameLIB.components.stage
             }
         }
 
-        public void orderToShoot(String id, String particleType, Vector2 destination, Vector2 direction, float speed)
+        public void orderToShoot(int enemyId, String particleType, int particleId, Vector2 destination, Vector2 direction, float speed)
         {
             Enemy e;
-            if (_enemies.TryGetValue(id, out e) && e.isAlive)
+            if (enemies.TryGetValue(enemyId, out e) && e.isAlive)
             {
                 Particle p = this.getParticleInstanceOf(particleType);
                 p.position = e.positionCollision;
@@ -142,53 +142,35 @@ namespace gameLIB.components.stage
                     p.direction = direction;
                 }
                 p.speed = speed;
-                _particles.Add(_particlesID.ToString(), p);
-                _particlesID++;
+                particles.Add(particleId, p);
             }
-        }
-
-        public void move()
-        {
-           /* String enemyName = args.enemyName;
-            Vector2 destination = args.destination;
-
-            Enemy e;
-            if (_enemies.TryGetValue(enemyName, out e))
-            {
-                if (e.isAlive)
-                {
-                    e.addTraj(destination);
-                }
-            }*/
         }
 
         public Particle getParticleInstanceOf(String name)
         {
-            Particle originalParticle = ParticlesPrototypes[name];
+            Particle originalParticle = particlesPrototypes[name];
             return (Particle)Activator.CreateInstance(originalParticle.GetType(), originalParticle);
         }
 
         public Enemy getEnemyInstanceOf(String name)
         {
-            Enemy originalEnemy = EnemiesPrototypes[name];
+            Enemy originalEnemy = enemiesPrototypes[name];
             return (Enemy)Activator.CreateInstance(originalEnemy.GetType(), originalEnemy);
         }
 
         public void playerShoot()
         {
-            Particle p1 = this.getParticleInstanceOf(Player.ParticleName);
-            p1.position = _player.position + Player.ParticleOffset1;
-            Particle p2 = this.getParticleInstanceOf(Player.ParticleName);
-            p2.position = _player.position + Player.ParticleOffset2;
-            Particles.Add(Player.ParticleName+ _particlesID, p1);
-            _particlesID++;
-            Particles.Add(Player.ParticleName+ _particlesID, p2);
-            _particlesID++;
+            Particle p1 = this.getParticleInstanceOf(player.ParticleName);
+            p1.position = player.position + player.ParticleOffset1;
+            Particle p2 = this.getParticleInstanceOf(player.ParticleName);
+            p2.position = player.position + player.ParticleOffset2;
+            particles.Add(_playerParticlesId++, p1);
+            particles.Add(_playerParticlesId++, p2);
         }
 
         public void updateEnemiesPositions()
         {
-            foreach (Enemy enemy in this.Enemies.Values)
+            foreach (Enemy enemy in this.enemies.Values)
             {
                 enemy.move();
             }
@@ -196,73 +178,9 @@ namespace gameLIB.components.stage
 
         public void updateParticlesPositions()
         {
-            foreach(Particle particle in Particles.Values)
+            foreach(Particle particle in particles.Values)
             {
                 particle.move();
-            }
-        }
-
-        public Player Player
-        {
-            get { return _player; }
-            set { _player = value; }
-        }
-
-        public double Time
-        {
-            get { return _time; }
-            set { _time = value; }
-        }
-
-        public Dictionary<string, Enemy> EnemiesPrototypes
-        {
-            get
-            {
-                return _enemiesPrototypes;
-            }
-
-            set
-            {
-                _enemiesPrototypes = value;
-            }
-        }
-
-        public Dictionary<string, Particle> ParticlesPrototypes
-        {
-            get
-            {
-                return _particlesPrototypes;
-            }
-
-            set
-            {
-                _particlesPrototypes = value;
-            }
-        }
-
-        public Dictionary<string, Particle> Particles
-        {
-            get
-            {
-                return _particles;
-            }
-
-            set
-            {
-                _particles = value;
-            }
-        }
-
-        public Dictionary<string, Enemy> Enemies
-        {
-            get
-            {
-                return _enemies;
-            }
-
-            set
-            {
-                _enemies = value;
             }
         }
     }

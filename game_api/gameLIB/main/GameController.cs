@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using gameLIB.components.characters;
 using gameLIB.components.particles;
+using gameLIB.main.engines;
 
 namespace gameLIB.main
 {
@@ -107,10 +108,9 @@ namespace gameLIB.main
         public GameController(Game game, ContentManager content, GraphicsDevice graphicsDevice)
         {
             _game = game;
-            CommonComponents common = new CommonComponents();
-            _gameEngine = new GameEngine(this, common);
-            _graphicEngine = new GraphicEngine(content, graphicsDevice, common);
-            _soundEngine = new SoundEngine(content, common);
+            _gameEngine = new GameEngine(this);
+            _graphicEngine = new GraphicEngine(content, graphicsDevice);
+            _soundEngine = new SoundEngine(content);
         }
 
         public void update(GameTime gameTime)
@@ -141,8 +141,6 @@ namespace gameLIB.main
                     break;
             }
         }
-
-
     }
 }
 

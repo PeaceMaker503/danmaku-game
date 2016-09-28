@@ -1,0 +1,96 @@
+{
+	create : [
+		{
+			time:1.0,
+			target : {
+				type : "FAIRIES",
+				id: 5,
+				position : "200, 200",
+				destination : "200, 50",
+				speed:2.0,
+				health:50
+			},
+		},
+		{
+			time:1.0,
+			target : {
+				type : "FAIRIES",
+				id: 0,
+				position : "200, -170",
+				destination : "200, 50",
+				speed:2.0,
+				health:50,
+				fdirection: "1, 1",
+				fspeed: 2.0
+			},
+		},
+		{
+			time:1.0,
+			target : {
+				type : "FAIRIES",
+				id: 1,
+				position : "190, -140",
+				destination : "190, 80",
+				speed:2.0,
+				health:50,
+				fdirection: "1, 1",
+				fspeed: 2.0
+			},
+		},
+		{
+			time:1.0,
+			target : {
+				type : "FAIRIES",
+				id: 2,
+				position : "180, -110",
+				destination : "180, 110",
+				speed:2.0,
+				health:50,
+				fdirection: "1, 1",
+				fspeed: 2.0
+			},
+		},
+		{
+			time:1.0,
+			target : {
+				type : "FAIRIES",
+				id: 3,
+				position : "170, -80",
+				destination : "170, 140",
+				speed:2.0,
+				health:50,
+				fdirection: "1, 1",
+				fspeed: 2.0
+			},
+		},
+		{
+			time:1.0,
+			target : {
+				type : "FAIRIES",
+				id: 4,
+				position : "160, -50",
+				destination : "160, 170",
+				speed:2.0,
+				health:50,
+				fdirection: "1, 1",
+				fspeed: 2.0
+			},
+		}
+	],
+	shoot : [
+		{
+			time:5,
+			targetId : 5,
+			bullet : {
+				type : "RED_KNIFE",
+				id:0,
+				direction : "1, 1",
+				speed: 2.0
+			}
+		}
+	]
+}
+
+	
+
+

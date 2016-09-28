@@ -19,14 +19,81 @@ namespace PeaceGame
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        API api;
+        GameApi api;
+        readonly Rectangle[] PLAYER_PARTS = new Rectangle[] {
+                                                    new Rectangle(1, 1, 31, 47),
+                                                    new Rectangle(33, 1, 31, 47),
+                                                    new Rectangle(65, 1, 31, 47),
+                                                    new Rectangle(97, 1, 31, 47)
+        };
+
+        readonly Rectangle[] FAIRIES_PARTS = new Rectangle[] {
+                                                        new Rectangle(1, 1, 30, 30),
+                                                        new Rectangle(33, 1, 30, 30),
+                                                        new Rectangle(65, 1, 30, 30),
+                                                        new Rectangle(97, 1, 30, 30)
+        };
+        readonly int WINDOW_WIDTH = 800;
+        readonly int WINDOW_HEIGHT = 600;
+        readonly bool IS_FULLSCREEN = false;
+        readonly string MENU_SELECT_SOUND = @"sounds\menu\selectMenu";
+        readonly string PLAYER_SHOOT_SOUND = @"sounds\particle\playerShoot";
+        readonly string PLAYER_DEAD_SOUND = @"sounds\player\playerDead";
+        readonly string ENEMY_DAMAGE_SOUND = @"sounds\enemy\enemyDamage";
+        readonly string BORDER_TEXTURE = @"images\background\black";
+        readonly string BACKGROUND_TEXTURE = @"images\menu\menuBackground";
+        readonly string PLAYER_TEXTURE = @"images\player\player00";
+        readonly string PLAYER_TEXTURE_ALPHA = @"images\player\player00_a";
+        readonly string MISSILE_TEXTURE = @"images\player\player00";
+        readonly string MISSILE_TEXTURE_ALPHA = @"images\player\player00_a";
+        readonly string TEXT_FONT = @"spritefonts\menuFont";
+        readonly string BULLETS_TEXTURE = @"images\particles\etama3";
+        readonly string BULLETS_TEXTURE_ALPHA = @"images\particles\etama3_a";
+        readonly string STAGE1_ENM_TEXTURE = @"images\enemy\stg1enm";
+        readonly string STAGE1_ENM_TEXTURE_ALPHA = @"images\enemy\stg1enm_a";
+        readonly string STAGE1_ENM2_TEXTURE = @"images\enemy\stg1enm2";
+        readonly string STAGE1_ENM2_TEXUTURE_ALPHA = @"images\enemy\stg1enm2_a";
+        readonly string ALPHA_SHADER = @"alpha\AlphaMap";
+        readonly string BULLETS = "BULLETS";
+        readonly string STAGE1_ENM = "STAGE1_ENM";
+        readonly string STAGE1_ENM2 = "STAGE1_ENM2";
+        readonly string GRAY_KNIFE = "GRAY_KNIFE";
+        readonly string RED_KNIFE = "RED_KNIFE";
+        readonly string PINK_KNIFE = "PINK_KNIFE";
+        readonly string BLUE_KNIFE = "BLUE_KNIFE";
+        readonly string TURQUOISE_KNIFE = "TURQUOISE_KNIFE";
+        readonly string GREEN_KNIFE = "GREEN_KNIFE";
+        readonly string YELLOW_KNIFE = "YELLOW_KNIFE";
+        readonly string WHITE_KNIFE = "WHITE_KNIFE";
+        readonly string FAIRIES = "FAIRIES";
+        readonly string SCRIPT_PATH = @"script.json";
+        readonly int PLAYER_LIFES_COUNT = 100;
+        readonly int PLAYER_FRAMES_IMAGE_COUNT = 4;
+        readonly float PLAYER_IMAGE_SCALE = 1f;
+        readonly Vector2 PLAYER_INITIAL_POSITION = new Vector2(300, 200);
+        readonly Vector2 PLAYER_LEFT_PARTICLE_POSITION = new Vector2(-9, -15);
+        readonly Vector2 PLAYER_RIGHT_PARTICLE_POSITION = new Vector2(6, -15);
+        readonly Rectangle PLAYER_PARTICLE_PART = new Rectangle(197, 0, 8, 47);
+        readonly int PLAYER_PARTICLE_DAMAGE = 20;
+        readonly float PLAYER_PARTICLE_SPEED = 15;
+        readonly float PLAYER_PARTICLE_IMAGE_SCALE = 1f;
+        readonly float KNIFE_SCALE = 1.25f;
+        readonly Vector2 MENU_MARGIN = new Vector2(200, 200);
+        readonly Rectangle GRAY_KNIFE_PART = new Rectangle(0, 160, 32, 32);
+        readonly Rectangle RED_KNIFE_PART = new Rectangle(32, 160, 32, 32);
+        readonly Rectangle PINK_KNIFE_PART = new Rectangle(64, 160, 32, 32);
+        readonly Rectangle BLUE_KNIFE_PART = new Rectangle(96, 160, 32, 32);
+        readonly Rectangle TURQUOISE_KNIFE_PART = new Rectangle(128, 160, 32, 32);
+        readonly Rectangle GREEN_KNIFE_PART = new Rectangle(160, 160, 32, 32);
+        readonly Rectangle YELLOW_KNIFE_PART = new Rectangle(192, 160, 32, 32);
+        readonly Rectangle WHITE_KNIFE_PART = new Rectangle(224, 160, 32, 32);
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            this.Window.AllowUserResizing = true;
-            this.graphics.PreferredBackBufferWidth = 800;
-            this.graphics.PreferredBackBufferHeight = 600;
-           // this.graphics.IsFullScreen = true;
+            this.graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
+            this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            this.graphics.IsFullScreen = IS_FULLSCREEN;
             Content.RootDirectory = "Content";
         }
 
@@ -38,7 +105,7 @@ namespace PeaceGame
         /// </summary>
         protected override void Initialize()
         {
-            api = new API();
+            api = new GameApi();
             api.instantiateGameController(this, Content, GraphicsDevice);
             base.Initialize();
         }
@@ -49,48 +116,34 @@ namespace PeaceGame
         /// </summary>
         protected override void LoadContent()
         {
-            Rectangle[] playerSpritesParts = new Rectangle[] {
-                                                                 new Rectangle(1, 1, 31, 47),
-                                                                 new Rectangle(33, 1, 31, 47),
-                                                                 new Rectangle(65, 1, 31, 47),
-                                                                 new Rectangle(97, 1, 31, 47)
-                                                             };
-
-            Rectangle[] fairiesParts = new Rectangle[] {
-                                                                  new Rectangle(1, 1, 30, 30),
-                                                                  new Rectangle(33, 1, 30, 30),
-                                                                  new Rectangle(65, 1, 30, 30),
-                                                                  new Rectangle(97, 1, 30, 30)
-                                                              };
-
-            api.loadSound("Select", @"sounds\menu\selectMenu");
-            api.loadSound("PlayerShoot", @"sounds\particle\playerShoot");
-            api.loadSound("PlayerDies", @"sounds\player\playerDead");
-            api.loadSound("EnemyDamage", @"sounds\enemy\enemyDamage");
-            api.loadImage("Black", @"images\background\black", null);
-            api.loadImage("MoonBackground", @"images\menu\menuBackground", null);
-            api.loadImage("Player", @"images\player\player00", @"images\player\player00_a");
-            api.loadImage("Missile", @"images\player\player00", @"images\player\player00_a");
-            api.loadImage("Bullets", @"images\particles\etama3", @"images\particles\etama3_a");
-            api.loadImage("Stage1Enm", @"images\enemy\stg1enm", @"images\enemy\stg1enm_a");
-            api.loadImage("Stage1Enm2", @"images\enemy\stg1enm2", @"images\enemy\stg1enm2_a");
-            api.loadFont("MyFont", @"spritefonts\menuFont");
-            api.loadAlphaShader(@"alpha\AlphaMap");
-            api.instantiateScreenMenu("Select", "MoonBackground", "MyFont", new Vector2(200,200));
-            api.instantiatePauseMenu("Select", "MoonBackground", "MyFont", new Vector2(200, 200));
-            api.instantiateInGameBackground("MoonBackground", "Black");
-            api.instantiatePlayer("PlayerDies", "PlayerShoot","Player", playerSpritesParts,  100, new Vector2(300, 200), 4, 1f);
-            api.instantiatePlayerParticle("PlayerParticle", "Missile", new Vector2(-9,-15), new Vector2(6,-15), new Rectangle[1] { new Rectangle(197, 0, 8, 47) }, 20, 15f, 1f);
-            api.instantiateEnemyParticle("GrayKnife", "Bullets", new Rectangle[] { new Rectangle(0, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("RedKnife", "Bullets", new Rectangle[] { new Rectangle(32, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("PinkKnife", "Bullets", new Rectangle[] { new Rectangle(64, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("BlueKnife", "Bullets", new Rectangle[] { new Rectangle(96, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("TurquoiseKnife", "Bullets", new Rectangle[] { new Rectangle(128, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("GreenKnife", "Bullets", new Rectangle[] { new Rectangle(160, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("YellowKnife", "Bullets", new Rectangle[] { new Rectangle(192, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemyParticle("WhiteKnife", "Bullets", new Rectangle[] { new Rectangle(224, 160, 32, 32) }, 1.25f);
-            api.instantiateEnemy("Fairies", "Select", "EnemyDamage", "Stage1Enm", fairiesParts, 4, 1.25f);
-            api.instantiateStage(@"scriptStage.txt");
+            api.loadSound(GameApi.LoadHelper.MENU_SELECT_SOUND, MENU_SELECT_SOUND);
+            api.loadSound(GameApi.LoadHelper.PLAYER_SHOOT_SOUND, PLAYER_SHOOT_SOUND);
+            api.loadSound(GameApi.LoadHelper.PLAYER_DIES_SOUND, PLAYER_DEAD_SOUND);
+            api.loadSound(GameApi.LoadHelper.ENEMY_DAMAGE_SOUND, ENEMY_DAMAGE_SOUND);
+            api.loadImage(GameApi.LoadHelper.BORDER_TEXTURE, BORDER_TEXTURE);
+            api.loadImage(GameApi.LoadHelper.BACKGROUND_TEXTURE, BACKGROUND_TEXTURE);
+            api.loadImage(GameApi.LoadHelper.PLAYER_TEXTURE, PLAYER_TEXTURE, PLAYER_TEXTURE_ALPHA);
+            api.loadImage(GameApi.LoadHelper.MISSILE_TEXTURE, MISSILE_TEXTURE, MISSILE_TEXTURE_ALPHA);
+            api.loadFont(GameApi.LoadHelper.TEXT_FONT, TEXT_FONT);
+            api.instantiateScreenMenu(MENU_MARGIN);
+            api.instantiatePauseMenu(MENU_MARGIN);
+            api.instantiateInGameBackground();
+            api.loadImage(BULLETS, BULLETS_TEXTURE, BULLETS_TEXTURE_ALPHA);
+            api.loadImage(STAGE1_ENM, STAGE1_ENM_TEXTURE, STAGE1_ENM_TEXTURE_ALPHA);
+            api.loadImage(STAGE1_ENM2, STAGE1_ENM2_TEXTURE, STAGE1_ENM2_TEXUTURE_ALPHA);
+            api.loadAlphaShader(ALPHA_SHADER);
+            api.instantiatePlayer(PLAYER_PARTS, PLAYER_LIFES_COUNT, PLAYER_INITIAL_POSITION, PLAYER_FRAMES_IMAGE_COUNT, PLAYER_IMAGE_SCALE);
+            api.instantiatePlayerParticle(PLAYER_LEFT_PARTICLE_POSITION, PLAYER_RIGHT_PARTICLE_POSITION, PLAYER_PARTICLE_PART, PLAYER_PARTICLE_DAMAGE, PLAYER_PARTICLE_SPEED, PLAYER_PARTICLE_IMAGE_SCALE);
+            api.instantiateEnemyParticle(GRAY_KNIFE, BULLETS, GRAY_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(RED_KNIFE, BULLETS, RED_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(PINK_KNIFE, BULLETS, PINK_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(BLUE_KNIFE, BULLETS, BLUE_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(TURQUOISE_KNIFE, BULLETS, TURQUOISE_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(GREEN_KNIFE, BULLETS, GREEN_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(YELLOW_KNIFE, BULLETS, YELLOW_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemyParticle(WHITE_KNIFE, BULLETS, WHITE_KNIFE_PART, KNIFE_SCALE);
+            api.instantiateEnemy(FAIRIES, STAGE1_ENM, FAIRIES_PARTS, 4, KNIFE_SCALE);
+            api.instantiateStage(SCRIPT_PATH);
         }
 
         /// <summary>

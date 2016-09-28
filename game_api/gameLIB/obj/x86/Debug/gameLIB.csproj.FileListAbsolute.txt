@@ -32,3 +32,5 @@ D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\gameLIB.csprojResolveAssembly
 D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\gameLIB.dll
 D:\git\danmaku-game\game_api\gameLIB\obj\x86\Debug\gameLIB.pdb
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Newtonsoft.Json.dll
+D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Newtonsoft.Json.xml
