@@ -36,6 +36,7 @@ namespace PeaceGame
         readonly int WINDOW_WIDTH = 800;
         readonly int WINDOW_HEIGHT = 600;
         readonly bool IS_FULLSCREEN = false;
+        readonly bool ALLOW_RESIZING = true;
         readonly string MENU_SELECT_SOUND = @"sounds\menu\selectMenu";
         readonly string PLAYER_SHOOT_SOUND = @"sounds\particle\playerShoot";
         readonly string PLAYER_DEAD_SOUND = @"sounds\player\playerDead";
@@ -94,6 +95,7 @@ namespace PeaceGame
             this.graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             this.graphics.IsFullScreen = IS_FULLSCREEN;
+            this.Window.AllowUserResizing = ALLOW_RESIZING;
             Content.RootDirectory = "Content";
         }
 

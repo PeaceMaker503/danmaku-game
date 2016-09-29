@@ -6,59 +6,60 @@ namespace gameLIB.components.sprites
 {
     public abstract class DynamicSprite : Sprite
     {
-        private Vector2 _direction;
-        private Vector2 _destination;
-        private float _speed;
-        private int _indexFrame;
-        private int _nbFrames;
-        private float _scale;
-        private Rectangle[] _part;
+        public Vector2 direction { get; set; }
+        public Vector2 destination { get; set; }
+        public float speed { get; set; }
+        public int indexFrame { get; set; }
+        public int nbFrames { get; set; }
+        public float scale { get; set; }
+        public Rectangle[] parts { get; set; }
 
-        public DynamicSprite(Image image, Vector2 position, Rectangle[] part, int nbFrames, float scale) //pour le player
+        public DynamicSprite(Image image, Vector2 position, Rectangle[] parts, int nbFrames, float scale) //pour le player
             : base(image, position)
         {
-            _destination = Vector2.Zero;
-            _direction = Vector2.Zero;
-            _speed = 0;
-            _nbFrames = nbFrames;
-            _scale = scale;
-            _part = part;
+            this.destination = Vector2.Zero;
+            this.direction = Vector2.Zero;
+            this.speed = 0;
+            this.nbFrames = nbFrames;
+            this.scale = scale;
+            this.parts = parts;
         }
 
-        public DynamicSprite(Image image, Vector2 position, Vector2 direction, Vector2 destination, Rectangle[] part, float speed, int nbFrames, float scale) 
+        public DynamicSprite(Image image, Vector2 position, Vector2 direction, Vector2 destination, Rectangle[] parts, float speed, int nbFrames, float scale) 
             : base(image, position)
         {
             if(direction != Vector2.Zero)
             {
-                _direction = direction;
-                _destination = Vector2.Zero;
+                this.direction = direction;
+                this.destination = Vector2.Zero;
             }
             else
             {
-                _destination = destination;
-                _direction = Vector2Math.calculateDirection(position, destination);
+                this.destination = destination;
+                this.direction = Vector2Extension.calculateDirection(position, destination);
             }
-            _speed = speed;
-            _nbFrames = nbFrames;
-            _scale = scale;
-            _part = part;
+            this.speed = speed;
+            this.nbFrames = nbFrames;
+            this.scale = scale;
+            this.parts = parts;
         }
         
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(image.texture, position, _part[_indexFrame/_nbFrames], Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 1f);
-            _indexFrame++;
-            _indexFrame = (_indexFrame + 1) % (_part.Length * _nbFrames);
+            spriteBatch.Draw(image.texture, position, parts[indexFrame/nbFrames], Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            indexFrame = (indexFrame+1) % (parts.Length * nbFrames);
         }
 
         public virtual void init()
         {
             this.position = this.initPosition;
+            this.destination = Vector2.Zero;
+            this.direction = Vector2.Zero;
         }
 
         public void move()
         {
-            this.position += _direction * _speed;
+            this.position += direction * speed;
         }
 
         public void moveOf(Vector2 value)
@@ -68,56 +69,14 @@ namespace gameLIB.components.sprites
 
         public void setDestination(Vector2 destination, float speed)
         {
-            _destination = destination;
-            _direction = Vector2Math.calculateDirection(position, destination);
-            _speed = speed;
-        }
-
-        public Vector2 direction
-        {
-            get { return _direction; }
-            set { _direction = value; }
-        }
-
-        public Vector2 destination
-        {
-            get { return _destination; }
-            set { _destination = value; direction = Vector2Math.calculateDirection(position, _destination); }
+            this.destination = destination;
+            this.direction = Vector2Extension.calculateDirection(position, destination);
+            this.speed = speed;
         }
 
         public abstract Vector2 positionCollision
         {
             get;
-        }
-
-        public float speed
-        {
-            get { return _speed; }
-            set { _speed = value; }
-        }
-
-        public int nbFrames
-        {
-            get { return _nbFrames; }
-            set { _nbFrames = value; }
-        }
-
-        public int indexFrame
-        {
-            get { return _indexFrame; }
-            set { _indexFrame = value; }
-        }
-
-        public float scale
-        {
-            get { return _scale; }
-            set { _scale = value; }
-        }
-
-        public Rectangle[] part
-        {
-            get { return _part; }
-            set { _part = part; }
         }
     }
 }

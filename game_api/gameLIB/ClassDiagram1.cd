@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical" MembersFormat="FullSignature">
+  <Class Name="gameLIB.components.characters.Character" Collapsed="true">
+    <Position X="8.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAA=</HashCode>
+      <FileName>components\characters\Character.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.characters.Enemy" Collapsed="true">
+    <Position X="7.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAADQAAACCABACAAgAAIAAgAgAAAAIAg=</HashCode>
+      <FileName>components\characters\Enemy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.characters.Player" Collapsed="true">
+    <Position X="10" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgEAAAAAAAAQAAAAAgAAAAAAAIAAAAIAwABEAAIAAA=</HashCode>
+      <FileName>components\characters\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.gui.InGameBackground" Collapsed="true">
+    <Position X="22.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAABIAAAAAAAAEgAAoAA=</HashCode>
+      <FileName>components\gui\InGameBackground.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.gui.Menu" Collapsed="true">
+    <Position X="13.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAEAABAAACAAAACAAAAAAgAEIAA=</HashCode>
+      <FileName>components\gui\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.gui.PauseMenu" Collapsed="true">
+    <Position X="14.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>components\gui\PauseMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.gui.ScreenMenu" Collapsed="true">
+    <Position X="12.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>components\gui\ScreenMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.particles.Particle" Collapsed="true">
+    <Position X="12.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>components\particles\Particle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.sprites.DynamicSprite" Collapsed="true">
+    <Position X="10" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAABAAgAMACAAAIAAAACAAAAAQIAAgAABEAAAAA=</HashCode>
+      <FileName>components\sprites\DynamicSprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.sprites.Image" Collapsed="true">
+    <Position X="20.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAQAAAAAEAAAAAAAAAAAEAgAAAAAQAAAAAAA=</HashCode>
+      <FileName>components\sprites\Image.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.sprites.Sprite" Collapsed="true">
+    <Position X="11" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAIAAAEAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>components\sprites\Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.sprites.StaticSprite" Collapsed="true">
+    <Position X="14.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAIAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>components\sprites\StaticSprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.instructions.Instruction" Collapsed="true">
+    <Position X="10" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>components\stage\instructions\Instruction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.instructions.InstructionCreate" Collapsed="true">
+    <Position X="7.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAIAAAAAAAIAAACAAAAQAAAAAABBAAAAg=</HashCode>
+      <FileName>components\stage\instructions\InstructionCreate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.instructions.InstructionMove" Collapsed="true">
+    <Position X="10" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAEAAAIAAAAAAAAAAAAAAAAQAAAAAABAAAAAA=</HashCode>
+      <FileName>components\stage\instructions\InstructionMove.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.instructions.InstructionShoot" Collapsed="true">
+    <Position X="12.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAEAAAIAAAAAAAAAAAAAAAAQAAAAACBAAAAAA=</HashCode>
+      <FileName>components\stage\instructions\InstructionShoot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.models.Bullet" Collapsed="true">
+    <Position X="17.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAABAQAAAAAABAAAAgA=</HashCode>
+      <FileName>components\stage\parser\models\Bullet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.models.CreateEvent" Collapsed="true">
+    <Position X="20.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>components\stage\parser\models\CreateEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.models.MoveEvent" Collapsed="true">
+    <Position X="17.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAIQAAAAAAAAAAAAAAAQAAAAAABAAAAAA=</HashCode>
+      <FileName>components\stage\parser\models\MoveEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.models.Script" Collapsed="true">
+    <Position X="19" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAACAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>components\stage\parser\models\Script.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.models.ShootEvent" Collapsed="true">
+    <Position X="20.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAQAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>components\stage\parser\models\ShootEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.models.Target" Collapsed="true">
+    <Position X="20.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAIAAAAAABAQAAABAADAAAAgg=</HashCode>
+      <FileName>components\stage\parser\models\Target.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.parser.StageMaker" Collapsed="true">
+    <Position X="17.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAACAAAAAAABAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>components\stage\parser\StageMaker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.Stage" Collapsed="true">
+    <Position X="24.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAgBAiAAAAAAABEABQkQAAAAAAAAsYABAAAAQJAAABA=</HashCode>
+      <FileName>components\stage\Stage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.components.stage.Task" Collapsed="true">
+    <Position X="22.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAgAAAAAAAAAAAAAAAAAAEAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>components\stage\Task.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.CommonComponents" Collapsed="true">
+    <Position X="19" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAABAAAAAAAAAAIAAAAAAAAAAAgQAAAAAAEAAAAA=</HashCode>
+      <FileName>main\CommonComponents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.GameApi" Collapsed="true">
+    <Position X="22.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAoAAAAAAgBFoBBAgAAAABACEAAAAACACEAAA=</HashCode>
+      <FileName>main\GameApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.GameController" Collapsed="true">
+    <Position X="24.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACgCAAoAAAgAEgBBoBBAAAAAAJAAEAAAAACCCEAAQ=</HashCode>
+      <FileName>main\GameController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.engines.GameEngine" Collapsed="true">
+    <Position X="17.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAAAAAAImRAAAAABGABAEAAQAQAEgAAMEAABAAA=</HashCode>
+      <FileName>main\engines\GameEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.engines.GraphicEngine" Collapsed="true">
+    <Position X="19" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAABAAAgCAAABABIAAEBAACSFCAEYCIgACACAQAA=</HashCode>
+      <FileName>main\engines\GraphicEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.engines.KeyboardEventEmitter" Collapsed="true">
+    <Position X="24.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAMgAQAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>main\engines\KeyboardEventEmitter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.main.engines.SoundEngine" Collapsed="true">
+    <Position X="22.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAEAAAAAAABAAgAAAAAAAAIAAAQABAAAAAAAAA=</HashCode>
+      <FileName>main\engines\SoundEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.utils.StringExtension" Collapsed="true">
+    <Position X="19" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>utils\StringExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gameLIB.utils.Vector2Extension" Collapsed="true">
+    <Position X="24.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABAAAAIAAAA=</HashCode>
+      <FileName>utils\Vector2Extension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

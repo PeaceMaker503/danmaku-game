@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace gameLIB.components.stage.instructions
 {
-    public class InstructionShoot : Instruction
+    public sealed class InstructionShoot : Instruction
     {
         public float speed { get; set; }
         public Vector2 direction { get; set; }

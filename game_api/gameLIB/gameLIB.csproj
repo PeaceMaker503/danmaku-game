@@ -64,7 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="components\characters\Player.cs" />
-    <Compile Include="utils\Vector2Math.cs" />
+    <Compile Include="components\stage\parser\models\MoveEvent.cs" />
+    <Compile Include="utils\Vector2Extension.cs" />
     <Compile Include="components\stage\parser\models\Bullet.cs" />
     <Compile Include="components\stage\parser\models\CreateEvent.cs" />
     <Compile Include="components\stage\instructions\Instruction.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="components\stage\Task.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

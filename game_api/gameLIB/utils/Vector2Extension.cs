@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace gameLIB.utils
 {
-    public class Vector2Math
+    public static class Vector2Extension
     {
         public static Vector2 calculateDirection(Vector2 position, Vector2 destination)
         {

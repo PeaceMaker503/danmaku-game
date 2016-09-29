@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace gameLIB.components.stage.instructions
 {
-    public class InstructionMove : Instruction
+    public sealed class InstructionMove : Instruction
     {
         public float speed { get; set; }
         public Vector2 direction { get; set; }
@@ -12,19 +12,19 @@ namespace gameLIB.components.stage.instructions
         public Vector2 fdirection { get; set; }
         public float fspeed { get; set; }
 
-        public InstructionMove(int _id, Vector2 _destination, Vector2 _direction, Vector2 _fdirection, float _speed, float _fspeed)
+        public InstructionMove(int _id, Vector2 _destination, Vector2 _direction, float _speed, Vector2 _fdirection, float _fspeed)
             : base(String.Empty, _id)
         {
             direction = _direction;
             speed = _speed;
             destination = _destination;
-            fspeed = _fspeed;
-            fdirection = _fdirection;
+            this.fspeed = _fspeed;
+            this.fdirection = _fdirection;
         }
 
         public override void run(Stage s)
         {
-            s.orderToMove(id, destination, direction, fdirection, speed, fspeed);
+            s.orderToMove(id, destination, direction, speed, fdirection, fspeed);
         }
     }
 }

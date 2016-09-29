@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace gameLIB.components.sprites
 {
-    public sealed class Image
+    public class Image
     {
         private Texture2D _texture;
         private Texture2D _alpha;
@@ -42,11 +42,6 @@ namespace gameLIB.components.sprites
             get
             {
                 return _name;
-            }
-
-            set
-            {
-                _name = value;
             }
         }
     }

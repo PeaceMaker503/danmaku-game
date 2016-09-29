@@ -7,7 +7,7 @@ namespace gameLIB.components.particles
 {
     public sealed class Particle : DynamicSprite
     {
-        private bool _hit;
+        public bool hit { get; set; }
 
         public Particle(Image image, Rectangle[] part, Vector2 direction, float speed, float scale) 
             : base(image, Vector2.Zero, direction, Vector2.Zero, part, speed, 0, scale) //pour créer l'instance originale de la particule du player qui sera ensuite clonée à souhait
@@ -16,7 +16,7 @@ namespace gameLIB.components.particles
         }
         
         public Particle(Particle p)
-            : base(p.image, p.position, p.direction, p.destination, p.part, p.speed, p.nbFrames, p.scale) //pour créer un clone en se basant sur la particule originale
+            : base(p.image, p.position, p.direction, p.destination, p.parts, p.speed, p.nbFrames, p.scale) //pour créer un clone en se basant sur la particule originale
         {
 
         }
@@ -25,18 +25,12 @@ namespace gameLIB.components.particles
         {
             float angle = (float)Math.Floor(MathHelper.ToDegrees((float)Math.Atan2(this.direction.Y, this.direction.X))) - 90;
             float anglerad = MathHelper.ToRadians(angle);
-            spriteBatch.Draw(this.image.texture, this.position, this.part[0], Color.White, anglerad, this.positionCollision, this.scale, SpriteEffects.None, 1f);
-        }
-
-        public bool Hit
-        {
-            get { return _hit; }
-            set { _hit = value; }
+            spriteBatch.Draw(this.image.texture, this.position, this.parts[0], Color.White, anglerad, this.positionCollision, this.scale, SpriteEffects.None, 1f);
         }
 
         public override Vector2 positionCollision
         {
-            get { return new Vector2(part[0].Width / 2f, part[0].Height); }
+            get { return new Vector2(parts[0].Width / 2f, parts[0].Height); }
         }
     }
 }

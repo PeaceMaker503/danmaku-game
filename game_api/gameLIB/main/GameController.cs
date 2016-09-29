@@ -115,14 +115,13 @@ namespace gameLIB.main
 
         public void update(GameTime gameTime)
         {
-            switch (_gameEngine.State)
+            switch (_gameEngine.state)
             {
                 case GameEngine.GameState.ScreenMenu:
                 case GameEngine.GameState.PauseMenu:
                     _gameEngine.runMenu();
                     break;
                 case GameEngine.GameState.Stage:
-                    _gameEngine.disposeObjects();
                     _gameEngine.runStage(gameTime);
                     break;
             }
@@ -130,7 +129,7 @@ namespace gameLIB.main
 
         public void draw()
         {
-            switch (_gameEngine.State)
+            switch (_gameEngine.state)
             {
                 case GameEngine.GameState.ScreenMenu:
                 case GameEngine.GameState.PauseMenu :

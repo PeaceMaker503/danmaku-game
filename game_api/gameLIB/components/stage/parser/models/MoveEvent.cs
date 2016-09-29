@@ -6,16 +6,14 @@ using System.Text;
 
 namespace gameLIB.components.stage.parser.models
 {
-    public sealed class Target
+    public sealed class MoveEvent
     {
-        public string type { get; set; }
-        public Vector2 position { get; set; }
-        public Vector2 destination { get; set; }
-        public float speed { get; set; }
-        public int health { get; set; }
-        public Vector2 fdirection { get; set; }
+        public float time { get; set; }
+        public int targetId { get; set; }
         public Vector2 direction { get; set; }
+        public Vector2 destination { get; set; }
+        public Vector2 fdirection { get; set; }
         public float fspeed { get; set; }
-        public int id { get; set; }
+        public float speed { get; set; }
     }
 }

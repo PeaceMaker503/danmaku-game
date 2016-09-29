@@ -15,7 +15,6 @@ C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Deb
 C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Debug\gameLIB.pdb
 C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\obj\x86\Debug\gameLIB.csprojResolveAssemblyReference.cache
 C:\Users\halim\Documents\Visual Studio 2015\Projects\gameLIB\gameLIB\bin\x86\Debug\stage_compiler.exe
-D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\stage_compiler.exe
 D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\gameLIB.dll
 D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\gameLIB.pdb
 D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.dll

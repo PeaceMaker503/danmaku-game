@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace gameLIB.components.stage
 {
-    public sealed class Stage
+    public class Stage
     {
         public double time;
         private List<Task> _tasks;
@@ -98,7 +98,7 @@ namespace gameLIB.components.stage
             e.finishSpeed = fspeed;
             if (direction==Vector2.Zero)
             {
-                e.addTraj(destination);
+                e.addNewDestination(destination);
             }
             else
             {
@@ -107,21 +107,32 @@ namespace gameLIB.components.stage
             enemies.Add(id, e);
         }
 
-        public void orderToMove(int id, Vector2 destination, Vector2 direction, Vector2 fdirection, float speed, float fspeed)
+        public void orderToMove(int id, Vector2 destination, Vector2 direction, float speed, Vector2 fdirection, float fspeed)
         {
             Enemy e;
             if (enemies.TryGetValue(id, out e) && e.isAlive)
             {
                 if (direction == Vector2.Zero)
                 {
-                    e.addTraj(destination, speed);
-                    e.finishDir = fdirection;
-                    e.finishSpeed = fspeed;
+                    e.addNewDestination(destination, speed);
                 }
                 else
                 {
                     e.direction = direction;
                     e.speed = speed;
+                }
+
+                if(fdirection != Vector2.Zero)
+                {
+                    e.finishDir = fdirection;
+                    if(fspeed<=0)
+                    {
+                        e.finishSpeed = e.speed;
+                    }
+                    else
+                    {
+                        e.finishSpeed = fspeed;
+                    }
                 }
             }
         }
@@ -160,12 +171,12 @@ namespace gameLIB.components.stage
 
         public void playerShoot()
         {
-            Particle p1 = this.getParticleInstanceOf(player.ParticleName);
-            p1.position = player.position + player.ParticleOffset1;
-            Particle p2 = this.getParticleInstanceOf(player.ParticleName);
-            p2.position = player.position + player.ParticleOffset2;
-            particles.Add(_playerParticlesId++, p1);
-            particles.Add(_playerParticlesId++, p2);
+            Particle p1 = this.getParticleInstanceOf(player.particleName);
+            p1.position = player.position + player.particleOffset1;
+            Particle p2 = this.getParticleInstanceOf(player.particleName);
+            p2.position = player.position + player.particleOffset2;
+            particles.Add(++_playerParticlesId, p1);
+            particles.Add(++_playerParticlesId, p2);
         }
 
         public void updateEnemiesPositions()

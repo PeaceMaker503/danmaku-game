@@ -7,7 +7,10 @@ using gameLIB.components.stage;
 
 namespace gameLIB.main
 {
-    public class CommonComponents //singleton
+    /// <summary>
+    /// singleton
+    /// </summary>
+    public class CommonComponents
     {
         public Menu currentMenu { get; set; }
         public ScreenMenu screenMenu { get; set; }

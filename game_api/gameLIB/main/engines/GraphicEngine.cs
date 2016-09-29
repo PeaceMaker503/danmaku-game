@@ -33,7 +33,6 @@ namespace gameLIB.main.engines
             WindowDimension = _graphicsDevice.Viewport.Bounds;
             _images = new Dictionary<String, Image>();
             _fonts = new Dictionary<String, SpriteFont>();
-            _inGameBackground = new InGameBackground();
             _effects = new Dictionary<String, Effect>();
             _inGameWindow = new Rectangle(35, 25, WindowDimension.Width - 25 - 275, WindowDimension.Height - 50);
         }
@@ -76,27 +75,25 @@ namespace gameLIB.main.engines
 
         public void createInGameBackgroundFrom(String imageNameBackground, String imageNameLimit)
         {
-            _inGameBackground.left = new StaticSprite(_images[imageNameLimit], new Vector2(0, 0), new Vector2(_inGameWindow.X, WindowDimension.Height));
-            _inGameBackground.up = new StaticSprite(_images[imageNameLimit], new Vector2(0, 0), new Vector2(WindowDimension.Width, _inGameWindow.Y));
-            _inGameBackground.down = new StaticSprite(_images[imageNameLimit], new Vector2(0, WindowDimension.Height - _inGameWindow.Y), new Vector2(WindowDimension.Width, _inGameWindow.Y));
-            _inGameBackground.right = new StaticSprite(_images[imageNameLimit], new Vector2(_inGameWindow.Width + _inGameWindow.X, 0), new Vector2(WindowDimension.Width - _inGameWindow.Width - _inGameWindow.X, WindowDimension.Height));
-            _inGameBackground.background = new StaticSprite(_images[imageNameBackground], new Vector2(0, 0), new Vector2(WindowDimension.Width, WindowDimension.Height));
+            StaticSprite left = new StaticSprite(_images[imageNameLimit], new Vector2(0, 0), new Vector2(_inGameWindow.X, WindowDimension.Height));
+            StaticSprite up = new StaticSprite(_images[imageNameLimit], new Vector2(0, 0), new Vector2(WindowDimension.Width, _inGameWindow.Y));
+            StaticSprite down = new StaticSprite(_images[imageNameLimit], new Vector2(0, WindowDimension.Height - _inGameWindow.Y), new Vector2(WindowDimension.Width, _inGameWindow.Y));
+            StaticSprite right = new StaticSprite(_images[imageNameLimit], new Vector2(_inGameWindow.Width + _inGameWindow.X, 0), new Vector2(WindowDimension.Width - _inGameWindow.Width - _inGameWindow.X, WindowDimension.Height));
+            StaticSprite background = new StaticSprite(_images[imageNameBackground], new Vector2(0, 0), new Vector2(WindowDimension.Width, WindowDimension.Height));
+            _inGameBackground = new InGameBackground(left, up, down, right, background);
         }
 
-        public void createScreenMenuFrom(String imageName, String soundSelect, String fontName, Vector2 marginMenu)
+        public void createScreenMenuFrom(String imageName, string soundSelect, String fontName, Vector2 marginMenu)
         {
-            _common.screenMenu.background = new StaticSprite(_images[imageName], new Vector2(0, 0), new Vector2(WindowDimension.Width, WindowDimension.Height));
-            _common.screenMenu.spriteFont = _fonts[fontName];
-            _common.screenMenu.MarginMenu = marginMenu;
-            _common.screenMenu.SelectSound = soundSelect;
+            StaticSprite background = new StaticSprite(_images[imageName], new Vector2(0, 0), new Vector2(WindowDimension.Width, WindowDimension.Height));
+            _common.screenMenu = new ScreenMenu(marginMenu, soundSelect, _fonts[fontName], background);
+            _common.currentMenu = _common.screenMenu;
         }
 
         public void createPauseMenuFrom(String imageName, String soundSelect, String fontName, Vector2 marginMenu)
         {
-            _common.pauseMenu.background = new StaticSprite(_images[imageName], new Vector2(0, 0), new Vector2(WindowDimension.Width, WindowDimension.Height));
-            _common.pauseMenu.spriteFont = _fonts[fontName];
-            _common.pauseMenu.MarginMenu = marginMenu;
-            _common.pauseMenu.SelectSound = soundSelect;
+            StaticSprite background = new StaticSprite(_images[imageName], new Vector2(0, 0), new Vector2(WindowDimension.Width, WindowDimension.Height));
+            _common.pauseMenu = new PauseMenu(marginMenu, soundSelect, _fonts[fontName], background);
         }
 
         public void unloadContent()

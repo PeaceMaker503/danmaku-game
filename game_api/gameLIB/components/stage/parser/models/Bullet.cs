@@ -6,7 +6,7 @@ using System.Text;
 
 namespace gameLIB.components.stage.parser.models
 {
-    public class Bullet
+    public sealed class Bullet
     {
         public string type { get; set; }
         public int id { get; set; }

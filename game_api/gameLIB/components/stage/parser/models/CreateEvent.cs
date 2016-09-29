@@ -5,7 +5,7 @@ using System.Text;
 
 namespace gameLIB.components.stage.parser.models
 {
-    public class CreateEvent
+    public sealed class CreateEvent
     {
         public float time { get; set; }
         public Target target { get; set; }

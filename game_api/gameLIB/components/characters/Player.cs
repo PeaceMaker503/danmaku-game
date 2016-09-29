@@ -7,142 +7,49 @@ namespace gameLIB.components.characters
 {
     public sealed class Player : Character
     {
-        private int _lifes;
+        public int lifes { get; set; }
         private int _lifesInit;
-        private String _shootSound;
-        private String _diesSound;
-        private string _particleName;
-        private string _particleImageName;
-        private Vector2 _particleOffset1;
-        private Vector2 _particleOffset2;
-        private int _particleDamage;
-        public Player(Image image, Vector2 position, Rectangle[] part, int lifes, int nbFrame, float scale)
+        public String shootSound { get; private set; }
+        public String diesSound { get; private set; }
+        public string particleName { get; set; }
+        public string particleImageName { get; set; }
+        public Vector2 particleOffset1 { get; set; }
+        public Vector2 particleOffset2 { get; set; }
+        public int particleDamage { get; set; }
+
+        public Player(Image image, Vector2 position, Rectangle[] part, int lifes, int nbFrame, float scale, string soundPlayerDies, string soundPlayerShoot)
             : base(image, position, part, nbFrame, scale)
         {
-            _lifes = lifes;
+            this.lifes = lifes;
             _lifesInit = lifes;
+            this.shootSound = soundPlayerShoot;
+            this.diesSound = soundPlayerDies;
         }
 
         public new void drawCharacter(SpriteBatch spriteBatch)
         {
-            if (this.isAlive == true)
+            if (isAlive == true)
             {
-                spriteBatch.Draw(this.image.texture, this.position, this.part[this.indexFrame / 4], Color.White, 0f, this.positionCollision - this.position, 1f, SpriteEffects.None, 1f);
+                spriteBatch.Draw(this.image.texture, this.position, this.parts[this.indexFrame / 4], Color.White, 0f, this.positionCollision - this.position, 1f, SpriteEffects.None, 1f);
             }
             else
             {
                 spriteBatch.Draw(this.image.texture, this.position, new Rectangle(0, 0, 32, 50), Color.White * 0.5f, 0f, this.positionCollision - this.position, 1f, SpriteEffects.None, 1f);
             }
-            this.indexFrame = (this.indexFrame+1)%(nbFrames * this.part.Length);
+            indexFrame++;
+            this.indexFrame = (this.indexFrame+1)%(this.nbFrames * this.parts.Length);
         }
 
         public void initPlayer()
         {
             this.init();
-            _lifes = _lifesInit;
+            lifes = _lifesInit;
             isAlive = true;
-        }
-
-        public int lifes
-        {
-            get { return _lifes; }
-            set { _lifes = value; }
         }
 
         public override Vector2 positionCollision
         {
             get { return new Vector2(position.X + (31f / 2f), position.Y + (47f / 2f)); }
-        }
-
-        public string ShootSound
-        {
-            get
-            {
-                return _shootSound;
-            }
-
-            set
-            {
-                _shootSound = value;
-            }
-        }
-
-        public string DiesSound
-        {
-            get
-            {
-                return _diesSound;
-            }
-
-            set
-            {
-                _diesSound = value;
-            }
-        }
-
-        public string ParticleName
-        {
-            get
-            {
-                return _particleName;
-            }
-
-            set
-            {
-                _particleName = value;
-            }
-        }
-
-        public Vector2 ParticleOffset1
-        {
-            get
-            {
-                return _particleOffset1;
-            }
-
-            set
-            {
-                _particleOffset1 = value;
-            }
-        }
-
-        public Vector2 ParticleOffset2
-        {
-            get
-            {
-                return _particleOffset2;
-            }
-
-            set
-            {
-                _particleOffset2 = value;
-            }
-        }
-
-        public string ParticleImageName
-        {
-            get
-            {
-                return _particleImageName;
-            }
-
-            set
-            {
-                _particleImageName = value;
-            }
-        }
-
-        public int ParticleDamage
-        {
-            get
-            {
-                return _particleDamage;
-            }
-
-            set
-            {
-                _particleDamage = value;
-            }
         }
     }
 }

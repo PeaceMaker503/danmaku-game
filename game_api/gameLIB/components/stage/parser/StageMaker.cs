@@ -9,7 +9,7 @@ using gameLIB.components.stage.instructions;
 
 namespace gameLIB.components.stage.parser
 {
-    public class StageMaker
+    public sealed class StageMaker
     {
         private Stage _stage;
         private String _path;
@@ -42,12 +42,12 @@ namespace gameLIB.components.stage.parser
                 _stage.addTask(task);
             }
 
-            /*
-             * 
-             *         InstructionMove ins = new InstructionMove(id, destination, direction, fdirection, speed, fspeed);
-         Task task = new Task(time, ins);
-         _stage.addTask(task); 
-             */
+            foreach (MoveEvent e in script.move)
+            {
+                InstructionMove ins = new InstructionMove(e.targetId, e.destination, e.direction, e.speed, e.fdirection, e.fspeed);
+                Task task = new Task(e.time, ins);
+                _stage.addTask(task);
+            }
         }
     }
 }

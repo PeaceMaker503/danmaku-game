@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace gameLIB.components.stage.instructions
 {
-    public class InstructionCreate : Instruction
+    public sealed class InstructionCreate : Instruction
     {
         public int health { get; set; }
         public float speed { get; set; }

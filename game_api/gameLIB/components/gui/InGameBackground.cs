@@ -5,48 +5,33 @@ namespace gameLIB.components.gui
 {
     public class InGameBackground
     {
-        private StaticSprite _background;
-        private StaticSprite _left;
-        private StaticSprite _right;
-        private StaticSprite _up;
-        private StaticSprite _down;
+        public StaticSprite background { get; private set; }
+        public StaticSprite left { get; private set; }
+        public StaticSprite right { get; private set; }
+        public StaticSprite up { get; private set; }
+        public StaticSprite down { get; private set; }
+
+
+        public InGameBackground(StaticSprite left, StaticSprite up, StaticSprite down, StaticSprite right, StaticSprite background)
+        {
+            this.background = background;
+            this.left = left;
+            this.right = right;
+            this.up = up;
+            this.down = down;
+        }
 
         public void drawInGameBackground(SpriteBatch spriteBatch)
         {
-            _background.draw(spriteBatch);
+            this.background.draw(spriteBatch);
         }
 
         public void drawInGameUI(SpriteBatch spriteBatch)
         {
-            _left.draw(spriteBatch);
-            _up.draw(spriteBatch);
-            _right.draw(spriteBatch);
-            _down.draw(spriteBatch);
-        }
-
-        public StaticSprite background
-        {
-            set { _background = value; }
-        }
-
-        public StaticSprite left
-        {
-            set { _left = value; }
-        }
-
-        public StaticSprite right
-        {
-            set { _right = value; }
-        }
-
-        public StaticSprite up
-        {
-            set { _up = value; }
-        }
-
-        public StaticSprite down
-        {
-            set { _down = value; }
+            this.left.draw(spriteBatch);
+            this.up.draw(spriteBatch);
+            this.right.draw(spriteBatch);
+            this.down.draw(spriteBatch);
         }
     }
 }
