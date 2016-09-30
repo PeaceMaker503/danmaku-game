@@ -9,10 +9,10 @@ namespace gameLIB.components.stage.parser.models
     public sealed class MoveEvent
     {
         public float time { get; set; }
-        public int targetId { get; set; }
-        public Vector2 direction { get; set; }
-        public Vector2 destination { get; set; }
-        public Vector2 fdirection { get; set; }
+        public ulong targetId { get; set; }
+        public JsonVector2 direction { get; set; }
+        public JsonVector2 destination { get; set; }
+        public JsonVector2 fdirection { get; set; }
         public float fspeed { get; set; }
         public float speed { get; set; }
     }

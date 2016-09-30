@@ -251,7 +251,7 @@ namespace gameLIB.main.engines
         {
             if (_common.currentStage.particles.Count > 0)
             {
-                IEnumerable<KeyValuePair<int, Particle>> particlesToBeRemoved = _common.currentStage.particles.Where(item => ((item.Value.position.Y > GraphicEngine.WindowDimension.Height + 100) ||
+                IEnumerable<KeyValuePair<ulong, Particle>> particlesToBeRemoved = _common.currentStage.particles.Where(item => ((item.Value.position.Y > GraphicEngine.WindowDimension.Height + 100) ||
                                                                                                                                 (item.Value.position.Y < -100) ||
                                                                                                                                 (item.Value.position.X > GraphicEngine.WindowDimension.Width + 100) ||
                                                                                                                                 (item.Value.position.X < -100) ||
@@ -265,7 +265,7 @@ namespace gameLIB.main.engines
 
             if (_common.currentStage.enemies.Count > 0)
             {
-                IEnumerable<KeyValuePair<int, Enemy>> enemiesToBeRemoved = _common.currentStage.enemies.Where(item => ((item.Value.position.Y >  GraphicEngine.WindowDimension.Height + 100) ||
+                IEnumerable<KeyValuePair<ulong, Enemy>> enemiesToBeRemoved = _common.currentStage.enemies.Where(item => ((item.Value.position.Y >  GraphicEngine.WindowDimension.Height + 100) ||
                                                                                                                          (item.Value.position.Y < -500) ||
                                                                                                                          (item.Value.position.X > GraphicEngine.WindowDimension.Width + 100) ||
                                                                                                                          (item.Value.position.X < -500) ||
@@ -293,7 +293,7 @@ namespace gameLIB.main.engines
                             particle.position.X > -10)
                         {
                             particle.hit = true;
-                            enemy.health -= _common.currentStage.player.particleDamage;
+                            enemy.health -= (ulong)_common.currentStage.player.particleDamage;
                             if (enemy.health <= 0)
                             {
                                 enemy.isAlive = false;

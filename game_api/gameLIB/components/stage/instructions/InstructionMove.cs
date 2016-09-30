@@ -12,7 +12,7 @@ namespace gameLIB.components.stage.instructions
         public Vector2 fdirection { get; set; }
         public float fspeed { get; set; }
 
-        public InstructionMove(int _id, Vector2 _destination, Vector2 _direction, float _speed, Vector2 _fdirection, float _fspeed)
+        public InstructionMove(ulong _id, Vector2 _destination, Vector2 _direction, float _speed, Vector2 _fdirection, float _fspeed)
             : base(String.Empty, _id)
         {
             direction = _direction;

@@ -1,113 +1,51 @@
 {
-    "create": [
-        {
-            "time": 1.0,
-            "target": {
-                "destination": "200, 50",
-                "health": 50,
-                "id": 5,
-                "position": "200, 200",
-                "speed": 2.0,
-                "type": "FAIRIES"
-            }
+  "create": [
+    {
+      "time": 0.0,
+      "target": {
+        "type": "-",
+        "position": {
+          "X": 0.0,
+          "Y": 0.0
         },
-        {
-            "time": 1.0,
-            "target": {
-                "destination": "200, 50",
-                "fdirection": "1, 1",
-                "fspeed": 2.0,
-                "health": 50,
-                "id": 0,
-                "position": "200, -170",
-                "speed": 2.0,
-                "type": "FAIRIES"
-            }
+        "destination": {
+          "X": 0.0,
+          "Y": 0.0
         },
-        {
-            "time": 1.0,
-            "target": {
-                "destination": "190, 80",
-                "fdirection": "1, 1",
-                "fspeed": 2.0,
-                "health": 50,
-                "id": 1,
-                "position": "190, -140",
-                "speed": 2.0,
-                "type": "FAIRIES"
-            }
+        "speed": 0.0,
+        "health": 0,
+        "fdirection": {
+          "X": 0.0,
+          "Y": 0.0
         },
-        {
-            "time": 1.0,
-            "target": {
-                "destination": "180, 110",
-                "fdirection": "1, 1",
-                "fspeed": 2.0,
-                "health": 50,
-                "id": 2,
-                "position": "180, -110",
-                "speed": 2.0,
-                "type": "FAIRIES"
-            }
+        "direction": {
+          "X": 0.0,
+          "Y": 0.0
         },
-        {
-            "target": {
-                "destination": "170, 140",
-                "fdirection": "1, 1",
-                "fspeed": 2.0,
-                "health": 50,
-                "id": 3,
-                "position": "170, -80",
-                "speed": 2.0,
-                "type": "FAIRIES"
-            },
-            "time": 1.0
-        },
-        {
-            "time": 1.0,
-            "target": {
-                "destination": "160, 170",
-                "fdirection": "1, 1",
-                "fspeed": 2.0,
-                "health": 50,
-                "id": 4,
-                "position": "160, -50",
-                "speed": 2.0,
-                "type": "FAIRIES"
-            }
-        }
-    ],
-    "shoot": [
-        {
-            "time": 5,
-            "targetId": 5,
-            "bullet": {
-                "direction": "1, 1",
-                "id": 0,
-                "speed": 2.0,
-                "type": "RED_KNIFE"
-            }
-        }
-    ],
-    "move": [
-        {
-            "time": 5,
-            "targetId": 5,
-            "destination": "100, 100",
-            "speed": 1
-        },
-        {
-            "time": 10,
-            "targetId": 5,
-            "destination": "200, 100",
-            "speed": 5
-        },
-        {
-            "time": 15,
-            "targetId": 5,
-            "destination": "300, 100",
-            "fdirection": "1, 1",
-            "speed" : 1.0
-        }
-    ]
+        "fspeed": 0.0,
+        "id": 0
+      }
+    }
+  ],
+  "shoot": [],
+  "move": [
+    {
+      "time": 0.0,
+      "targetId": 0,
+      "direction": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "destination": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "fdirection": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "fspeed": 0.0,
+      "speed": 0.0
+    }
+  ]
 }

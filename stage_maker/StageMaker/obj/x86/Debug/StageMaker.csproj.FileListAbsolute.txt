@@ -1,0 +1,13 @@
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\StageMaker.exe.config
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\StageMaker.exe
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\StageMaker.pdb
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\Microsoft.Xna.Framework.dll
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\Microsoft.Xna.Framework.xml
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\x86\Debug\StageMaker.csprojResolveAssemblyReference.cache
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\x86\Debug\StageMaker.Properties.Resources.resources
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\x86\Debug\StageMaker.csproj.GenerateResource.Cache
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\x86\Debug\StageMaker.exe
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\x86\Debug\StageMaker.pdb
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\Newtonsoft.Json.dll
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\bin\x86\Debug\Newtonsoft.Json.xml
+C:\Users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\x86\Debug\StageMaker.StageMaker.resources

@@ -14,7 +14,7 @@ namespace gameLIB.components.stage.instructions
 {
     public sealed class InstructionCreate : Instruction
     {
-        public int health { get; set; }
+        public ulong health { get; set; }
         public float speed { get; set; }
         public Vector2 position { get; set; }
         public Vector2 destination { get; set; }
@@ -23,7 +23,7 @@ namespace gameLIB.components.stage.instructions
         public float finishSpeed { get; set; }
 
 
-        public InstructionCreate(String _type, int _id, int _health, Vector2 _position, Vector2 _destination, Vector2 _direction, Vector2 _finishDirection, float _speed, float _finishSpeed)
+        public InstructionCreate(String _type, ulong _id, ulong _health, Vector2 _position, Vector2 _destination, Vector2 _direction, Vector2 _finishDirection, float _speed, float _finishSpeed)
             : base(_type, _id)
         {
             direction = _direction;

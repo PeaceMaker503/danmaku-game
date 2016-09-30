@@ -29,7 +29,7 @@ namespace gameLIB.components.stage.parser
             foreach(CreateEvent e in script.create)
             {
                 Target t = e.target;
-                InstructionCreate ins = new InstructionCreate(t.type, t.id, t.health, t.position, t.destination, t.direction, t.fdirection, t.speed, t.fspeed);
+                InstructionCreate ins = new InstructionCreate(t.type, t.id, t.health, new Vector2(t.position.X, t.position.Y), new Vector2(t.destination.X, t.destination.Y), new Vector2(t.direction.X, t.direction.Y), new Vector2(t.fdirection.X, t.fdirection.Y), t.speed, t.fspeed);
                 Task task = new Task(e.time, ins);
                 _stage.addTask(task);
             }
@@ -37,14 +37,14 @@ namespace gameLIB.components.stage.parser
             foreach (ShootEvent e in script.shoot)
             {
                 Bullet b = e.bullet;
-                InstructionShoot ins = new InstructionShoot(e.targetId, b.type, b.id, b.destination, b.direction, b.speed);
+                InstructionShoot ins = new InstructionShoot(e.targetId, b.type, b.id, new Vector2(b.destination.X, b.destination.Y), new Vector2(b.direction.X, b.direction.Y), b.speed);
                 Task task = new Task(e.time, ins);
                 _stage.addTask(task);
             }
 
             foreach (MoveEvent e in script.move)
             {
-                InstructionMove ins = new InstructionMove(e.targetId, e.destination, e.direction, e.speed, e.fdirection, e.fspeed);
+                InstructionMove ins = new InstructionMove(e.targetId, new Vector2(e.destination.X, e.destination.Y), new Vector2(e.direction.X, e.direction.Y), e.speed, new Vector2(e.fdirection.X, e.fdirection.Y), e.fspeed);
                 Task task = new Task(e.time, ins);
                 _stage.addTask(task);
             }

@@ -8,7 +8,7 @@ namespace gameLIB.components.stage.parser.models
     public sealed class ShootEvent
     {
         public float time { get; set; }
-        public int targetId { get; set; }
+        public ulong targetId { get; set; }
         public Bullet bullet { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace gameLIB.components.characters
 {
     public sealed class Enemy : Character
     {
-        public int health { get; set; }
+        public ulong health { get; set; }
         public List<Vector2> path { get; private set; }
         public String enemyDamageSound { get; set; }
         public String enemyDiesSound { get; set; }

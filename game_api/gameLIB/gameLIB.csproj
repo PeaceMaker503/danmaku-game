@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="components\characters\Player.cs" />
+    <Compile Include="components\stage\parser\models\JsonVector2.cs" />
     <Compile Include="components\stage\parser\models\MoveEvent.cs" />
+    <Compile Include="utils\JsonHelper.cs" />
     <Compile Include="utils\Vector2Extension.cs" />
     <Compile Include="components\stage\parser\models\Bullet.cs" />
     <Compile Include="components\stage\parser\models\CreateEvent.cs" />

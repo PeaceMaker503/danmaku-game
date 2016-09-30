@@ -14,17 +14,17 @@ namespace gameLIB.components.stage
         private double _timerPlayerRespawn;
         public Dictionary<string, Particle> particlesPrototypes { get; set; }
         public Dictionary<string, Enemy> enemiesPrototypes { get; set; }
-        public Dictionary<int, Enemy> enemies { get; set; }
-        public Dictionary<int, Particle> particles { get; set; }
+        public Dictionary<ulong, Enemy> enemies { get; set; }
+        public Dictionary<ulong, Particle> particles { get; set; }
         private List<Task> _tasksInit;
-        private int _playerParticlesId;
+        private ulong _playerParticlesId;
 
         public Stage()
         {
-            enemies = new Dictionary<int, Enemy>();
+            enemies = new Dictionary<ulong, Enemy>();
             particlesPrototypes = new Dictionary<string, Particle>();
             enemiesPrototypes = new Dictionary<string, Enemy>();
-            particles = new Dictionary<int, Particle>();
+            particles = new Dictionary<ulong, Particle>();
             _tasks = new List<Task>();
             time = 0;
             _timerPlayerRespawn = 0;
@@ -88,7 +88,7 @@ namespace gameLIB.components.stage
             }
         }
 
-        public void instantiateEnemy(String enemyType, int id, Vector2 position, Vector2 direction, Vector2 destination, Vector2 fdirection, int health, float speed, float fspeed)
+        public void instantiateEnemy(String enemyType, ulong id, Vector2 position, Vector2 direction, Vector2 destination, Vector2 fdirection, ulong health, float speed, float fspeed)
         {
             Enemy e = this.getEnemyInstanceOf(enemyType);
             e.health = health;
@@ -107,7 +107,7 @@ namespace gameLIB.components.stage
             enemies.Add(id, e);
         }
 
-        public void orderToMove(int id, Vector2 destination, Vector2 direction, float speed, Vector2 fdirection, float fspeed)
+        public void orderToMove(ulong id, Vector2 destination, Vector2 direction, float speed, Vector2 fdirection, float fspeed)
         {
             Enemy e;
             if (enemies.TryGetValue(id, out e) && e.isAlive)
@@ -137,7 +137,7 @@ namespace gameLIB.components.stage
             }
         }
 
-        public void orderToShoot(int enemyId, String particleType, int particleId, Vector2 destination, Vector2 direction, float speed)
+        public void orderToShoot(ulong enemyId, String particleType, ulong particleId, Vector2 destination, Vector2 direction, float speed)
         {
             Enemy e;
             if (enemies.TryGetValue(enemyId, out e) && e.isAlive)
