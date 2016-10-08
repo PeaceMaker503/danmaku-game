@@ -9,10 +9,10 @@ namespace StageMaker.models
     public sealed class MoveEvent
     {
         public float time { get; set; }
-        public ulong targetId { get; set; }
-        public JsonVector2 direction { get; set; }
-        public JsonVector2 destination { get; set; }
-        public JsonVector2 fdirection { get; set; }
+        public long targetId { get; set; }
+        public string direction { get; set; }
+        public string destination { get; set; }
+        public string fdirection { get; set; }
         public float fspeed { get; set; }
         public float speed { get; set; }
     }

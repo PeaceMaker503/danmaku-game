@@ -16,13 +16,13 @@ namespace StageMaker.utils
 {
     public class JsonGridConverter
     {
-        public static ulong importJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, string path)
+        public static long importJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
         {
             try
             {
                 string text = File.ReadAllText(path);
                 Script script = JsonConvert.DeserializeObject<Script>(text);
-                ulong idEnemy = 0;
+                long idEnemy = 0;
                 enemies.Rows.Clear();
                 create.Rows.Clear();
                 shoot.Rows.Clear();
@@ -30,20 +30,25 @@ namespace StageMaker.utils
 
                 foreach (CreateEvent ev in script.create)
                 {
-                    enemies.Rows.Add(ev.target.id, ev.target.type, ev.target.health, ev.target.position, ev.target.destination, ev.target.direction, new JsonFloat(ev.target.speed), ev.target.fdirection, new JsonFloat(ev.target.fspeed));
-                    create.Rows.Add(new JsonFloat(ev.time), ev.target.id);
+                    JsonGridHelper.insertEnemy(enemies, ev.target);
+                    JsonGridHelper.insertCreate(create, ev);
                     idEnemy = Math.Max(idEnemy, ev.target.id);
                 }
                 idEnemy++;
 
                 foreach (ShootEvent ev in script.shoot)
                 {
-                    shoot.Rows.Add(new JsonFloat(ev.time), ev.targetId, ev.bullet.id, ev.bullet.destination, ev.bullet.direction, new JsonFloat(ev.bullet.speed), ev.bullet.type);
+                    JsonGridHelper.insertShoot(shoot, ev);
                 }
 
                 foreach (MoveEvent ev in script.move)
                 {
-                    move.Rows.Add(new JsonFloat(ev.time), ev.targetId, ev.destination, ev.direction, new JsonFloat(ev.speed), ev.fdirection, new JsonFloat(ev.fspeed));
+                    JsonGridHelper.insertMove(move, ev);
+                }
+
+                foreach (ParticleMoveEvent ev in script.particleMove)
+                {
+                    JsonGridHelper.insertParticleMove(particleMove, ev);
                 }
 
                 return idEnemy;
@@ -54,7 +59,7 @@ namespace StageMaker.utils
             }
         }
 
-        public static void exportJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, string path)
+        public static void exportJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
         {
             try
             {
@@ -62,65 +67,37 @@ namespace StageMaker.utils
                 script.create = new List<CreateEvent>();
                 script.shoot = new List<ShootEvent>();
                 script.move = new List<MoveEvent>();
-                Dictionary<ulong, Target> targets = new Dictionary<ulong, Target>();
+                script.particleMove = new List<ParticleMoveEvent>();
+                Dictionary<long, Target> targets = new Dictionary<long, Target>();
 
                 foreach (DataGridViewRow row in enemies.Rows)
                 {
-                    Target t = new Target();
-
-                    t.id = (ulong)row.Cells[EnemiesGridColumnsName.ID].Value;
-                    t.type = (string)row.Cells[EnemiesGridColumnsName.TYPE].Value;
-                    t.health = (ulong)row.Cells[EnemiesGridColumnsName.HEALTH].Value;
-                    t.position = (JsonVector2)row.Cells[EnemiesGridColumnsName.POSITION].Value;
-                    t.destination = (JsonVector2)row.Cells[EnemiesGridColumnsName.DESTINATION].Value;
-                    t.direction = (JsonVector2)row.Cells[EnemiesGridColumnsName.DIRECTION].Value;
-                    t.speed = ((JsonFloat)(row.Cells[EnemiesGridColumnsName.SPEED].Value)).f;
-                    t.fdirection = (JsonVector2)row.Cells[EnemiesGridColumnsName.FINAL_DIRECTION].Value;
-                    t.fspeed = ((JsonFloat)(row.Cells[EnemiesGridColumnsName.FINAL_SPEED].Value)).f;
-
+                    Target t = JsonGridHelper.createTarget(row);
                     targets[t.id] = t;
                 }
                 
                 foreach (DataGridViewRow row in create.Rows)
                 {
-                    CreateEvent ev = new CreateEvent();
-
-                    ulong targetId = (ulong)row.Cells[CreateGridColumnsName.TARGET_ID].Value;
-                    ev.time = ((JsonFloat)(row.Cells[CreateGridColumnsName.TIME].Value)).f;
-                    ev.target = targets[targetId];
-
+                    CreateEvent ev = JsonGridHelper.createCreateEvent(row, targets);
                     script.create.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in shoot.Rows)
                 {
-                    ShootEvent ev = new ShootEvent();
-                    Bullet b = new Bullet();
-                    b.destination = (JsonVector2)row.Cells[ShootGridColumnsName.DESTINATION].Value;
-                    b.direction = (JsonVector2)row.Cells[ShootGridColumnsName.DIRECTION].Value;
-                    b.speed = ((JsonFloat)(row.Cells[ShootGridColumnsName.SPEED].Value)).f;
-                    b.id = (ulong)row.Cells[ShootGridColumnsName.PARTICLE_ID].Value;
-                    b.type = (string)row.Cells[ShootGridColumnsName.PARTICLE_TYPE].Value;
-
-                    ev.time = ((JsonFloat)(row.Cells[ShootGridColumnsName.TIME].Value)).f;
-                    ev.targetId = (ulong)row.Cells[ShootGridColumnsName.TARGET_ID].Value;
-                    ev.bullet = b;
-
+                    ShootEvent ev = JsonGridHelper.createShootEvent(row);
                     script.shoot.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in move.Rows)
                 {
-                    MoveEvent ev = new MoveEvent();
-
-                    ev.time = ((JsonFloat)(row.Cells[MoveGridColumnsName.TIME].Value)).f;
-                    ev.targetId = (ulong)row.Cells[MoveGridColumnsName.TARGET_ID].Value;
-                    ev.destination = (JsonVector2)row.Cells[MoveGridColumnsName.DESTINATION].Value;
-                    ev.direction = (JsonVector2)row.Cells[MoveGridColumnsName.DIRECTION].Value;
-                    ev.speed = ev.time = ((JsonFloat)(row.Cells[MoveGridColumnsName.SPEED].Value)).f;
-                    ev.fdirection = (JsonVector2)row.Cells[MoveGridColumnsName.FINAL_DIRECTION].Value;
-                    ev.fspeed = ((JsonFloat)(row.Cells[MoveGridColumnsName.FINAL_SPEED].Value)).f;
+                    MoveEvent ev = JsonGridHelper.createMoveEvent(row);
                     script.move.Add(ev);
+                }
+
+                foreach (DataGridViewRow row in particleMove.Rows)
+                {
+                    ParticleMoveEvent ev = JsonGridHelper.createParticleMoveEvent(row);
+                    script.particleMove.Add(ev);
                 }
 
                 string text = JsonConvert.SerializeObject(script, Formatting.Indented);
@@ -132,13 +109,13 @@ namespace StageMaker.utils
             }
         }
 
-        public static ulong openJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, string path)
+        public static OpenJsonResults openJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
         {
             try
             {
                 string text = File.ReadAllText(path);
                 ScriptSave script = JsonConvert.DeserializeObject<ScriptSave>(text);
-                ulong idEnemy = 0;
+                long idEnemy = 0;
                 enemies.Rows.Clear();
                 create.Rows.Clear();
                 shoot.Rows.Clear();
@@ -146,27 +123,32 @@ namespace StageMaker.utils
 
                 foreach (Target target in script.enemies)
                 {
-                    enemies.Rows.Add(target.id, target.type, target.health, target.position, target.destination, target.direction, new JsonFloat(target.speed), target.fdirection, new JsonFloat(target.fspeed));
+                    JsonGridHelper.insertEnemy(enemies, target);
                 }
 
                 foreach (CreateEventSave ev in script.create)
                 {
-                    create.Rows.Add(new JsonFloat(ev.time), ev.targetId);
+                    JsonGridHelper.insertCreateSave(create, ev);
                     idEnemy = Math.Max(idEnemy, ev.targetId);
                 }
                 idEnemy++;
 
                 foreach (ShootEvent ev in script.shoot)
                 {
-                    shoot.Rows.Add(new JsonFloat(ev.time), ev.targetId, ev.bullet.id,ev.bullet.destination,  ev.bullet.direction, new JsonFloat(ev.bullet.speed), ev.bullet.type);
+                    JsonGridHelper.insertShoot(shoot, ev);
                 }
 
                 foreach (MoveEvent ev in script.move)
                 {
-                    move.Rows.Add(new JsonFloat(ev.time), ev.targetId, ev.destination, ev.direction, new JsonFloat(ev.speed), ev.fdirection, new JsonFloat(ev.fspeed));
+                    JsonGridHelper.insertMove(move, ev);
                 }
 
-                return idEnemy;
+                foreach (ParticleMoveEvent ev in script.particleMove)
+                {
+                    JsonGridHelper.insertParticleMove(particleMove, ev);
+                }
+
+                return new OpenJsonResults(idEnemy, script.spells);
             }
             catch (Exception e)
             {
@@ -174,7 +156,7 @@ namespace StageMaker.utils
             }
         }
 
-        public static void saveJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, string path)
+        public static void saveJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, List<SpellLine> jsonSpells, string path)
         {
             try
             {
@@ -183,64 +165,37 @@ namespace StageMaker.utils
                 script.create = new List<CreateEventSave>();
                 script.shoot = new List<ShootEvent>();
                 script.move = new List<MoveEvent>();
+                script.particleMove = new List<ParticleMoveEvent>();
+                script.spells = jsonSpells;
 
                 foreach (DataGridViewRow row in enemies.Rows)
                 {
-                    Target t = new Target();
-
-                    t.id = (ulong)row.Cells[EnemiesGridColumnsName.ID].Value;
-                    t.type = (string)row.Cells[EnemiesGridColumnsName.TYPE].Value;
-                    t.health = (ulong)row.Cells[EnemiesGridColumnsName.HEALTH].Value;
-                    t.position = (JsonVector2)row.Cells[EnemiesGridColumnsName.POSITION].Value;
-                    t.destination = (JsonVector2)row.Cells[EnemiesGridColumnsName.DESTINATION].Value;
-                    t.direction = (JsonVector2)row.Cells[EnemiesGridColumnsName.DIRECTION].Value;
-                    t.speed = ((JsonFloat)(row.Cells[EnemiesGridColumnsName.SPEED].Value)).f;
-                    t.fdirection = (JsonVector2)row.Cells[EnemiesGridColumnsName.FINAL_DIRECTION].Value;
-                    t.fspeed = ((JsonFloat)(row.Cells[EnemiesGridColumnsName.FINAL_SPEED].Value)).f;
-
+                    Target t = JsonGridHelper.createTarget(row);
                     script.enemies.Add(t);
                 }
 
                 foreach (DataGridViewRow row in create.Rows)
                 {
-                    CreateEventSave ev = new CreateEventSave();
-
-                    ulong targetId = (ulong)row.Cells[CreateGridColumnsName.TARGET_ID].Value;
-                    ev.time = ((JsonFloat)(row.Cells[CreateGridColumnsName.TIME].Value)).f;
-                    ev.targetId = targetId;
+                    CreateEventSave ev = JsonGridHelper.createCreateEventSave(row);
                     script.create.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in shoot.Rows)
                 {
-                    ShootEvent ev = new ShootEvent();
-                    Bullet b = new Bullet();
-                    b.destination = (JsonVector2)row.Cells[ShootGridColumnsName.DESTINATION].Value;
-                    b.direction = (JsonVector2)row.Cells[ShootGridColumnsName.DIRECTION].Value;
-                    b.speed = ((JsonFloat)(row.Cells[ShootGridColumnsName.SPEED].Value)).f;
-                    b.id = (ulong)row.Cells[ShootGridColumnsName.PARTICLE_ID].Value;
-                    b.type = (string)row.Cells[ShootGridColumnsName.PARTICLE_TYPE].Value;
-
-                    ev.time = ((JsonFloat)(row.Cells[ShootGridColumnsName.TIME].Value)).f;
-                    ev.targetId = (ulong)row.Cells[ShootGridColumnsName.TARGET_ID].Value;
-                    ev.bullet = b;
-
+                    ShootEvent ev = JsonGridHelper.createShootEvent(row);
                     script.shoot.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in move.Rows)
                 {
-                    MoveEvent ev = new MoveEvent();
-
-                    ev.time = ((JsonFloat)(row.Cells[MoveGridColumnsName.TIME].Value)).f;
-                    ev.targetId = (ulong)row.Cells[MoveGridColumnsName.TARGET_ID].Value;
-                    ev.destination = (JsonVector2)row.Cells[MoveGridColumnsName.DESTINATION].Value;
-                    ev.direction = (JsonVector2)row.Cells[MoveGridColumnsName.DIRECTION].Value;
-                    ev.speed = ev.time = ((JsonFloat)(row.Cells[MoveGridColumnsName.SPEED].Value)).f;
-                    ev.fdirection = (JsonVector2)row.Cells[MoveGridColumnsName.FINAL_DIRECTION].Value;
-                    ev.fspeed = ((JsonFloat)(row.Cells[MoveGridColumnsName.FINAL_SPEED].Value)).f;
-
+                    MoveEvent ev = JsonGridHelper.createMoveEvent(row);
                     script.move.Add(ev);
+                }
+
+                foreach(DataGridViewRow row in particleMove.Rows)
+                {
+                    ParticleMoveEvent ev = JsonGridHelper.createParticleMoveEvent(row);
+                    script.particleMove.Add(ev);
                 }
 
                 string text = JsonConvert.SerializeObject(script, Formatting.Indented);

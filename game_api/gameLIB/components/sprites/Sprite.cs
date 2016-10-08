@@ -16,6 +16,11 @@ namespace gameLIB.components.sprites
             this.initPosition = new Vector2(position.X, position.Y);
         }
 
+        public virtual void initialize()
+        {
+            this.position = new Vector2(initPosition.X, initPosition.Y);
+        }
+
         public abstract void draw(SpriteBatch spriteBatch);
     }
 }

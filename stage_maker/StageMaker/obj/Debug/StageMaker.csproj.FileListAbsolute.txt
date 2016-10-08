@@ -7,3 +7,6 @@ c:\users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\D
 c:\users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\Debug\StageMaker.exe
 c:\users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\Debug\StageMaker.pdb
 c:\users\halim\documents\visual studio 2015\Projects\StageMaker\StageMaker\obj\Debug\StageMaker.csprojResolveAssemblyReference.cache
+D:\git\danmaku-game\stage_maker\StageMaker\bin\Debug\StageMaker.exe.config
+D:\git\danmaku-game\stage_maker\StageMaker\obj\Debug\StageMaker.exe
+D:\git\danmaku-game\stage_maker\StageMaker\obj\Debug\StageMaker.pdb

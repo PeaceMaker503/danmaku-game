@@ -15,7 +15,7 @@ namespace gameLIB.components.stage.parser.models
         public float X { get; set; }
         public float Y { get; set; }
 
-        public static readonly JsonVector2 Zero = new JsonVector2(0,0);
+        public static readonly string Zero = "{X:0.0, Y:0.0}";
 
         public JsonVector2(float x, float y)
         {

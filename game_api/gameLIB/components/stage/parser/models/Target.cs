@@ -8,14 +8,33 @@ namespace gameLIB.components.stage.parser.models
 {
     public sealed class Target
     {
+
+        public Target()
+        {
+
+        }
+
+        public Target(long _id, Target t)
+        {
+            this.type = t.type;
+            this.position = t.position;
+            this.destination = t.destination;
+            this.speed = t.speed;
+            this.fspeed = t.fspeed;
+            this.health = t.health;
+            this.fdirection = t.fdirection;
+            this.direction = t.direction;
+            this.id = _id;
+        }
+
         public string type { get; set; }
-        public JsonVector2 position { get; set; }
-        public JsonVector2 destination { get; set; }
+        public string position { get; set; }
+        public string destination { get; set; }
         public float speed { get; set; }
-        public ulong health { get; set; }
-        public JsonVector2 fdirection { get; set; }
-        public JsonVector2 direction { get; set; }
+        public long health { get; set; }
+        public string fdirection { get; set; }
+        public string direction { get; set; }
         public float fspeed { get; set; }
-        public ulong id { get; set; }
+        public long id { get; set; }
     }
 }

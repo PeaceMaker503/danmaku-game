@@ -6,20 +6,21 @@ namespace gameLIB.components.stage.instructions
     public sealed class InstructionMove : Instruction
     {
         public float speed { get; set; }
-        public Vector2 direction { get; set; }
+        public string direction { get; set; }
         public String particleType { get; set; }
-        public Vector2 destination { get; set; }
-        public Vector2 fdirection { get; set; }
+        public string destination { get; set; }
+        public string fdirection { get; set; }
         public float fspeed { get; set; }
+        public long id { get; set; }
 
-        public InstructionMove(ulong _id, Vector2 _destination, Vector2 _direction, float _speed, Vector2 _fdirection, float _fspeed)
-            : base(String.Empty, _id)
+        public InstructionMove(long id, string destination, string direction, float speed, string fdirection, float fspeed)
         {
-            direction = _direction;
-            speed = _speed;
-            destination = _destination;
-            this.fspeed = _fspeed;
-            this.fdirection = _fdirection;
+            this.id = id;
+            this.direction = direction;
+            this.speed = speed;
+            this.destination = destination;
+            this.fspeed = fspeed;
+            this.fdirection = fdirection;
         }
 
         public override void run(Stage s)

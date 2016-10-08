@@ -9,6 +9,6 @@ namespace StageMaker.models
     public sealed class CreateEventSave
     {
         public float time { get; set; }
-        public ulong targetId { get; set; }
+        public long targetId { get; set; }
     }
 }

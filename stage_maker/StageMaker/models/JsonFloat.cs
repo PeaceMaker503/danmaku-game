@@ -22,7 +22,7 @@ namespace StageMaker.models
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(f);
+            return f.ToString().Replace(",", ".");
         }
     }
 }

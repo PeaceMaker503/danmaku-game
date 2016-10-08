@@ -37,6 +37,7 @@ namespace PeaceGame
         readonly int WINDOW_HEIGHT = 600;
         readonly bool IS_FULLSCREEN = false;
         readonly bool ALLOW_RESIZING = true;
+        readonly int FAIRIES_FRAMES_IMAGE_COUNT = 4;
         readonly string MENU_SELECT_SOUND = @"sounds\menu\selectMenu";
         readonly string PLAYER_SHOOT_SOUND = @"sounds\particle\playerShoot";
         readonly string PLAYER_DEAD_SOUND = @"sounds\player\playerDead";
@@ -71,6 +72,7 @@ namespace PeaceGame
         readonly int PLAYER_LIFES_COUNT = 100;
         readonly int PLAYER_FRAMES_IMAGE_COUNT = 4;
         readonly float PLAYER_IMAGE_SCALE = 1f;
+        readonly float FAIRIES_SCALE = 1.5f;
         readonly Vector2 PLAYER_INITIAL_POSITION = new Vector2(300, 200);
         readonly Vector2 PLAYER_LEFT_PARTICLE_POSITION = new Vector2(-9, -15);
         readonly Vector2 PLAYER_RIGHT_PARTICLE_POSITION = new Vector2(6, -15);
@@ -96,6 +98,7 @@ namespace PeaceGame
             this.graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             this.graphics.IsFullScreen = IS_FULLSCREEN;
             this.Window.AllowUserResizing = ALLOW_RESIZING;
+            graphics.SynchronizeWithVerticalRetrace = false;
             Content.RootDirectory = "Content";
         }
 
@@ -127,25 +130,25 @@ namespace PeaceGame
             api.loadImage(GameApi.LoadHelper.PLAYER_TEXTURE, PLAYER_TEXTURE, PLAYER_TEXTURE_ALPHA);
             api.loadImage(GameApi.LoadHelper.MISSILE_TEXTURE, MISSILE_TEXTURE, MISSILE_TEXTURE_ALPHA);
             api.loadFont(GameApi.LoadHelper.TEXT_FONT, TEXT_FONT);
-            api.instantiateScreenMenu(MENU_MARGIN);
-            api.instantiatePauseMenu(MENU_MARGIN);
-            api.instantiateInGameBackground();
+            api.createScreenMenu(MENU_MARGIN);
+            api.createPauseMenu(MENU_MARGIN);
+            api.createInGameBackground();
             api.loadImage(BULLETS, BULLETS_TEXTURE, BULLETS_TEXTURE_ALPHA);
             api.loadImage(STAGE1_ENM, STAGE1_ENM_TEXTURE, STAGE1_ENM_TEXTURE_ALPHA);
             api.loadImage(STAGE1_ENM2, STAGE1_ENM2_TEXTURE, STAGE1_ENM2_TEXUTURE_ALPHA);
             api.loadAlphaShader(ALPHA_SHADER);
-            api.instantiatePlayer(PLAYER_PARTS, PLAYER_LIFES_COUNT, PLAYER_INITIAL_POSITION, PLAYER_FRAMES_IMAGE_COUNT, PLAYER_IMAGE_SCALE);
-            api.instantiatePlayerParticle(PLAYER_LEFT_PARTICLE_POSITION, PLAYER_RIGHT_PARTICLE_POSITION, PLAYER_PARTICLE_PART, PLAYER_PARTICLE_DAMAGE, PLAYER_PARTICLE_SPEED, PLAYER_PARTICLE_IMAGE_SCALE);
-            api.instantiateEnemyParticle(GRAY_KNIFE, BULLETS, GRAY_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(RED_KNIFE, BULLETS, RED_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(PINK_KNIFE, BULLETS, PINK_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(BLUE_KNIFE, BULLETS, BLUE_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(TURQUOISE_KNIFE, BULLETS, TURQUOISE_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(GREEN_KNIFE, BULLETS, GREEN_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(YELLOW_KNIFE, BULLETS, YELLOW_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemyParticle(WHITE_KNIFE, BULLETS, WHITE_KNIFE_PART, KNIFE_SCALE);
-            api.instantiateEnemy(FAIRIES, STAGE1_ENM, FAIRIES_PARTS, 4, KNIFE_SCALE);
-            api.instantiateStage(SCRIPT_PATH);
+            api.createPlayer(PLAYER_PARTS, PLAYER_LIFES_COUNT, PLAYER_INITIAL_POSITION, PLAYER_FRAMES_IMAGE_COUNT, PLAYER_IMAGE_SCALE);
+            api.createPlayerParticle(PLAYER_LEFT_PARTICLE_POSITION, PLAYER_RIGHT_PARTICLE_POSITION, PLAYER_PARTICLE_PART, PLAYER_PARTICLE_DAMAGE, PLAYER_PARTICLE_SPEED, PLAYER_PARTICLE_IMAGE_SCALE);
+            api.createParticle(GRAY_KNIFE, BULLETS, GRAY_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(RED_KNIFE, BULLETS, RED_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(PINK_KNIFE, BULLETS, PINK_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(BLUE_KNIFE, BULLETS, BLUE_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(TURQUOISE_KNIFE, BULLETS, TURQUOISE_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(GREEN_KNIFE, BULLETS, GREEN_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(YELLOW_KNIFE, BULLETS, YELLOW_KNIFE_PART, KNIFE_SCALE);
+            api.createParticle(WHITE_KNIFE, BULLETS, WHITE_KNIFE_PART, KNIFE_SCALE);
+            api.createEnemy(FAIRIES, STAGE1_ENM, FAIRIES_PARTS, FAIRIES_FRAMES_IMAGE_COUNT, FAIRIES_SCALE);
+            api.createStage(SCRIPT_PATH);
         }
 
         /// <summary>

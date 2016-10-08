@@ -14,30 +14,32 @@ namespace gameLIB.components.stage.instructions
 {
     public sealed class InstructionCreate : Instruction
     {
-        public ulong health { get; set; }
+        public long health { get; set; }
         public float speed { get; set; }
-        public Vector2 position { get; set; }
-        public Vector2 destination { get; set; }
-        public Vector2 direction { get; set; }
-        public Vector2 finishDirection { get; set; }
-        public float finishSpeed { get; set; }
+        public string position { get; set; }
+        public string destination { get; set; }
+        public string direction { get; set; }
+        public string fdirection { get; set; }
+        public float fspeed { get; set; }
+        public string type { get; set; }
+        public long id { get; set; }
 
-
-        public InstructionCreate(String _type, ulong _id, ulong _health, Vector2 _position, Vector2 _destination, Vector2 _direction, Vector2 _finishDirection, float _speed, float _finishSpeed)
-            : base(_type, _id)
+        public InstructionCreate(string type, long id, long health, string position, string destination, string direction, string finishDirection, float speed, float finishSpeed)
         {
-            direction = _direction;
-            health = _health;
-            speed = _speed;
-            position = _position;
-            destination = _destination;
-            finishDirection = _finishDirection;
-            finishSpeed = _finishSpeed;
+            this.type = type;
+            this.id = id;
+            this.direction = direction;
+            this.health = health;
+            this.speed = speed;
+            this.position = position;
+            this.destination = destination;
+            this.fdirection = finishDirection;
+            this.fspeed = finishSpeed;
         }
 
         public override void run(Stage s)
         {
-            s.instantiateEnemy(type, id, position, direction, destination, finishDirection, health, speed, finishSpeed);
+            s.instantiateEnemy(type, id, position, direction, destination, fdirection, health, speed, fspeed);
         }
     }
 }

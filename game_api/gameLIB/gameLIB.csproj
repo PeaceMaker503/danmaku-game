@@ -64,8 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="components\characters\Player.cs" />
+    <Compile Include="components\sprites\MoveableSprite.cs" />
+    <Compile Include="components\stage\instructions\InstructionParticleMove.cs" />
     <Compile Include="components\stage\parser\models\JsonVector2.cs" />
     <Compile Include="components\stage\parser\models\MoveEvent.cs" />
+    <Compile Include="components\stage\parser\models\ParticleMoveEvent.cs" />
     <Compile Include="utils\JsonHelper.cs" />
     <Compile Include="utils\Vector2Extension.cs" />
     <Compile Include="components\stage\parser\models\Bullet.cs" />
@@ -90,7 +93,7 @@
     <Compile Include="components\gui\PauseMenu.cs" />
     <Compile Include="components\gui\ScreenMenu.cs" />
     <Compile Include="components\particles\Particle.cs" />
-    <Compile Include="components\sprites\DynamicSprite.cs" />
+    <Compile Include="components\sprites\AnimatedSprite.cs" />
     <Compile Include="components\sprites\Image.cs" />
     <Compile Include="components\sprites\Sprite.cs" />
     <Compile Include="components\sprites\StaticSprite.cs" />

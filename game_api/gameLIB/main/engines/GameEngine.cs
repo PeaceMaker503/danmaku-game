@@ -55,7 +55,7 @@ namespace gameLIB.main.engines
                                 if (_common.screenMenu.selected >= (int)ScreenMenu.Options.Play && _common.screenMenu.selected < (int)ScreenMenu.Options.Exit)
                                 {
                                     _common.screenMenu.selected++;
-                                    RaisePlaySound(_common.screenMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                 }
                                 break;
 
@@ -63,13 +63,13 @@ namespace gameLIB.main.engines
                                 if (_common.screenMenu.selected > (int)ScreenMenu.Options.Play && _common.screenMenu.selected <= (int)ScreenMenu.Options.Exit)
                                 {
                                     _common.screenMenu.selected--;
-                                    RaisePlaySound(_common.screenMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                 }
                                 break;
                             case "Enter":
                                 if (_common.screenMenu.selected == (int)ScreenMenu.Options.Play)
                                 {
-                                    RaisePlaySound(_common.screenMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                     state = GameState.Stage;
                                 }
                                 else if (_common.screenMenu.selected == (int)ScreenMenu.Options.Exit)
@@ -87,7 +87,7 @@ namespace gameLIB.main.engines
                                 if (_common.pauseMenu.selected >= (int)PauseMenu.Options.Resume && _common.pauseMenu.selected < (int)PauseMenu.Options.Exit)
                                 {
                                     _common.pauseMenu.selected++;
-                                    RaisePlaySound(_common.pauseMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                 }
                                 break;
 
@@ -95,19 +95,19 @@ namespace gameLIB.main.engines
                                 if (_common.pauseMenu.selected > (int)PauseMenu.Options.Resume && _common.pauseMenu.selected <= (int)PauseMenu.Options.Exit)
                                 {
                                     _common.pauseMenu.selected--;
-                                    RaisePlaySound(_common.pauseMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                 }
                                 break;
 
                             case "Enter":
                                 if (_common.pauseMenu.selected == (int)PauseMenu.Options.Resume)
                                 {
-                                    RaisePlaySound(_common.pauseMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                     state = GameState.Stage;
                                 }
                                 else if (_common.pauseMenu.selected == (int)PauseMenu.Options.Return)
                                 {
-                                    RaisePlaySound(_common.pauseMenu.selectSound);
+                                    RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                     _common.currentMenu = _common.screenMenu;
                                     state = GameState.ScreenMenu;
                                     _firstTimeStage = true;
@@ -119,7 +119,7 @@ namespace gameLIB.main.engines
                                 break;
 
                             case "Pause":
-                                RaisePlaySound(_common.pauseMenu.selectSound);
+                                RaisePlaySound(GameApi.LoadHelper.MENU_SELECT_SOUND);
                                 state = GameState.Stage;
                                 break;
                         }
@@ -133,31 +133,31 @@ namespace gameLIB.main.engines
                     switch (keyDown)
                     {
                         case "Down":
-                            _common.currentStage.player.moveOf(new Vector2(0, 8));
+                            _common.currentStage.player.move(new Vector2(0, 8));
                             break;
                         case "ShiftDown":
-                            _common.currentStage.player.moveOf(new Vector2(0, 2));
+                            _common.currentStage.player.move(new Vector2(0, 2));
                             break;
                         case "Up":
-                            _common.currentStage.player.moveOf(new Vector2(0, -8));
+                            _common.currentStage.player.move(new Vector2(0, -8));
                             break;
                         case "ShiftUp":
-                            _common.currentStage.player.moveOf(new Vector2(0, -2));
+                            _common.currentStage.player.move(new Vector2(0, -2));
                             break;
                         case "Right":
-                            _common.currentStage.player.moveOf(new Vector2(8, 0));
+                            _common.currentStage.player.move(new Vector2(8, 0));
                             break;
                         case "ShiftRight":
-                            _common.currentStage.player.moveOf(new Vector2(2, 0));
+                            _common.currentStage.player.move(new Vector2(2, 0));
                             break;
                         case "Left":
-                            _common.currentStage.player.moveOf(new Vector2(-8, 0));
+                            _common.currentStage.player.move(new Vector2(-8, 0));
                             break;
                         case "ShiftLeft":
-                            _common.currentStage.player.moveOf(new Vector2(-2, 0));
+                            _common.currentStage.player.move(new Vector2(-2, 0));
                             break;
                         case "Shoot":
-                            RaisePlaySound(_common.currentStage.player.shootSound);
+                            RaisePlaySound(GameApi.LoadHelper.PLAYER_SHOOT_SOUND);
                             _common.currentStage.playerShoot();
                             break;
                         case "Pause":
@@ -194,45 +194,35 @@ namespace gameLIB.main.engines
             _common.currentStage.updateEnemiesPositions();
         }
 
-        public void createStageFrom(String scriptPath)
+        public void createStage(String scriptPath)
         {
             StageMaker sm = new StageMaker(_common.currentStage, scriptPath);
             sm.createStage();
         }
 
-        public void createPlayerFrom(String soundPlayerDies, String soundPlayerShoot, Image image, Rectangle[] parts, int lifes, Vector2 position, int nbFrames, float scale)
+        public void createPlayer(Image image, Rectangle[] parts, int nbFrames, float scale, int lifes, Vector2 position)
         {
-            _common.currentStage.player = new Player(image, position, parts, lifes, nbFrames, scale, soundPlayerDies, soundPlayerShoot);
+            _common.currentStage.player = new Player(image, position, parts, nbFrames, scale, lifes);
         }
 
-        public void createPlayerParticleFrom(String particleName, Vector2 particleOffset1, Vector2 particleOffset2, Image particleImage, Rectangle[] parts, int damage, float speed, float scale)
+        public void createPlayerParticle(Vector2 particleOffset1, Vector2 particleOffset2, int damage, Image image, Rectangle[] parts, float speed, float scale)
         {
-            _common.currentStage.player.particleName = particleName;
-            _common.currentStage.player.particleImageName = particleImage.name;
-            _common.currentStage.player.particleOffset1 = particleOffset1;
-            _common.currentStage.player.particleOffset2 = particleOffset2;
+            _common.currentStage.player.particleP1 = particleOffset1;
+            _common.currentStage.player.particleP2 = particleOffset2;
             _common.currentStage.player.particleDamage = damage;
-            Particle m = new Particle(particleImage, parts, new Vector2(0, -1), speed, scale);
-            _common.currentStage.addNewParticlePrototype(particleName, m);
+            createParticle(GameApi.LoadHelper.MISSILE_TEXTURE, image, parts, scale);
         }
 
-        public void createEnemyParticleFrom(String particleName, Image particleImage, Rectangle[] parts, float scale)
+        public void createParticle(String particleName, Image image, Rectangle[] parts, float scale)
         {
-            Particle p = new Particle(particleImage, parts, Vector2.Zero, 0, scale);
+            Particle p = new Particle(image, parts, scale);
             _common.currentStage.addNewParticlePrototype(particleName, p);
         }
 
-        public void createEnemyFrom(String enemyType, String enemyDiesSound, String enemyDamageSound, Image image, Rectangle[] parts, int nbFrames, float scale)
+        public void createEnemy(String enemyName, Image image, Rectangle[] parts, int nbFrames, float scale)
         {
-            Enemy e = new Enemy(image, enemyDiesSound, enemyDamageSound, Vector2.Zero, parts, nbFrames, scale);
-            _common.currentStage.addNewEnemyPrototype(enemyType, e);
-        }
-
-        private String getName(Sprite sprite)
-        {
-            int n = sprite.GetType().ToString().LastIndexOf('.');
-            String name = sprite.GetType().ToString().Substring(n + 1);
-            return name;
+            Enemy e = new Enemy(image, parts, nbFrames, scale);
+            _common.currentStage.addNewEnemyPrototype(enemyName, e);
         }
 
         private void disposeObjects()
@@ -249,59 +239,73 @@ namespace gameLIB.main.engines
 
         private void disposeParticles()
         {
-            if (_common.currentStage.particles.Count > 0)
+            Dictionary<string, Dictionary<long, Particle>> result = new Dictionary<string, Dictionary<long, Particle>>();
+
+            foreach (string key in _common.currentStage.particles.Keys)
             {
-                IEnumerable<KeyValuePair<ulong, Particle>> particlesToBeRemoved = _common.currentStage.particles.Where(item => ((item.Value.position.Y > GraphicEngine.WindowDimension.Height + 100) ||
-                                                                                                                                (item.Value.position.Y < -100) ||
-                                                                                                                                (item.Value.position.X > GraphicEngine.WindowDimension.Width + 100) ||
-                                                                                                                                (item.Value.position.X < -100) ||
-                                                                                                                                (item.Value.hit)));
-                _common.currentStage.particles = _common.currentStage.particles.Where(item => !particlesToBeRemoved.Contains(item)).ToDictionary(item => item.Key, item => item.Value);
+                IEnumerable<KeyValuePair<long, Particle>> particles = _common.currentStage.particles[key].Where(item => (!((item.Value.position.Y > 600) ||
+                                                                                                                        (item.Value.position.Y < 0) ||
+                                                                                                                        (item.Value.position.X > 600) ||
+                                                                                                                        (item.Value.position.X < 0) ||
+                                                                                                                        (item.Value.hit))));
+
+                result[key] = particles.ToDictionary(item => item.Key, item => item.Value);
             }
+
+            _common.currentStage.particles = result;
+
         }
 
         private void disposeEnemies()
         {
+            Dictionary<string, Dictionary<long, Enemy>> result = new Dictionary<string, Dictionary<long, Enemy>>();
 
-            if (_common.currentStage.enemies.Count > 0)
+            foreach (string key in _common.currentStage.enemies.Keys)
             {
-                IEnumerable<KeyValuePair<ulong, Enemy>> enemiesToBeRemoved = _common.currentStage.enemies.Where(item => ((item.Value.position.Y >  GraphicEngine.WindowDimension.Height + 100) ||
-                                                                                                                         (item.Value.position.Y < -500) ||
-                                                                                                                         (item.Value.position.X > GraphicEngine.WindowDimension.Width + 100) ||
-                                                                                                                         (item.Value.position.X < -500) ||
-                                                                                                                         (!item.Value.isAlive)));
-                _common.currentStage.enemies = _common.currentStage.enemies.Where(item => !enemiesToBeRemoved.Contains(item)).ToDictionary(item => item.Key, item => item.Value);
+                IEnumerable<KeyValuePair<long, Enemy>> enemies = _common.currentStage.enemies[key].Where(item => !((item.Value.position.Y > GraphicEngine.WindowDimension.Height + 100) ||
+                                                                                                                 (item.Value.position.Y < -500) ||
+                                                                                                                 (item.Value.position.X > GraphicEngine.WindowDimension.Width + 100) ||
+                                                                                                                 (item.Value.position.X < -500) ||
+                                                                                                                 (!item.Value.isAlive)));
+
+                result[key] = enemies.ToDictionary(item => item.Key, item => item.Value);
             }
+
+            _common.currentStage.enemies = result;
+           
         }
 
         private void controlCollisionEnemy() //proj player sur ennemi
         {
-            if (_common.currentStage.enemies.Count > 0 && _common.currentStage.particles.Count > 0)
+            foreach (string key in _common.currentStage.enemies.Keys)
             {
-                foreach (Enemy enemy in _common.currentStage.enemies.Values)
+                foreach (Enemy enemy in _common.currentStage.enemies[key].Values)
                 {
-                    foreach (Particle particle in _common.currentStage.particles.Values)
+                    foreach (string key2 in _common.currentStage.particles.Keys)
                     {
-                        if (particle.image.name.Equals(_common.currentStage.player.particleImageName) && 
-                            !particle.hit && 
-                            enemy.isAlive &&
-                            Math.Abs(particle.position.X - enemy.position.X) < 20 &&
-                            Math.Abs(particle.position.Y - enemy.position.Y) < 20 &&
-                            particle.position.Y < GraphicEngine.WindowDimension.Height - 10 &&
-                            particle.position.X < GraphicEngine.WindowDimension.Width - 10 &&
-                            particle.position.Y > -10 &&
-                            particle.position.X > -10)
+                        foreach (Particle particle in _common.currentStage.particles[key2].Values)
                         {
-                            particle.hit = true;
-                            enemy.health -= (ulong)_common.currentStage.player.particleDamage;
-                            if (enemy.health <= 0)
+                            if (particle.image.name.Equals(GameApi.LoadHelper.MISSILE_TEXTURE) &&
+                                !particle.hit &&
+                                enemy.isAlive &&
+                                Math.Abs(particle.position.X - enemy.position.X) < 20 &&
+                                Math.Abs(particle.position.Y - enemy.position.Y) < 20 &&
+                                particle.position.Y < GraphicEngine.WindowDimension.Height - 10 &&
+                                particle.position.X < GraphicEngine.WindowDimension.Width - 10 &&
+                                particle.position.Y > -10 &&
+                                particle.position.X > -10)
                             {
-                                enemy.isAlive = false;
-                                RaisePlaySound(enemy.enemyDiesSound);
-                            }
-                            else
-                            {
-                                RaisePlaySound(enemy.enemyDamageSound);
+                                particle.hit = true;
+                                enemy.health -= (long)_common.currentStage.player.particleDamage;
+                                if (enemy.health <= 0)
+                                {
+                                    enemy.isAlive = false;
+                                    RaisePlaySound(GameApi.LoadHelper.ENEMY_DAMAGE_SOUND);
+                                }
+                                else
+                                {
+                                    RaisePlaySound(GameApi.LoadHelper.ENEMY_DAMAGE_SOUND);
+                                }
                             }
                         }
                     }
@@ -312,30 +316,30 @@ namespace gameLIB.main.engines
         private void controlCollisionPlayer() //proj ennemi sur player + sa hitbox à lui sur player
         {
             if (_common.currentStage.player != null) //tour de boucle pour le draw
-            
-                if(_common.currentStage.particles.Values.Count > 0)
+
+                foreach (string key in _common.currentStage.particles.Keys)
                 {
-                    foreach (Particle proj in _common.currentStage.particles.Values)
+                    foreach (Particle proj in _common.currentStage.particles[key].Values)
                     {
                         if (_common.currentStage.player.isAlive && Math.Abs(proj.position.X - _common.currentStage.player.position.X) < 5 && Math.Abs(proj.position.Y - _common.currentStage.player.position.Y) < 5)
                         {
                             _common.currentStage.player.lifes--;
                             _common.currentStage.player.isAlive = false;
-                            string sound = _common.currentStage.player.diesSound;
-                            RaisePlaySound(sound);
+                            RaisePlaySound(GameApi.LoadHelper.PLAYER_DIES_SOUND);
                         }
                     }
                 }
 
-            if (_common.currentStage.enemies.Values.Count > 0)
+
+            foreach (string key in _common.currentStage.enemies.Keys)
             {
-                foreach (Enemy enemy in _common.currentStage.enemies.Values)
+                foreach (Enemy enemy in _common.currentStage.enemies[key].Values)
                 {
                     if (_common.currentStage.player.isAlive && enemy.isAlive && Math.Abs(enemy.position.X - _common.currentStage.player.position.X) < 10 && Math.Abs(enemy.position.Y - _common.currentStage.player.position.Y) < 10)
                     {
                         _common.currentStage.player.lifes--;
                         _common.currentStage.player.isAlive = false;
-                        RaisePlaySound(_common.currentStage.player.diesSound);
+                        RaisePlaySound(GameApi.LoadHelper.PLAYER_DIES_SOUND);
                     }
                 }
             }

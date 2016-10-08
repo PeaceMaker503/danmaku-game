@@ -1,114 +1,42 @@
-﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StageMaker.models;
+using StageMaker.spell_maker;
 using StageMaker.utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using static StageMaker.utils.DataGridViewHelper;
 
 namespace StageMaker
 {
     public partial class StageMaker : Form
     {
-        private enum DataType { ULONG, FLOAT, VECTOR2, STRING };
         private object lastCellValue;
-        public static readonly ulong ULONG_ZERO = 0;
-        public static readonly string NO_TYPE = "-";
-
-        public sealed class EnemiesGridColumnsName
-        {
-            public static readonly string ID = "ID_ENEMIES";
-            public static readonly string TYPE = "TYPE_ENEMIES";
-            public static readonly string HEALTH = "HEALTH_ENEMIES";
-            public static readonly string POSITION = "POSITION_ENEMIES";
-            public static readonly string DESTINATION = "DESTINATION_ENEMIES";
-            public static readonly string DIRECTION = "DIRECTION_ENEMIES";
-            public static readonly string SPEED = "SPEED_ENEMIES";
-            public static readonly string FINAL_DIRECTION = "FINAL_DIRECTION_ENEMIES";
-            public static readonly string FINAL_SPEED = "FINAL_SPEED_ENEMIES";
-        }
-
-        public sealed class CreateGridColumnsName
-        {
-            public static readonly string TIME = "TIME_CREATE";
-            public static readonly string TARGET_ID = "TARGET_ID_CREATE";
-        }
-
-        public sealed class ShootGridColumnsName
-        {
-            public static readonly string TIME = "TIME_SHOOT";
-            public static readonly string TARGET_ID = "TARGET_ID_SHOOT";
-            public static readonly string DESTINATION = "DESTINATION_SHOOT";
-            public static readonly string DIRECTION = "DIRECTION_SHOOT";
-            public static readonly string SPEED = "SPEED_SHOOT";
-            public static readonly string PARTICLE_TYPE = "PARTICLE_TYPE_SHOOT";
-            public static readonly string PARTICLE_ID = "PARTICLE_ID_SHOOT";
-        }
-
-        public sealed class MoveGridColumnsName
-        {
-            public static readonly string TIME = "TIME_MOVE";
-            public static readonly string TARGET_ID = "TARGET_ID_MOVE";
-            public static readonly string DESTINATION = "DESTINATION_MOVE";
-            public static readonly string DIRECTION = "DIRECTION_MOVE";
-            public static readonly string SPEED = "SPEED_MOVE";
-            public static readonly string FINAL_DIRECTION = "FINAL_DIRECTION_MOVE";
-            public static readonly string FINAL_SPEED = "FINAL_SPEED_MOVE";
-        }
-
-        private readonly Dictionary<string, DataType> COLUMNS_TYPE = new Dictionary<string, DataType> {
-
-            { EnemiesGridColumnsName.ID, DataType.ULONG },
-            { EnemiesGridColumnsName.TYPE, DataType.STRING },
-            { EnemiesGridColumnsName.HEALTH, DataType.ULONG },
-            { EnemiesGridColumnsName.POSITION, DataType.VECTOR2 },
-            { EnemiesGridColumnsName.DESTINATION, DataType.VECTOR2 },
-            { EnemiesGridColumnsName.DIRECTION,  DataType.VECTOR2},
-            { EnemiesGridColumnsName.SPEED, DataType.FLOAT },
-            { EnemiesGridColumnsName.FINAL_DIRECTION, DataType.VECTOR2 },
-            { EnemiesGridColumnsName.FINAL_SPEED, DataType.FLOAT },
-            { CreateGridColumnsName.TIME, DataType.FLOAT },
-            { CreateGridColumnsName.TARGET_ID, DataType.ULONG },
-            { ShootGridColumnsName.TIME, DataType.FLOAT },
-            { ShootGridColumnsName.TARGET_ID, DataType.ULONG },
-            { ShootGridColumnsName.DESTINATION, DataType.VECTOR2 },
-            { ShootGridColumnsName.DIRECTION, DataType.VECTOR2 },
-            { ShootGridColumnsName.SPEED, DataType.FLOAT },
-            { ShootGridColumnsName.PARTICLE_TYPE, DataType.STRING },
-            { ShootGridColumnsName.PARTICLE_ID, DataType.ULONG },
-            { MoveGridColumnsName.TIME, DataType.FLOAT },
-            { MoveGridColumnsName.TARGET_ID, DataType.ULONG },
-            { MoveGridColumnsName.DESTINATION, DataType.VECTOR2 },
-            { MoveGridColumnsName.DIRECTION, DataType.VECTOR2 },
-            { MoveGridColumnsName.SPEED, DataType.FLOAT },
-            { MoveGridColumnsName.FINAL_DIRECTION, DataType.VECTOR2 },
-            { MoveGridColumnsName.FINAL_SPEED, DataType.FLOAT },
-
+        private long enemyId;
+        private long particleId;
+        private List<SpellLine> SPELLS_PATH = new List<SpellLine> {
+            new SpellLine("CIRCLE", @"spells\circle.sp"),
+            new SpellLine("SPELL_TEST", @"spells\spell.sp")
         };
-
-        private ulong _idEnemy;
 
         public StageMaker()
         {
             InitializeComponent();
-            _idEnemy = 0;
+            enemyId = 0;
+            particleId = 0;
 
             this.dataGridView1.CellEndEdit += new DataGridViewCellEventHandler(this.cellEndEdit_handler);
             this.dataGridView2.CellEndEdit += new DataGridViewCellEventHandler(this.cellEndEdit_handler);
             this.dataGridView3.CellEndEdit += new DataGridViewCellEventHandler(this.cellEndEdit_handler);
             this.dataGridView4.CellEndEdit += new DataGridViewCellEventHandler(this.cellEndEdit_handler);
+            this.dataGridView5.CellEndEdit += new DataGridViewCellEventHandler(this.cellEndEdit_handler);
             this.dataGridView1.CellBeginEdit += new DataGridViewCellCancelEventHandler(this.cellBeginEdit_handler);
             this.dataGridView2.CellBeginEdit += new DataGridViewCellCancelEventHandler(this.cellBeginEdit_handler);
             this.dataGridView3.CellBeginEdit += new DataGridViewCellCancelEventHandler(this.cellBeginEdit_handler);
             this.dataGridView4.CellBeginEdit += new DataGridViewCellCancelEventHandler(this.cellBeginEdit_handler);
+            this.dataGridView5.CellBeginEdit += new DataGridViewCellCancelEventHandler(this.cellBeginEdit_handler);
+
+
         }
 
         private void cellBeginEdit_handler(object sender, DataGridViewCellCancelEventArgs args)
@@ -122,27 +50,83 @@ namespace StageMaker
             DataGridView grid = sender as DataGridView;
             string columnName = grid.Columns[args.ColumnIndex].Name;
 
-            if(grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value == null)
+            if (grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value != null)
             {
-                grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value = defaultField(columnName);
+                if (grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value is string)
+                {
+                    string value = (string)grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value;
+                    object newFormattedValue = formatField(columnName, value);
+                    if (newFormattedValue != null)
+                    {
+                        grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value = newFormattedValue;
+                        if (grid == dataGridView1)
+                        {
+                            if (grid.Columns[args.ColumnIndex].Name == EnemiesGridColumnsName.DESTINATION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[EnemiesGridColumnsName.DIRECTION].Value = null;
+                            }
+                            else if (grid.Columns[args.ColumnIndex].Name == EnemiesGridColumnsName.DIRECTION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[EnemiesGridColumnsName.DESTINATION].Value = null;
+                            }
+                        }
+                        else if (grid == dataGridView3)
+                        {
+                            if (grid.Columns[args.ColumnIndex].Name == ShootGridColumnsName.DESTINATION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[ShootGridColumnsName.DIRECTION].Value = null;
+                            }
+                            else if (grid.Columns[args.ColumnIndex].Name == ShootGridColumnsName.DIRECTION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[ShootGridColumnsName.DESTINATION].Value = null;
+                            }
+
+                            if (grid.Columns[args.ColumnIndex].Name == ShootGridColumnsName.TARGET_ID)
+                            {
+                                grid.Rows[args.RowIndex].Cells[ShootGridColumnsName.POSITION].Value = null;
+                            }
+                            else if (grid.Columns[args.ColumnIndex].Name == ShootGridColumnsName.POSITION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[ShootGridColumnsName.TARGET_ID].Value = null;
+                            }
+                        }
+                        else if (grid == dataGridView4)
+                        {
+                            if (grid.Columns[args.ColumnIndex].Name == MoveGridColumnsName.DESTINATION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[MoveGridColumnsName.DIRECTION].Value = null;
+                            }
+                            else if (grid.Columns[args.ColumnIndex].Name == MoveGridColumnsName.DIRECTION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[MoveGridColumnsName.DESTINATION].Value = null;
+                            }
+                        }
+                        else if (grid == dataGridView5)
+                        {
+                            if (grid.Columns[args.ColumnIndex].Name == ParticleMoveColumnsName.DESTINATION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[ParticleMoveColumnsName.DIRECTION].Value = null;
+                            }
+                            else if (grid.Columns[args.ColumnIndex].Name == ParticleMoveColumnsName.DIRECTION)
+                            {
+                                grid.Rows[args.RowIndex].Cells[ParticleMoveColumnsName.DESTINATION].Value = null;
+                            }
+                        }
+                    }
+                    else
+                        grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value = this.lastCellValue;
+                }
             }
-            else if(grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value is string)
-            {
-                string value = (string)grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value;
-                object newFormattedValue = formatField(columnName, value);
-                if (newFormattedValue != null)
-                    grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value = newFormattedValue;
-                else
-                    grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value = this.lastCellValue;
-            }
+            else
+                grid.Rows[args.RowIndex].Cells[args.ColumnIndex].Value = this.lastCellValue;
         }
 
         private object defaultField(string column)
         {
             object result = null;
-            if (COLUMNS_TYPE[column] == DataType.ULONG)
+            if (COLUMNS_TYPE[column] == DataType.ID)
             {
-                result = ULONG_ZERO;
+                result = LONG_DEFAULT;
             }
             else if (COLUMNS_TYPE[column] == DataType.FLOAT)
             {
@@ -154,9 +138,8 @@ namespace StageMaker
             }
             else if (COLUMNS_TYPE[column] == DataType.STRING)
             {
-                result = NO_TYPE;
+                result = STRING_DEFAULT;
             }
-
             return result;
         }
 
@@ -168,11 +151,11 @@ namespace StageMaker
                 value = value.Trim();
                 try
                 {
-                    if (COLUMNS_TYPE[column] == DataType.ULONG)
+                    if (COLUMNS_TYPE[column] == DataType.ID)
                     {
-                        ulong ul;
-                        if (ulong.TryParse(value, out ul))
-                            result = ul;
+                        long l;
+                        if (long.TryParse(value, out l) && l >= 0)
+                            result = l;
                     }
                     else if (COLUMNS_TYPE[column] == DataType.FLOAT)
                     {
@@ -183,7 +166,11 @@ namespace StageMaker
                     else if (COLUMNS_TYPE[column] == DataType.VECTOR2)
                     {
                         if (value.StartsWith("{") && value.EndsWith("}"))
-                            result = JsonConvert.DeserializeObject<JsonVector2>(value);
+                        {
+                            result = JsonVector2.convertString(value).ToString();
+                        }
+                        else
+                            throw new Exception();
                     }
                     else if (COLUMNS_TYPE[column] == DataType.STRING)
                     {
@@ -192,7 +179,13 @@ namespace StageMaker
                 }
                 catch (Exception)
                 {
-                    
+                    if (COLUMNS_TYPE[column] == DataType.VECTOR2)
+                    {
+                        if (ValueEvaluator.isRuntimeValue(value))
+                        {
+                            result = value;
+                        }
+                    }
                 }
             }
 
@@ -201,23 +194,28 @@ namespace StageMaker
 
         private void createNewEnemyRow()
         {
-            this.dataGridView1.Rows.Add(this._idEnemy, NO_TYPE, ULONG_ZERO, JsonVector2.Zero, JsonVector2.Zero, JsonVector2.Zero, JsonFloat.Zero, JsonVector2.Zero, JsonFloat.Zero);
-            this._idEnemy++;
+            this.dataGridView1.Rows.Add(this.enemyId, STRING_DEFAULT, LONG_DEFAULT, JsonVector2.Zero, JsonVector2.Zero, null, JsonFloat.Zero, null, null);
+            this.enemyId++;
         }
 
         private void createNewCreateEvent()
         {
-            this.dataGridView2.Rows.Add(JsonFloat.Zero, ULONG_ZERO);
+            this.dataGridView2.Rows.Add(JsonFloat.Zero, LONG_DEFAULT);
         }
 
         private void createNewShootEvent()
         {
-            this.dataGridView3.Rows.Add(JsonFloat.Zero, ULONG_ZERO, ULONG_ZERO, JsonVector2.Zero, JsonVector2.Zero, JsonFloat.Zero, NO_TYPE);
+            this.dataGridView3.Rows.Add(JsonFloat.Zero, particleId++, LONG_DEFAULT, null, JsonVector2.Zero, null, JsonFloat.Zero, STRING_DEFAULT);
         }
 
         private void createNewMoveEvent()
         {
-            this.dataGridView4.Rows.Add(JsonFloat.Zero, ULONG_ZERO, JsonVector2.Zero, JsonVector2.Zero, JsonFloat.Zero, JsonVector2.Zero, JsonFloat.Zero);
+            this.dataGridView4.Rows.Add(JsonFloat.Zero, LONG_DEFAULT, JsonVector2.Zero, null, JsonFloat.Zero, null, null);
+        }
+
+        private void createNewParticleMoveEvent()
+        {
+            this.dataGridView5.Rows.Add(JsonFloat.Zero, LONG_DEFAULT, JsonVector2.Zero, null, JsonFloat.Zero);
         }
 
         private void jsonToolStripMenuItem1_Click(object sender, EventArgs e) //import
@@ -232,7 +230,7 @@ namespace StageMaker
             {
                 try
                 {
-                    this._idEnemy = JsonGridConverter.importJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, openFileDialog1.FileName);
+                    this.enemyId = JsonGridConverter.importJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, this.dataGridView5, openFileDialog1.FileName);
                 }
                 catch (Exception)
                 {
@@ -254,7 +252,7 @@ namespace StageMaker
             {
                 try
                 {
-                    JsonGridConverter.exportJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, saveFileDialog1.FileName);
+                    JsonGridConverter.exportJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, this.dataGridView5, saveFileDialog1.FileName);
                     MessageBox.Show("The file has been successfully exported.", "Export to json.");
                 }
                 catch (Exception)
@@ -320,15 +318,46 @@ namespace StageMaker
             {
                 this.createNewMoveEvent();
             }
+            else if(grid == dataGridView5)
+            {
+                this.createNewParticleMoveEvent();
+            }
         }
 
         private void deleteRows(DataGridView grid)
         {
-            foreach (DataGridViewCell oneCell in grid.SelectedCells)
+            foreach (DataGridViewRow row in grid.SelectedRows)
             {
-                if (oneCell.Selected)
-                    grid.Rows.RemoveAt(oneCell.RowIndex);
+                if (row.Selected)
+                    grid.Rows.RemoveAt(row.Index);
             }
+        }
+
+        private void copyRows(DataGridView grid)
+        {
+            List<DataGridViewRow> rows = new List<DataGridViewRow>();
+
+            foreach (DataGridViewRow row in grid.SelectedRows)
+            {
+                if (row.Selected)
+                {
+                    DataGridViewRow newRow = DataGridViewHelper.CloneRowWithValues(row);
+                    if (grid == dataGridView1)
+                        newRow.Cells[0].Value = this.enemyId++;
+                    else if (grid == dataGridView3)
+                        newRow.Cells[1].Value = this.particleId++;
+
+                    rows.Add(newRow);
+                }
+            }
+
+            if(grid != dataGridView1)
+                rows.Reverse();
+
+            foreach (DataGridViewRow row in rows)
+                grid.Rows.Add(row);
+
+
         }
 
         private void savreToolStripMenuItem_Click(object sender, EventArgs e)
@@ -343,7 +372,7 @@ namespace StageMaker
             {
                 try
                 {
-                    JsonGridConverter.saveJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, saveFileDialog1.FileName);
+                    JsonGridConverter.saveJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, this.dataGridView5, this.SPELLS_PATH, saveFileDialog1.FileName);
                     MessageBox.Show("The file has been successfully saved.", "Save file.");
                 }
                 catch (Exception)
@@ -365,7 +394,9 @@ namespace StageMaker
             {
                 try
                 {
-                    this._idEnemy = JsonGridConverter.openJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, openFileDialog1.FileName);
+                    OpenJsonResults results = JsonGridConverter.openJson(this.dataGridView1, this.dataGridView2, this.dataGridView3, this.dataGridView4, this.dataGridView5, openFileDialog1.FileName);
+                    this.enemyId = results.idEnemy;
+                    this.SPELLS_PATH = results.spells;
                 }
                 catch (Exception)
                 {
@@ -377,6 +408,57 @@ namespace StageMaker
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void copySelectedRowsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem menuItem = sender as ToolStripItem;
+            if (menuItem != null)
+            {
+                ContextMenuStrip owner = menuItem.Owner as ContextMenuStrip;
+                if (owner != null)
+                {
+                    Control sourceControl = owner.SourceControl;
+                    this.copyRows(sourceControl as DataGridView);
+                }
+            }
+        }
+
+        private void copySelectedEnemiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            copyRows(sender as DataGridView);
+        }
+
+        private void addNewSpellToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 f = new Form2(dataGridView3, dataGridView5, particleId, this.SPELLS_PATH);
+            DialogResult r = f.ShowDialog();
+
+            if(r == DialogResult.OK)
+            {
+                particleId = f.particleId;
+                MessageBox.Show(@"Le spell a été correctement instancié.", "Message.");
+            }
+            else
+            {
+                MessageBox.Show(@"Le spell n'a pas pu être correctement instancié.", "Message.");
+            }
+        }
+
+        private void manageSpellsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form3 f = new Form3(this.SPELLS_PATH);
+            DialogResult r = f.ShowDialog();
+
+            if (r == DialogResult.OK)
+            {
+                this.SPELLS_PATH = f.jsonSpells;
+                MessageBox.Show(@"Les modifications ont bien été sauvegardées.", "Message.");
+            }
+            else
+            {
+                MessageBox.Show(@"Les modifications n'ont pas été sauvegardées.", "Message.");
+            }
         }
     }
 }

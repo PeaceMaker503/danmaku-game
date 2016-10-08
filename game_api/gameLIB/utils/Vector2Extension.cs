@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using gameLIB.components.stage.parser.models;
 
 namespace gameLIB.utils
 {
@@ -19,6 +20,11 @@ namespace gameLIB.utils
         public static Vector2 rotatePoint(Vector2 point, Vector2 origin, float angle)
         {
             return Vector2.Transform(point - origin, Matrix.CreateRotationZ(MathHelper.ToRadians(angle))) + origin;
+        }
+
+        public static bool isNaN(Vector2 v)
+        {
+            return float.IsNaN(v.X) || float.IsNaN(v.Y);
         }
     }
 }

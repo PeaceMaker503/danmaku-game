@@ -34,44 +34,44 @@ namespace gameLIB.main
             _graphicEngine.loadImage(imageName, texturePath, alphaPath);
         }
 
-        public void instantiateScreenMenu(String soundSelectMenuName, String imageName, String fontName, Vector2 margin)
+        public void createScreenMenu(Vector2 margin)
         {
-            _graphicEngine.createScreenMenuFrom(imageName, soundSelectMenuName, fontName, margin);
+            _graphicEngine.createScreenMenu(margin);
         }
 
-        public void instantiatePauseMenu(String soundSelectMenuName, String imageName, String fontName, Vector2 margin)
+        public void createPauseMenu(Vector2 margin)
         {
-            _graphicEngine.createPauseMenuFrom(imageName, soundSelectMenuName, fontName, margin);
+            _graphicEngine.createPauseMenu(margin);
         }
 
-        public void instantiateInGameBackground(String imageNameBackground, String imageNameLimit)
+        public void createInGameBackground()
         {
-            _graphicEngine.createInGameBackgroundFrom(imageNameBackground, imageNameLimit);
+            _graphicEngine.createInGameBackground();
         }
 
-        public void instantiateStage(String scriptPath)
+        public void createStage(String scriptPath)
         {
-            _gameEngine.createStageFrom(scriptPath);
+            _gameEngine.createStage(scriptPath);
         }
 
-        public void instantiatePlayer(String soundPlayerDies, String soundShoot, String imageName, Rectangle[] imageParts, int lifes, Vector2 position, int nbFramesPerSprite, float scale)
+        public void createPlayer(Rectangle[] imageParts, int lifes, Vector2 position, int nbFramesPerSprite, float scale)
         {
-            _gameEngine.createPlayerFrom(soundPlayerDies, soundShoot, _graphicEngine.getImage(imageName), imageParts, lifes, position, nbFramesPerSprite, scale);
+            _gameEngine.createPlayer(_graphicEngine.getImage(GameApi.LoadHelper.PLAYER_TEXTURE), imageParts, nbFramesPerSprite, scale, lifes, position);
         }
 
-        public void instantiatePlayerParticle(String particleName, String imageName,  Vector2 particleOffset1, Vector2 particleOffset2, Rectangle[] parts, int damage, float speed, float scale)
+        public void createPlayerParticle(Vector2 particleOffset1, Vector2 particleOffset2, Rectangle[] parts, int damage, float speed, float scale)
         {
-            _gameEngine.createPlayerParticleFrom(particleName, particleOffset1, particleOffset2,  _graphicEngine.getImage(imageName), parts, damage, speed, scale);
+            _gameEngine.createPlayerParticle(particleOffset1, particleOffset2, damage,  _graphicEngine.getImage(GameApi.LoadHelper.MISSILE_TEXTURE), parts, speed, scale);
         }
 
-        public void instantiateEnemyParticle(String particleName, String imageName, Rectangle[] parts, float scale)
+        public void createParticle(String particleName, String imageName, Rectangle[] parts, float scale)
         {
-            _gameEngine.createEnemyParticleFrom(particleName, _graphicEngine.getImage(imageName), parts, scale);
+            _gameEngine.createParticle(particleName, _graphicEngine.getImage(imageName), parts, scale);
         }
 
-        public void instantiateEnemy(String enemyType, String enemyDiesSound, String enemyDamageSound, String imageName, Rectangle[] imageParts, int nbFramesPerSprite, float scale)
+        public void createEnemy(String enemyType, String imageName, Rectangle[] imageParts, int nbFramesPerSprite, float scale)
         {
-            _gameEngine.createEnemyFrom(enemyType, enemyDiesSound, enemyDamageSound, _graphicEngine.getImage(imageName), imageParts, nbFramesPerSprite, scale);
+            _gameEngine.createEnemy(enemyType, _graphicEngine.getImage(imageName), imageParts, nbFramesPerSprite, scale);
         }
 
         public void loadImage(String imageName, String texturePath)

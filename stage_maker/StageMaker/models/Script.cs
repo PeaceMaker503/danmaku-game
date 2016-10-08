@@ -12,5 +12,6 @@ namespace StageMaker.models
         public List<CreateEvent> create { get; set; }
         public List<ShootEvent> shoot { get; set; }
         public List<MoveEvent> move { get; set; }
+        public List<ParticleMoveEvent> particleMove { get; set; }
     }
 }

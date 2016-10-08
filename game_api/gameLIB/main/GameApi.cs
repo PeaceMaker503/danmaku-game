@@ -82,54 +82,54 @@ namespace gameLIB.main
             _gameController.loadAlphaShader(path);
         }
 
-        public void instantiatePauseMenu(Vector2 margin)
+        public void createPauseMenu(Vector2 margin)
         {
-            _gameController.instantiatePauseMenu(LoadHelper.MENU_SELECT_SOUND, LoadHelper.BACKGROUND_TEXTURE, LoadHelper.TEXT_FONT, margin);
+            _gameController.createPauseMenu(margin);
         }
 
-        public void instantiatePlayer(Rectangle[] parts, int lifes, Vector2 position, int nbFrames, float scale)
+        public void createPlayer(Rectangle[] parts, int lifes, Vector2 position, int nbFrames, float scale)
         {
-            _gameController.instantiatePlayer(LoadHelper.PLAYER_DIES_SOUND, LoadHelper.PLAYER_SHOOT_SOUND, LoadHelper.PLAYER_TEXTURE, parts, lifes, position, nbFrames, scale);
+            _gameController.createPlayer(parts, lifes, position, nbFrames, scale);
         }
         
-        public void instantiatePlayerParticle(Vector2 offset1, Vector2 offset2, Rectangle[] parts, int damage, float speed, float scale)
+        public void createPlayerParticle(Vector2 offset1, Vector2 offset2, Rectangle[] parts, int damage, float speed, float scale)
         {
-            _gameController.instantiatePlayerParticle(LoadHelper.MISSILE_TEXTURE, LoadHelper.MISSILE_TEXTURE, offset1, offset2, parts, damage, speed, scale);
+            _gameController.createPlayerParticle(offset1, offset2, parts, damage, speed, scale);
         }
 
-        public void instantiatePlayerParticle(Vector2 offset1, Vector2 offset2, Rectangle part, int damage, float speed, float scale)
+        public void createPlayerParticle(Vector2 offset1, Vector2 offset2, Rectangle part, int damage, float speed, float scale)
         {
-            _gameController.instantiatePlayerParticle(LoadHelper.MISSILE_TEXTURE, LoadHelper.MISSILE_TEXTURE, offset1, offset2, new Rectangle[] { part }, damage, speed, scale);
+            _gameController.createPlayerParticle(offset1, offset2, new Rectangle[] { part }, damage, speed, scale);
         }
 
-        public void instantiateInGameBackground()
+        public void createInGameBackground()
         {
-            _gameController.instantiateInGameBackground(LoadHelper.BACKGROUND_TEXTURE, LoadHelper.BORDER_TEXTURE);
+            _gameController.createInGameBackground();
         }
 
-        public void instantiateScreenMenu(Vector2 margin)
+        public void createScreenMenu(Vector2 margin)
         {
-            _gameController.instantiateScreenMenu(LoadHelper.MENU_SELECT_SOUND, LoadHelper.BACKGROUND_TEXTURE, LoadHelper.TEXT_FONT, margin);
+            _gameController.createScreenMenu(margin);
         }
 
-        public void instantiateEnemy(String typeName, String iname, Rectangle[] parts, int nbFrames, float scale)
+        public void createEnemy(String typeName, String iname, Rectangle[] parts, int nbFrames, float scale)
         {
-            _gameController.instantiateEnemy(typeName, LoadHelper.ENEMY_DAMAGE_SOUND, LoadHelper.ENEMY_DAMAGE_SOUND, iname, parts, nbFrames, scale);
+            _gameController.createEnemy(typeName, iname, parts, nbFrames, scale);
         }
 
-        public void instantiateStage(String path)
+        public void createStage(String path)
         {
-            _gameController.instantiateStage(path);
+            _gameController.createStage(path);
         }
 
-        public void instantiateEnemyParticle(String pname, String iname, Rectangle[] parts, float scale)
+        public void createParticle(String pname, String iname, Rectangle[] parts, float scale)
         {
-            _gameController.instantiateEnemyParticle(pname, iname, parts, scale);
+            _gameController.createParticle(pname, iname, parts, scale);
         }
 
-        public void instantiateEnemyParticle(String pname, String iname, Rectangle part, float scale)
+        public void createParticle(String pname, String iname, Rectangle part, float scale)
         {
-            _gameController.instantiateEnemyParticle(pname, iname, new Rectangle[] { part }, scale);
+            _gameController.createParticle(pname, iname, new Rectangle[] { part }, scale);
         }
 
         public void loadImage(String name, String imagePath, String alphaPath)

@@ -1,5 +1,6 @@
 // this is the texture we are trying to render
 uniform extern texture ScreenTexture;
+
 sampler screen = sampler_state
 {
   // get the texture we are trying to render from the gpu.
@@ -8,6 +9,8 @@ sampler screen = sampler_state
  
 // this is the alpha map texture, we set this from the C# code.
 uniform extern texture MaskTexture;
+uniform extern float Opacity;
+
 sampler mask = sampler_state
 {
   Texture = <MaskTexture> ;
@@ -26,7 +29,7 @@ float4 PixelShaderFunction(float2 inCoord: TEXCOORD0) : COLOR
   // have a value of 255. Hence the black areas will subtract
   // nothing from our original color, and the white areas of
   // our mask will subtract all color from the color.
-  color = tex2D(mask, inCoord).r * color;
+  color = tex2D(mask, inCoord).r * color * Opacity;
   
   // return the new color of the pixel.
   return color;
