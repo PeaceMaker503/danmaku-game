@@ -1,11 +1,17 @@
+let var:number 0;
+
 loop 10
 {
-	case INDEX_0 == 6
+	mod var INDEX_0 2;
+	case var == 0
 	{
-		with angle 0;
-		with speed INDEX_0;
-		with type RED_KNIFE;
-		make;
+		call CIRCLE 0 36 2 0 10 RED_KNIFE;
 	}
+	delay 1;
+	case var == 1
+	{
+		call CIRCLE 0 18 2 0.05 20 BLUE_KNIFE;
+	}
+	delay 1;
 }
-
+free var;

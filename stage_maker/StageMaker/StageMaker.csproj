@@ -132,16 +132,23 @@
     <Compile Include="models\OpenJsonResults.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="spell_maker\Value.cs" />
-    <Compile Include="spell_maker\ValueEvaluator.cs" />
-    <Compile Include="spell_maker\SpellEvaluator.cs" />
-    <Compile Include="spell_maker\VarsManager.cs" />
+    <Compile Include="spell_maker\models\CaseArgs.cs" />
+    <Compile Include="spell_maker\models\CaseConditionArgs.cs" />
+    <Compile Include="spell_maker\models\Delegates.cs" />
+    <Compile Include="spell_maker\models\GrammarArgs.cs" />
+    <Compile Include="spell_maker\evaluators\GrammarEvaluator.cs" />
+    <Compile Include="spell_maker\models\LoopArgs.cs" />
+    <Compile Include="spell_maker\parser\Tokenizer.cs" />
+    <Compile Include="spell_maker\models\Value.cs" />
+    <Compile Include="spell_maker\evaluators\ValueEvaluator.cs" />
+    <Compile Include="spell_maker\evaluators\SpellEvaluator.cs" />
+    <Compile Include="spell_maker\parser\VarsManager.cs" />
     <Compile Include="utils\FileHelper.cs" />
-    <Compile Include="spell_maker\SpellMaker.cs" />
     <Compile Include="utils\DataGridViewHelper.cs" />
     <Compile Include="utils\JsonGridConverter.cs" />
     <Compile Include="utils\JsonGridHelper.cs" />
     <Compile Include="utils\JsonHelper.cs" />
+    <Compile Include="utils\JsonModelHelper.cs" />
     <Compile Include="utils\StringExtension.cs" />
     <Compile Include="utils\StringHelper.cs" />
     <Compile Include="utils\Vector2Extension.cs" />
@@ -166,6 +173,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="conf\tokenizer.conf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -11,6 +11,7 @@ using StageMaker.utils;
 using System.IO;
 using StageMaker.models;
 using StageMaker.spell_maker;
+using StageMaker.spell_maker.evaluators;
 
 namespace StageMaker
 {
@@ -63,7 +64,7 @@ namespace StageMaker
 
                         if (spellEvaluator.mustSpecifyArgs())
                         {
-                            Form4 f = new Form4(spellEvaluator.getCallArgsNames());
+                            Form4 f = new Form4(spellEvaluator.getArgsDeclaration());
                             f.ShowDialog();
                             if(f.DialogResult == DialogResult.OK)
                             {

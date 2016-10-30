@@ -29,6 +29,11 @@ namespace StageMaker.models
             this.Y = v.Y;
         }
 
+        public static JsonVector2 operator *(JsonVector2 v1, JsonVector2 v2)
+        {
+            return new JsonVector2(v1.X * v2.X, v1.Y * v2.Y);
+        }
+
         public override string ToString()
         {
             return "{X: " + X.ToString().Replace(",", ".") + ", Y:" + Y.ToString().Replace(",", ".") + "}";

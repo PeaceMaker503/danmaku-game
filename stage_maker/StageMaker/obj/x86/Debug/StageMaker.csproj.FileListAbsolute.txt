@@ -29,3 +29,4 @@ D:\git\danmaku-game\stage_maker\StageMaker\obj\x86\Debug\StageMaker.Form3.resour
 D:\git\danmaku-game\stage_maker\StageMaker\bin\x86\Debug\spells\spell.sp
 D:\git\danmaku-game\stage_maker\StageMaker\bin\x86\Debug\spells\circle.sp
 D:\git\danmaku-game\stage_maker\StageMaker\obj\x86\Debug\StageMaker.Form4.resources
+D:\git\danmaku-game\stage_maker\StageMaker\bin\x86\Debug\conf\tokenizer.conf

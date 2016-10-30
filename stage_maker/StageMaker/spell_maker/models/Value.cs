@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StageMaker.spell_maker
+namespace StageMaker.spell_maker.models
 {
     public sealed class Value
     {
@@ -14,7 +14,7 @@ namespace StageMaker.spell_maker
             this.value = value;
         }
 
-        public enum Types { FLOAT, LONG, STRING, VECTOR2 };
+        public enum Types { NULL, FLOAT, NUMBER, STRING, VECTOR2 };
         public Types type { get; set; }
         public object value { get; set; }
     }

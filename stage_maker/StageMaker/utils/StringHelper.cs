@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static StageMaker.spell_maker.models.Value;
 
 namespace StageMaker.utils
 {
@@ -11,34 +13,50 @@ namespace StageMaker.utils
         public static string[] FormatLine(string s)
         {
             string result = string.Join(String.Empty, s.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries));
-            result = string.Join("\r\n", result.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
-            result = string.Join(" ", result.Split(new char[] { ' ', }, StringSplitOptions.RemoveEmptyEntries));
+            result = string.Join("\r\n", result.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries));
+            result = string.Join(" ", result.Split(new string[] { " ", }, StringSplitOptions.RemoveEmptyEntries));
             result = string.Join(",", result.Split(new string[] { ", ", }, StringSplitOptions.None));
             result = string.Join(",", result.Split(new string[] { " ,", }, StringSplitOptions.None));
             result = string.Join("[", result.Split(new string[] { "[ ", }, StringSplitOptions.None));
             result = string.Join("]", result.Split(new string[] { " ]", }, StringSplitOptions.None));
             result = string.Join("(", result.Split(new string[] { "( ", }, StringSplitOptions.None));
             result = string.Join(")", result.Split(new string[] { " )", }, StringSplitOptions.None));
+            result = string.Join(":", result.Split(new string[] { " :", }, StringSplitOptions.None));
+            result = string.Join(":", result.Split(new string[] { ": ", }, StringSplitOptions.None));
             return result.Split(' ');
-        }
-
-        public static string[] FormatAllText(string s)
-        {
-            string result = string.Join(String.Empty, s.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries));
-            result = string.Join("\r\n", result.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
-            result = string.Join(" ", result.Split(new char[] { ' ', }, StringSplitOptions.RemoveEmptyEntries));
-            result = string.Join(",", result.Split(new string[] { ", ", }, StringSplitOptions.None));
-            result = string.Join(",", result.Split(new string[] { " ,", }, StringSplitOptions.None));
-            result = string.Join("[", result.Split(new string[] { "[ ", }, StringSplitOptions.None));
-            result = string.Join("]", result.Split(new string[] { " ]", }, StringSplitOptions.None));
-            result = string.Join("(", result.Split(new string[] { "( ", }, StringSplitOptions.None));
-            result = string.Join(")", result.Split(new string[] { " )", }, StringSplitOptions.None));
-            return result.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         }
 
         public static string FormatFloat(float f)
         {
             return f.ToString().Replace(",", ".");
+        }
+
+        public static string TypesEnumToString(Types t)
+        {
+            if (t == Types.FLOAT)
+                return "float";
+            else if (t == Types.NUMBER)
+                return "number";
+            else if (t == Types.VECTOR2)
+                return "vector";
+            else if (t == Types.STRING)
+                return "string";
+
+            return null;
+        }
+
+        public static Types StringToTypesEnum(string s)
+        {
+            if (s == "float")
+                return Types.FLOAT;
+            else if (s == "number")
+                return Types.NUMBER;
+            else if (s == "vector")
+                return Types.VECTOR2;
+            else if (s == "string")
+                return Types.STRING;
+
+            return Types.NULL;
         }
     }
 }

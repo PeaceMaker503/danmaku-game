@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StageMaker.models;
 using StageMaker.spell_maker;
+using StageMaker.spell_maker.evaluators;
 using StageMaker.utils;
 using System;
 using System.Collections.Generic;

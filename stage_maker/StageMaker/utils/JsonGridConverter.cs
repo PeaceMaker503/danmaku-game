@@ -72,31 +72,31 @@ namespace StageMaker.utils
 
                 foreach (DataGridViewRow row in enemies.Rows)
                 {
-                    Target t = JsonGridHelper.createTarget(row);
+                    Target t = JsonModelHelper.createTarget(row);
                     targets[t.id] = t;
                 }
                 
                 foreach (DataGridViewRow row in create.Rows)
                 {
-                    CreateEvent ev = JsonGridHelper.createCreateEvent(row, targets);
+                    CreateEvent ev = JsonModelHelper.createCreateEvent(row, targets);
                     script.create.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in shoot.Rows)
                 {
-                    ShootEvent ev = JsonGridHelper.createShootEvent(row);
+                    ShootEvent ev = JsonModelHelper.createShootEvent(row);
                     script.shoot.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in move.Rows)
                 {
-                    MoveEvent ev = JsonGridHelper.createMoveEvent(row);
+                    MoveEvent ev = JsonModelHelper.createMoveEvent(row);
                     script.move.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in particleMove.Rows)
                 {
-                    ParticleMoveEvent ev = JsonGridHelper.createParticleMoveEvent(row);
+                    ParticleMoveEvent ev = JsonModelHelper.createParticleMoveEvent(row);
                     script.particleMove.Add(ev);
                 }
 
@@ -170,31 +170,31 @@ namespace StageMaker.utils
 
                 foreach (DataGridViewRow row in enemies.Rows)
                 {
-                    Target t = JsonGridHelper.createTarget(row);
+                    Target t = JsonModelHelper.createTarget(row);
                     script.enemies.Add(t);
                 }
 
                 foreach (DataGridViewRow row in create.Rows)
                 {
-                    CreateEventSave ev = JsonGridHelper.createCreateEventSave(row);
+                    CreateEventSave ev = JsonModelHelper.createCreateEventSave(row);
                     script.create.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in shoot.Rows)
                 {
-                    ShootEvent ev = JsonGridHelper.createShootEvent(row);
+                    ShootEvent ev = JsonModelHelper.createShootEvent(row);
                     script.shoot.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in move.Rows)
                 {
-                    MoveEvent ev = JsonGridHelper.createMoveEvent(row);
+                    MoveEvent ev = JsonModelHelper.createMoveEvent(row);
                     script.move.Add(ev);
                 }
 
                 foreach(DataGridViewRow row in particleMove.Rows)
                 {
-                    ParticleMoveEvent ev = JsonGridHelper.createParticleMoveEvent(row);
+                    ParticleMoveEvent ev = JsonModelHelper.createParticleMoveEvent(row);
                     script.particleMove.Add(ev);
                 }
 

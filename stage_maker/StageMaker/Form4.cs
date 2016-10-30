@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StageMaker.utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static StageMaker.spell_maker.models.Value;
 
 namespace StageMaker
 {
@@ -38,7 +40,7 @@ namespace StageMaker
             this.Close();
         }
 
-        public Form4(string[] args)
+        public Form4(Dictionary<string, Types> args)
         {
             InitializeComponent();
             textboxes = new List<TextBox>(); ;
@@ -59,18 +61,18 @@ namespace StageMaker
             buttonCancel.Click += new EventHandler(cancel);
 
             int maxWidth = 0;
-
-            for (int i=0;i<args.Length;i++)
+            int i = 0;
+            foreach(string key in args.Keys)
             {
                 var label = new Label();
                 label.AutoSize = true;
-                label.Name = args[i];
-                label.Text = args[i] + ":";
+                label.Name = key;
+                label.Text = key + ": (" + StringHelper.TypesEnumToString(args[key]) + ")";
                 label.Location = new Point(MARGIN, MARGIN + OFFSET_SPACE_TEXBOX_Y + (SPACE_LINES * i));
                 label.Visible = true;
 
                 var txt = new TextBox();
-                txt.Name = args[i];
+                txt.Name = key;
                 txt.Text = String.Empty;
                 txt.Location = new Point(12 + label.PreferredWidth, MARGIN + (SPACE_LINES * i));
                 txt.Visible = true;
@@ -78,6 +80,7 @@ namespace StageMaker
                 maxWidth = Math.Max(maxWidth, label.PreferredWidth);
                 textboxes.Add(txt);
                 labels.Add(label);
+                i++;
             }
 
             buttonValidate.Location = new Point(MARGIN + maxWidth, MARGIN + labels.Count * SPACE_LINES);
