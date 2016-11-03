@@ -12,32 +12,6 @@ namespace StageMaker.utils
 {
     public class JsonGridHelper
     {
-        public static void insertCreate(DataGridView create, CreateEvent ev)
-        {
-            object time = null;
-            if (ev.time >= 0)
-                time = new JsonFloat(ev.time);
-
-            object targetId = null;
-            if (ev.target.id >= 0)
-                targetId = ev.target.id;
-
-            create.Rows.Add(time, targetId);
-        }
-
-        public static void insertCreateSave(DataGridView create, CreateEventSave ev)
-        {
-            object time = null;
-            if (ev.time >= 0)
-                time = new JsonFloat(ev.time);
-
-            object targetId = null;
-            if (ev.targetId >= 0)
-                targetId = ev.targetId;
-
-            create.Rows.Add(time, targetId);
-        }
-
         public static void insertParticleMove(DataGridView particleMove, ParticleMoveEvent ev)
         {
             object time = null;
@@ -93,24 +67,28 @@ namespace StageMaker.utils
             shoot.Rows.Add(time, ev.bullet.id, targetId, ev.bullet.position, ev.bullet.destination, ev.bullet.direction, speed, ev.bullet.type);
         }
 
-        public static void insertEnemy(DataGridView enemies, Target target)
+        public static void insertEnemy(DataGridView enemies, CreateEvent ev)
         {
+            object time = null;
+            if (ev.time >= 0)
+                time = new JsonFloat(ev.time);
+
             object health = null;
-            if (target.health >= 0)
-                health = target.health;
+            if (ev.target.health >= 0)
+                health = ev.target.health;
 
             object speed = null;
-            if (!float.IsNaN(target.speed))
-                speed = new JsonFloat(target.speed);
+            if (!float.IsNaN(ev.target.speed))
+                speed = new JsonFloat(ev.target.speed);
 
             object fspeed = null;
-            if (!float.IsNaN(target.fspeed))
-                fspeed = new JsonFloat(target.fspeed);
+            if (!float.IsNaN(ev.target.fspeed))
+                fspeed = new JsonFloat(ev.target.fspeed);
 
-            enemies.Rows.Add(target.id, target.type, health, target.position, target.destination, target.direction, speed, target.fdirection, fspeed);
+            enemies.Rows.Add(time, ev.target.type, health, ev.target.position, ev.target.destination, ev.target.direction, speed, ev.target.fdirection, fspeed);
         }
 
-        public static T parseCellValue<T>(DataGridViewRow row, string columnName) //abuse generics but w/e
+        public static T parseCellValue<T>(DataGridViewRow row, string columnName) //generics abuse but w/e
         {
             object result = null;
             if (typeof(float) == typeof(T))

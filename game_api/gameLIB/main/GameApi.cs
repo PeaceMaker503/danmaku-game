@@ -117,9 +117,14 @@ namespace gameLIB.main
             _gameController.createEnemy(typeName, iname, parts, nbFrames, scale);
         }
 
-        public void createStage(String path)
+        public void createStageFromPath(String path)
         {
-            _gameController.createStage(path);
+            _gameController.createStageFromPath(path);
+        }
+
+        public void createStage(String data)
+        {
+            _gameController.createStage(data);
         }
 
         public void createParticle(String pname, String iname, Rectangle[] parts, float scale)

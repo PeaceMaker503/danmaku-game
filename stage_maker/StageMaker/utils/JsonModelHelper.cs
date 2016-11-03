@@ -11,7 +11,7 @@ namespace StageMaker.utils
 {
     class JsonModelHelper
     {
-        public static MoveEvent createMoveEvent(DataGridViewRow row)
+        public static MoveEvent generateMoveEvent(DataGridViewRow row)
         {
             MoveEvent ev = new MoveEvent();
             ev.time = JsonGridHelper.parseCellValue<float>(row, MoveGridColumnsName.TIME);
@@ -24,7 +24,7 @@ namespace StageMaker.utils
             return ev;
         }
 
-        public static ParticleMoveEvent createParticleMoveEvent(DataGridViewRow row)
+        public static ParticleMoveEvent generateParticleMoveEvent(DataGridViewRow row)
         {
             ParticleMoveEvent ev = new ParticleMoveEvent();
             ev.time = JsonGridHelper.parseCellValue<float>(row, ParticleMoveColumnsName.TIME);
@@ -35,7 +35,7 @@ namespace StageMaker.utils
             return ev;
         }
 
-        public static ShootEvent createShootEvent(DataGridViewRow row)
+        public static ShootEvent generatecreateShootEvent(DataGridViewRow row)
         {
             ShootEvent ev = new ShootEvent();
             Bullet b = new Bullet();
@@ -51,28 +51,7 @@ namespace StageMaker.utils
             return ev;
         }
 
-        public static CreateEvent createCreateEvent(DataGridViewRow row, Dictionary<long, Target> targets)
-        {
-            CreateEvent ev = new CreateEvent();
-            long targetId = JsonGridHelper.parseCellValue<long>(row, CreateGridColumnsName.TARGET_ID);
-
-            ev.time = JsonGridHelper.parseCellValue<float>(row, CreateGridColumnsName.TIME);
-            ev.target = targets[targetId];
-
-            return ev;
-        }
-
-        public static CreateEventSave createCreateEventSave(DataGridViewRow row)
-        {
-            CreateEventSave ev = new CreateEventSave();
-            long targetId = JsonGridHelper.parseCellValue<long>(row, CreateGridColumnsName.TARGET_ID);
-            ev.time = JsonGridHelper.parseCellValue<float>(row, CreateGridColumnsName.TIME);
-            ev.targetId = targetId;
-
-            return ev;
-        }
-
-        public static Target createTarget(DataGridViewRow row)
+        public static CreateEvent generateCreateEvent(DataGridViewRow row)
         {
             Target t = new Target();
 
@@ -86,7 +65,11 @@ namespace StageMaker.utils
             t.fdirection = JsonGridHelper.parseCellValue<string>(row, EnemiesGridColumnsName.FINAL_DIRECTION);
             t.fspeed = JsonGridHelper.parseCellValue<float>(row, EnemiesGridColumnsName.FINAL_SPEED);
 
-            return t;
+            CreateEvent ev = new CreateEvent();
+            ev.time = JsonGridHelper.parseCellValue<float>(row, EnemiesGridColumnsName.TIME);
+            ev.target = t;
+
+            return ev;
         }
     }
 }

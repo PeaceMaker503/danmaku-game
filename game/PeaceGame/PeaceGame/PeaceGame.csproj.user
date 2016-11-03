@@ -10,4 +10,7 @@
     <FallbackCulture>fr-FR</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <StartArguments>"{\"create\":[],\"shoot\":[{\"time\":5.0,\"targetId\":-1,\"bullet\":{\"type\":\"RED_KNIFE\",\"id\":0,\"direction\":null,\"destination\":\"{X: 0, Y:0}\",\"speed\":0.5,\"position\":\"{X: 200, Y:200}\"}}],\"move\":[],\"particleMove\":[]}"</StartArguments>
+  </PropertyGroup>
 </Project>

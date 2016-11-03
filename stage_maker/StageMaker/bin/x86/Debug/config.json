@@ -1,0 +1,13 @@
+﻿{
+  "enemyTypes": {},
+  "spells": [
+    {
+      "name": "CIRCLE",
+      "path": "spells\\circle.sp"
+    },
+    {
+      "name": "SPELL_TEST",
+      "path": "spells\\spell.sp"
+    }
+  ]
+}

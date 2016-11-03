@@ -37,7 +37,7 @@ namespace StageMaker.utils
                 return "float";
             else if (t == Types.NUMBER)
                 return "number";
-            else if (t == Types.VECTOR2)
+            else if (t == Types.VECTOR)
                 return "vector";
             else if (t == Types.STRING)
                 return "string";
@@ -47,12 +47,13 @@ namespace StageMaker.utils
 
         public static Types StringToTypesEnum(string s)
         {
+            s = s.ToLower();
             if (s == "float")
                 return Types.FLOAT;
             else if (s == "number")
                 return Types.NUMBER;
             else if (s == "vector")
-                return Types.VECTOR2;
+                return Types.VECTOR;
             else if (s == "string")
                 return Types.STRING;
 

@@ -21,7 +21,8 @@ namespace StageMaker.spell_maker.evaluators
     {
         private VarsManager varsManager;
         private Dictionary<string, string> spells;
-        private Dictionary<string, List<string[]>> behaviors;
+        private Dictionary<string, List<string>> behaviorsBuffer;
+        private Dictionary<string, int> behaviorsValuesCursor;
         private Dictionary<string, Dictionary<string, Types>> argsDeclarationBehaviors;
         private float time;
         private float initTime;
@@ -29,11 +30,9 @@ namespace StageMaker.spell_maker.evaluators
         private long particleId;
         private DataGridView shoot;
         private DataGridView particleMove;
-        private int currentLoopId;
         private Bullet lastBullet;
         private string spellName;
         private long behaviorParticleId;
-        private GrammarEvaluator g;
 
         public sealed class Command
         {
@@ -83,15 +82,15 @@ namespace StageMaker.spell_maker.evaluators
         public SpellEvaluator(string spellName, float time, long targetId, long particleId, Dictionary<string, string> spells)
         {
             this.initTime = time;
+            this.behaviorsValuesCursor = new Dictionary<string, int>();
             this.behaviorParticleId = -1;
             this.spellName = spellName;
             this.time = time;
             this.targetId = targetId;
             this.particleId = particleId;
             this.spells = spells;
-            this.behaviors = new Dictionary<string, List<string[]>>();
+            this.behaviorsBuffer = new Dictionary<string, List<string>>();
             this.argsDeclarationBehaviors = new Dictionary<string, Dictionary<string, Types>>();
-            this.currentLoopId = 0;
             this.varsManager = new VarsManager();
             this.argsDeclarationBehaviors = new Dictionary<string, Dictionary<string, Types>>();
             if (spellName != null)
@@ -99,27 +98,17 @@ namespace StageMaker.spell_maker.evaluators
         }
 
         private SpellEvaluator(string spellName, float time, long targetId, long particleId, Dictionary<string, string> spells, long behaviorParticleId, float initTime)
+            : this(spellName, time, targetId, particleId, spells)
         {
             this.initTime = initTime;
             this.behaviorParticleId = behaviorParticleId;
-            this.spellName = spellName;
-            this.time = time;
-            this.targetId = targetId;
-            this.particleId = particleId;
-            this.spells = spells;
-            this.behaviors = new Dictionary<string, List<string[]>>();
-            this.argsDeclarationBehaviors = new Dictionary<string, Dictionary<string, Types>>();
-            this.currentLoopId = 0;
-            this.varsManager = new VarsManager();
-            this.argsDeclarationBehaviors = new Dictionary<string, Dictionary<string, Types>>();
-            if (spellName != null)
-                this.declareArgs();
+            this.varsManager = new VarsManager(behaviorParticleId);
         }
 
         private void declareArgs()
         {
-            Dictionary<string, Types> spellArgsDeclaration = FileHelper.getArgsDeclaration(spells[spellName]);
-            this.varsManager.declareArgs(spellArgsDeclaration);
+            /*Dictionary<string, Types> spellArgsDeclaration = FileHelper.getArgsDeclaration(spells[spellName]);
+            this.varsManager.declareArgs(spellArgsDeclaration);*/
         }
 
         public void initializeGrids(DataGridView shoot, DataGridView particleMove)
@@ -130,200 +119,185 @@ namespace StageMaker.spell_maker.evaluators
 
         public bool mustSpecifyArgs()
         {
-            return !varsManager.empty();
+            return false;
         }
 
         public Dictionary<string, Types> getArgsDeclaration()
         {
-            return varsManager.getArgsDeclaration();
+            return new Dictionary<string, Types>();
         }
 
         public void specifyArgs(string[] argsValues)
         {
-            this.varsManager.specifyArgs(argsValues);
+            // this.varsManager.specifyArgs(argsValues);
         }
 
-        private float calculateFloat(float v1, float v2, string op)
+        public long evaluate(string[] text)
         {
-            float result = float.NaN;
-            if (op == "+")
-                result = v1 + v2;
-            else if (op == "-")
-                result = v1 - v2;
-            else if (op == "*")
-                result = v1 * v2;
-            else if (op == "/")
-                result = v1 / v2;
+            List<string> loopBuffer = new List<string>();
+            int loopCount = -1;
+            bool inLoop = false;
+            bool caseFalse = false;
+            bool inBehavior = false;
+            int loopId = -1;
+            int caseId = -1;
+            int behaviorId = 0;
+            string behaviorName = String.Empty;
 
-            return result;
-        }
-
-        private float getFloat(string[] values)
-        {
-            if (values.Length == 1)
-                return this.varsManager.valueEvaluator.parseFloat(values[0]);
-            else if (values.Length == 2)
-                return this.varsManager.valueEvaluator.parseFloat(values[0] + "." + values[1]);
-            else
-                throw new Exception("Float error");
-        }
-        
-        private string getString(string[] values)
-        {
-            if (values.Length == 1)
-                return this.varsManager.valueEvaluator.parseString(values[0]);
-            else if (values.Length == 3 && values[0] == "'" && values[2] == "'")
-                return this.varsManager.valueEvaluator.parseString("'" + values[1] + "'");
-            else
-                throw new Exception("String error");
-        }
-
-        private float getFloatOpResult(string[] vs1, string op, string [] vs2)
-        {
-            float result = float.NaN;
-            float v1 = getFloat(vs1);
-            float v2 = getFloat(vs2);
-            result = calculateFloat(v1, v2, op);
-            return result;
-        }
-
-        private class GrammarResult
-        {
-            public object value { get; set; }
-            public object[] values { get; set; }
-            public bool isArray { get; set; }
-            public GrammarResult(object[] values)
+            for (int i=0;i<text.Length;i++)
             {
-                this.values = values;
-                isArray = true;
+                string line = text[i].Replace(" ", String.Empty);
+
+                if(inBehavior && !line.StartsWith("END_BEHAVIOR(" + behaviorId + ")"))
+                {
+                    behaviorsBuffer[behaviorName].Add(line);
+                }
+                else if(caseFalse && !line.StartsWith("END_CASE(" + caseId + ")"))
+                {
+                    continue;
+                }
+                else if (inLoop && !line.StartsWith("END_LOOP(" + loopId + ")"))
+                {
+                    loopBuffer.Add(line);
+                }
+                else if (line.StartsWith("START_BEHAVIOR"))
+                {
+                    line = line.Replace("START_BEHAVIOR", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    behaviorId = int.Parse(args[0]);
+                    behaviorName = args[1];
+                    string behaviorArgs = args[2];
+                    argsDeclarationBehaviors[behaviorName] = this.varsManager.valueEvaluator.evaluateBehaviorDeclarationArgs(behaviorArgs);
+                    behaviorsBuffer[behaviorName] = new List<string>();
+                    inBehavior = true;
+                }
+                else if (line.StartsWith("END_BEHAVIOR"))
+                {
+                    inBehavior = false;
+                    behaviorName = String.Empty;
+                    behaviorId = -1;
+                }
+                else if (line.StartsWith("START_CASE"))
+                {
+                    line = line.Replace("START_CASE", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    caseId = int.Parse(args[0]);
+                    string v1 = args[1];
+                    string op = args[2];
+                    string v2 = args[3];
+                    caseFalse = !this.varsManager.valueEvaluator.evaluateCase(v1, v2, op);
+                }
+                else if (line.StartsWith("END_CASE"))
+                {
+                    caseFalse = false;
+                    caseId = -1;
+                }
+                else if (line.StartsWith("START_LOOP"))
+                {
+                    line = line.Replace("START_LOOP", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    loopId = int.Parse(args[0]);
+                    loopCount = (int)this.varsManager.valueEvaluator.evaluateArithmeticOperation(args[1]);
+                    inLoop = true;
+                }
+                else if (line.StartsWith("END_LOOP"))
+                {
+                    for (int j = 0; j < loopCount; j++)
+                    {
+                        this.evaluate(loopBuffer.ToArray());
+                    }
+                    loopCount = -1;
+                    loopId = -1;
+                    inLoop = false;
+                    loopBuffer.Clear();
+                }
+                else if (line.StartsWith("MAKE"))
+                {
+                    line = line.Replace("MAKE", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    this.evaluate_make();
+                    if (args.Length > 0)
+                    {
+                        string currentBehaviorName = args[0];
+                        string behaviorCallArgs = args[1];
+                        this.evaluate_make_behavior(currentBehaviorName, behaviorCallArgs);
+                    }
+                }
+                else if (line.StartsWith("DELAY"))
+                {
+                    line = line.Replace("DELAY", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string delay = args[0];
+                    this.evaluate_delay(delay);
+                }
+                else if (line.StartsWith("WITH_POSITION"))
+                {
+                    line = line.Replace("WITH_POSITION", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string position = args[0];
+                    this.evaluate_with_position(position);
+                }
+                else if (line.StartsWith("WITH_DESTINATION"))
+                {
+                    line = line.Replace("WITH_DESTINATION", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string destination = args[0];
+                    this.evaluate_with_destination(destination);
+                }
+                else if (line.StartsWith("WITH_ANGLE"))
+                {
+                    line = line.Replace("WITH_ANGLE", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string angle = args[0];
+                    this.evaluate_with_angle(angle);
+                }
+                else if (line.StartsWith("WITH_SPEED"))
+                {
+                    line = line.Replace("WITH_SPEED", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string speed = args[0];
+                    this.evaluate_with_speed(speed);
+                }
+                else if (line.StartsWith("WITH_TYPE"))
+                {
+                    line = line.Replace("WITH_TYPE", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string type = args[0];
+                    this.evaluate_with_type(type);
+                }
+                else if (line.StartsWith("AFF"))
+                {
+                    line = line.Replace("AFF", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string id = args[0];
+                    string value = args[1];
+                    this.evaluate_aff(id, value);
+                }
+                else if(line.StartsWith("LET_AFF"))
+                {
+                    line = line.Replace("LET_AFF", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string id = args[0];
+                    string type = args[1];
+                    string value = args[2];
+                    this.evaluate_let_aff(id, type, value);
+                }
             }
-
-            public GrammarResult(object value)
-            {
-                this.values = values;
-                isArray = false;
-            }
+            return particleId;
         }
 
-        private void let_float(GrammarArgs args)
+        private void evaluate_make_behavior(string currentBehaviorName, string behaviorCallArgs)
         {
-            string id = args.values[0];
-            string type = args.values[1];
-            string op = args.values[3][0][1];
-            object[] ovs1 = args.values[3][0][0];
-            object[] ovs2 = args.values[3][0][2];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            string[] vs2 = ovs2.Where(x => x != null).Select(x => x.ToString()).ToArray();
-
-            if (varsManager.getValue(id) != null)
-                 throw new Exception("Variable '" + id + "' already exists.");
-
-             string result = getFloatOpResult(vs1, op, vs2).ToString();
-             this.varsManager.setValue(id, result, Types.FLOAT);
+            Dictionary<string, Types> behaviorDeclarationArgs = argsDeclarationBehaviors[currentBehaviorName];
+            Dictionary<string, Value> behaviorCallValues = this.varsManager.valueEvaluator.evaluateBehaviorCallArgs(behaviorDeclarationArgs, behaviorCallArgs);
+            SpellEvaluator spBehavior = new SpellEvaluator(null, time, targetId, particleId, spells, Math.Max(0, particleId - 1), initTime);
+            spBehavior.setBehaviorCallValues(behaviorCallValues);
+            spBehavior.initializeGrids(shoot, particleMove);
+            spBehavior.setBehaviors(argsDeclarationBehaviors, behaviorsBuffer);
+            particleId = spBehavior.evaluate(behaviorsBuffer[currentBehaviorName].ToArray());
         }
 
-        private void let_string(GrammarArgs args)
-        {
-            string id = args.values[0];
-            string type = args.values[1];
-            object[] ovs1 = args.values[3];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-
-            if (varsManager.getValue(id) != null)
-                throw new Exception("Variable '" + id + "' already exists.");
-
-            string result = getString(vs1);
-            this.varsManager.setValue(id, result, Types.STRING);
-        }
-
-        private void let_vector(GrammarArgs args)
-        {
-            string id = args.values[0];
-            string type = args.values[1];
-            object[] ovs1 = args.values[3][0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            object[] ovs2 = args.values[3][1];
-            string[] vs2 = ovs2.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            float vx = getFloat(vs1);
-            float vy = getFloat(vs2);
-            string v = new JsonVector2(vx, vy).ToString();
-
-            if (varsManager.getValue(id) != null)
-                throw new Exception("Variable '" + id + "' already exists.");
-
-            this.varsManager.setValue(id, v, Types.VECTOR2);
-        }
-
-        private void aff_float(GrammarArgs args)
-        {
-            string id = args.values[0];
-            string op = args.values[2][0][1];
-            object[] ovs1 = args.values[2][0][0];
-            object[] ovs2 = args.values[2][0][2];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            string[] vs2 = ovs2.Where(x => x != null).Select(x => x.ToString()).ToArray();
-
-            if (this.varsManager.getValue(id) == null)
-                throw new Exception("Variable '" + args.values[0] + "' does not exist.");
-
-            string result = getFloatOpResult(vs1, op, vs2).ToString();
-            this.varsManager.setValue(args.values[0], result, Types.FLOAT);
-        }
-
-        private void aff_string(GrammarArgs args)
-        {
-            string id = args.values[0];
-            object[] ovs1 = args.values[2];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-
-            if (this.varsManager.getValue(id) == null)
-                throw new Exception("Variable '" + args.values[0] + "' does not exist.");
-
-            string result = getString(vs1);
-            this.varsManager.setValue(args.values[0], result, Types.STRING);
-        }
-
-        private void aff_vector(GrammarArgs args)
-        {
-            string id = args.values[0];
-            object[] ovs1 = args.values[2][0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            object[] ovs2 = args.values[2][1];
-            string[] vs2 = ovs2.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            float vx = getFloat(vs1);
-            float vy = getFloat(vs2);
-            string v = new JsonVector2(vx, vy).ToString();
-
-            if (this.varsManager.getValue(id) == null)
-                throw new Exception("Variable '" + args.values[0] + "' does not exist.");
-
-            this.varsManager.setValue(id, v, Types.VECTOR2);
-        }
-
-        private void with_speed(GrammarArgs args)
-        {
-            if (lastBullet == null)
-                lastBullet = new Bullet();
-
-            object[] ovs1 = args.values[0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            lastBullet.speed = getFloat(vs1);
-        }
-
-        private void with_angle(GrammarArgs args)
-        {
-            if (lastBullet == null)
-                lastBullet = new Bullet();
-
-            object[] ovs1 = args.values[0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            float angle = getFloat(vs1);
-
-            Vector2 direction = Vector2Extension.valueOf(angle);
-            lastBullet.direction = new JsonVector2(direction).ToString();
-        }
-
-        private void make(GrammarArgs args)
+        private void evaluate_make()
         {
             if (lastBullet.position == null)
                 shoot.Rows.Add(new JsonFloat(time), particleId++, targetId, null, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
@@ -333,304 +307,72 @@ namespace StageMaker.spell_maker.evaluators
             lastBullet = null;
         }
 
-        private void with_position(GrammarArgs args)
+        private void evaluate_delay(string delay)
         {
-            object[] ovs1 = args.values[0][0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            object[] ovs2 = args.values[0][1];
-            string[] vs2 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            float vx = getFloat(vs1);
-            float vy = getFloat(vs2);
-
-            if (lastBullet == null)
-                lastBullet = new Bullet();
-
-            lastBullet.position = new JsonVector2(vx, vy).ToString();
+            float fDelay = this.varsManager.valueEvaluator.evaluateArithmeticOperation(delay);
+            time += fDelay;
         }
 
-        private void with_destination(GrammarArgs args)
-        {
-            object[] ovs1 = args.values[0][0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            object[] ovs2 = args.values[0][1];
-            string[] vs2 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            float vx = getFloat(vs1);
-            float vy = getFloat(vs2);
-
-            if (lastBullet == null)
-                lastBullet = new Bullet();
-
-            lastBullet.destination = new JsonVector2(vx, vy).ToString();
-        }
-
-        private void with_type(GrammarArgs args)
+        private void evaluate_with_position(string position)
         {
             if (lastBullet == null)
                 lastBullet = new Bullet();
 
-            object[] ovs1 = args.values[0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            lastBullet.type = getString(vs1);
-        }
-        
-        private long loop_getter_handler(string times)
-        {
-            return this.varsManager.valueEvaluator.parseLong(times);
+            string vPosition = this.varsManager.valueEvaluator.evaluateVector(position);
+            lastBullet.position = vPosition;
         }
 
-        private bool case_condition_handler(CaseConditionArgs args)
+        private void evaluate_with_destination(string destination)
         {
-            object[] ovs1 = args.values[0];
-            string[] vs1 = ovs1.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            object[] ovs2 = args.values[1];
-            string[] vs2 = ovs2.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            object[] ovs3 = args.values[2];
-            string[] vs3 = ovs3.Where(x => x != null).Select(x => x.ToString()).ToArray();
-            float v1 = getFloat(vs1);
-            float v2 = getFloat(vs3);
-            string boolOp = getBoolOp(vs2);
-            return evaluateFloat(v1, v2, boolOp);
+            if (lastBullet == null)
+                lastBullet = new Bullet();
+
+            string vDestination = this.varsManager.valueEvaluator.evaluateVector(destination);
+            lastBullet.destination = vDestination;
         }
 
-        private string getBoolOp(string[] values)
+        private void evaluate_with_angle(string angle)
         {
-            if (values.Length == 1)
-                return values[0];
-            else if (values.Length == 2)
-                return values[0] + values[1];
-            else
-                throw new Exception("BoolOp error");
+            if (lastBullet == null)
+                lastBullet = new Bullet();
+
+            float fAngle = this.varsManager.valueEvaluator.evaluateArithmeticOperation(angle);
+            Vector2 direction = Vector2Extension.valueOf(fAngle);
+            lastBullet.direction = new JsonVector2(direction).ToString();
         }
 
-        public bool evaluateFloat(float v1, float v2, string op)
+        private void evaluate_with_speed(string speed)
         {
-            bool result = false;
-            if (op == Operator.EQUALS && v1 == v2)
-                result = true;
-            else if (op == Operator.DIFFERENT && v1 != v2)
-                result = true;
-            else if (op == Operator.SUPERIOR && v1 > v2)
-                result = true;
-            else if (op == Operator.INFERIOR && v1 < v2)
-                result = true;
-            else if (op == Operator.SUPERIOR_EQUALS && v1 >= v2)
-                result = true;
-            else if (op == Operator.INFERIOR_EQUALS && v1 <= v2)
-                result = true;
+            if (lastBullet == null)
+                lastBullet = new Bullet();
 
-            return result;
+            lastBullet.speed = this.varsManager.valueEvaluator.evaluateArithmeticOperation(speed);
         }
 
-        public long evaluate()
+        private void evaluate_with_type(string type)
         {
-            string text = File.ReadAllText(spells[spellName]);
-            Tokenizer t = new Tokenizer();
-            string[] tokens = t.tokenize(text);
-            g = new GrammarEvaluator(t.values);
-            g.tClose = "tAF";
-            g.tEndl = "tPV";
-            g.tOpen = "tAO";
-            
-            g.loopGetterHandler = new LoopGetterAction(loop_getter_handler);
-            g.addGrammarRule("Number", "tNUMBER");
-            g.addGrammarRule("Number", "tID");
-            g.addGrammarRule("Float", "tID");
-            g.addGrammarRule("Float", "tNUMBER tDOT tNUMBER");
-            g.addGrammarRule("Vector", "tCO Float tV Float tCF");
-            g.addGrammarRule("String", "tQUOTE tID tQUOTE");
-            g.addGrammarRule("String", "tID");
-            g.addGrammarRule("Type", "tFLOAT");
-            g.addGrammarRule("Type", "tTNUMBER");
-            g.addGrammarRule("Type", "tVECTOR");
-            g.addGrammarRule("Type", "tTSTRING");
-            g.addGrammarRule("Add", "Float tADD Float");
-            g.addGrammarRule("Sub", "Float tSUB Float");
-            g.addGrammarRule("Div", "Float tMUL Float");
-            g.addGrammarRule("Mul", "Float tDIV Float");
-            g.addGrammarRule("Op", "Add");
-            g.addGrammarRule("Op", "Sub");
-            g.addGrammarRule("Op", "Div");
-            g.addGrammarRule("Op", "Mul");
-            g.addGrammarRule("BehaviorDeclaration", "tPO tID tDP Type tPF");
-            g.addGrammarRule("BehaviorDeclaration", "tPO (tID tDP Type tV)+ (tID tDP Type) tPF");
-            g.addGrammarRule("Op", "Float");
-            g.addGrammarRule("BoolOp", "tEQ tEQ");
-            g.addGrammarRule("BoolOp", "tSUP tEQ");
-            g.addGrammarRule("BoolOp", "tINF tEQ");
-            g.addGrammarRule("BoolOp", "tDIFF tEQ");
-            g.addGrammarRule("BoolOp", "tSUP");
-            g.addGrammarRule("BoolOp", "tINF");
-            g.addLoopPattern("tLOOP Number");
-            g.addCasePattern("tCASE Float BoolOp Float");
-            g.caseConditionHandler = new CaseConditionAction(case_condition_handler);
-            g.addGrammarAction("tLET tID tDP tFLOAT tEQ Op tPV", new GrammarAction(let_float));
-            g.addGrammarAction("tLET tID tDP tTSTRING tEQ String tPV", new GrammarAction(let_string));
-            g.addGrammarAction("tLET tID tDP tVECTOR tEQ Vector tPV", new GrammarAction(let_vector));
-            g.addGrammarAction("tID tEQ Op tPV", new GrammarAction(aff_float));
-            g.addGrammarAction("tID tEQ String tPV", new GrammarAction(aff_string));
-            g.addGrammarAction("tID tEQ Vector tPV", new GrammarAction(aff_vector));
-            g.addGrammarAction("tWITH tSPEED Float tPV", new GrammarAction(with_speed));
-            g.addGrammarAction("tWITH tANGLE Float tPV", new GrammarAction(with_angle));
-            g.addGrammarAction("tMAKE tPV", new GrammarAction(make));
-            g.addGrammarAction("BehaviorDeclaration", new GrammarAction(make));
-            g.addGrammarAction("tWITH tPOSITION Vector tPV", new GrammarAction(with_position));
-            g.addGrammarAction("tWITH tDESTINATION Vector tPV", new GrammarAction(with_destination));
-            g.addGrammarAction("tWITH tTYPE String tPV", new GrammarAction(with_type));
-            g.parseTokens(tokens);
-            return particleId;
+            if (lastBullet == null)
+                lastBullet = new Bullet();
+
+            lastBullet.type = this.varsManager.valueEvaluator.evaluateString(type);
         }
 
-        private long evaluate(List<string[]> allargs)
+        private void evaluate_aff(string id, string value)
         {
-            long times = 0;
-            int loopCounter = 0;
-            int caseFalseCounter = 0;
-            int behaviorCounter = 0;
-            bool inLoop = false;
-            bool inBehavior = false;
-            bool inCaseFalse = false;
-            string currentBehavior = null;
-            List<string[]> argsInLoop = new List<string[]>();
-
-            foreach (string[] args in allargs)
-            {
-                if (args[0] == Command.COMMENT)
-                {
-                    continue;
-                }
-                else if (!inBehavior && !inLoop && !inCaseFalse && args[0] == Command.CASE)
-                {
-                    float v1 = this.varsManager.valueEvaluator.parseFloat(args[1]);
-                    string op = args[2];
-                    float v2 = this.varsManager.valueEvaluator.parseFloat(args[3]);
-
-                    if(op == Operator.EQUALS && v1 != v2)
-                        inCaseFalse = true;
-                    else if(op == Operator.DIFFERENT && v1 == v2)
-                        inCaseFalse = true;
-                    else if (op == Operator.SUPERIOR && v1 <= v2)
-                        inCaseFalse = true;
-                    else if (op == Operator.INFERIOR && v1 >= v2)
-                        inCaseFalse = true;
-                    else if (op == Operator.SUPERIOR_EQUALS && v1 < v2)
-                        inCaseFalse = true;
-                    else if (op == Operator.INFERIOR_EQUALS && v1 > v2)
-                        inCaseFalse = true;
-
-                    if (inCaseFalse)
-                        caseFalseCounter = 0;
-                }
-                else if (!inBehavior && !inLoop && inCaseFalse && args[0] == Command.OPEN)
-                {
-                    caseFalseCounter++;
-                }
-                else if(!inBehavior && !inLoop && inCaseFalse && args[0] == Command.CLOSE)
-                {
-                    caseFalseCounter--;
-                    if (caseFalseCounter == 0)
-                        inCaseFalse = false;
-                }
-                else if (!inBehavior && !inLoop && inCaseFalse)
-                {
-                    continue;
-                }
-                else if (args[0] == Command.COMPARE)
-                {
-                    string token = args[1];
-                    float value1 = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                    float value2 = this.varsManager.valueEvaluator.parseFloat(args[3]);
-                    int result;
-
-                    if (value1 == value2)
-                        result = 1;
-                    else
-                        result = 0;
-
-                    varsManager.setValue(token, result.ToString(), Types.FLOAT);
-                }
-                else if (!inBehavior && args[0] == Command.BEHAVIOR)
-                {
-                    currentBehavior = this.varsManager.valueEvaluator.parseBehaviorName(args[1]);
-                    behaviors[currentBehavior] = new List<string[]>();
-                    argsDeclarationBehaviors[currentBehavior] = this.varsManager.valueEvaluator.parseBehaviorArgsName(args[1]);
-                    inBehavior = true;
-                    behaviorCounter = 0;
-                }
-                else if (inBehavior && args[0] == Command.OPEN)
-                {
-                    behaviorCounter++;
-                    if (behaviorCounter > 1)
-                        behaviors[currentBehavior].Add(args);
-                }
-
-                else if (inBehavior && args[0] == Command.CLOSE)
-                {
-                    behaviorCounter--;
-                    if (behaviorCounter == 0)
-                        inBehavior = false;
-                    else
-                        behaviors[currentBehavior].Add(args);
-                }
-                else if (inBehavior)
-                {
-                    behaviors[currentBehavior].Add(args);
-                }
-                else if (!inLoop && args[0] == Command.LOOP)
-                {
-                    times = (long)this.varsManager.valueEvaluator.parseLong(args[1]);
-                    inLoop = true;
-                    loopCounter = 0;
-                }
-                else if (inLoop && args[0] == Command.OPEN)
-                {
-                    loopCounter++;
-                    if (loopCounter > 1)
-                        argsInLoop.Add(args);
-                }
-                else if (inLoop && args[0] == Command.CLOSE)
-                {
-                    loopCounter--;
-                    if (loopCounter == 0)
-                    {
-                        inLoop = false;
-                        int saveLoopId = currentLoopId;
-                        currentLoopId++;
-                        for (long j = 0; j < times; j++)
-                        {
-                            this.varsManager.setValue(Command.INDEX + "_" + saveLoopId, j.ToString(), Value.Types.NUMBER);
-                            evaluate(argsInLoop);
-                        }
-                        this.varsManager.removeValue(Command.INDEX + "_" + saveLoopId);
-                        currentLoopId--;
-                        times = 0;
-                        argsInLoop.Clear();
-                    }
-                    else
-                        argsInLoop.Add(args);
-                }
-                else if (inLoop)
-                {
-                    argsInLoop.Add(args);
-                }
-                else
-                {
-                    this.evaluateLine(args);
-                }
-            }
-            return particleId;
+            varsManager.updateValue(id, value);
         }
 
-        private void evaluateLine(string[] args)
+        private void evaluate_let_aff(string id, string type, string value)
         {
-            if (args[0] == Command.COMMENT)
-            {
-                return;
-            }
-            else if (args[0] == Command.TIMESET)
-            {
-                float value = this.varsManager.valueEvaluator.parseFloat(args[1]);
-                time = initTime + value;
-            }
+            varsManager.setValue(id, value, type);
+        }
+
+        private void evaluate_dimove(string destination)
+        {
+
+        }
+
+        /*
             else if (args[0] == Command.CALL)
             {
                 string token = args[1];
@@ -653,152 +395,24 @@ namespace StageMaker.spell_maker.evaluators
                 string destination = this.varsManager.valueEvaluator.parseVector(args[2], behaviorParticleId);
                 particleMove.Rows.Add(new JsonFloat(time), particleId - 1, destination, null, new JsonFloat(speed));
             }
-            else if (args[0] == Command.WITH)
-            {
-                if (lastBullet == null)
-                    lastBullet = new Bullet();
-
-                if (args[1] == Command.TYPE)
-                {
-                    lastBullet.type = this.varsManager.valueEvaluator.parseString(args[2]);
-                }
-                else if (args[1] == Command.SPEED)
-                {
-                    lastBullet.speed = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                }
-                else if (args[1] == Command.ANGLE)
-                {
-                    Vector2 direction = Vector2Extension.valueOf(this.varsManager.valueEvaluator.parseFloat(args[2]));
-                    lastBullet.direction = new JsonVector2(direction).ToString();
-                }
-                else if (args[1] == Command.POSITION)
-                {
-                    string position = this.varsManager.valueEvaluator.parseVector(args[2], behaviorParticleId);
-                    lastBullet.position = position;
-                }
-                else if (args[1] == Command.DESTINATION)
-                {
-                    string destination = this.varsManager.valueEvaluator.parseVector(args[2], behaviorParticleId);
-                    lastBullet.destination = destination;
-                }
-            }
-            else if (args[0] == Command.MAKE)
-            {
-                if (lastBullet.position == null)
-                    shoot.Rows.Add(new JsonFloat(time), particleId++, targetId, null, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
-                else
-                    shoot.Rows.Add(new JsonFloat(time), particleId++, null, lastBullet.position, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
-                if (args.Length > 1)
-                {
-                    string behaviorToken = this.varsManager.valueEvaluator.parseBehaviorName(args[1]);
-                    object[] valuesArgs = this.varsManager.valueEvaluator.parseBehaviorArgsValues(args[1]);
-                    particleId = this.parseBehavior(behaviorToken, valuesArgs);
-                }
-                lastBullet = null;
-            }
-            else if (args[0] == Command.DELAY)
-            {
-                time += this.varsManager.valueEvaluator.parseFloat(args[1]);
-            }
-            else if (args[0] == Command.LET)
-            {
-                string[] decl = args[1].Split(':');
-                string token = decl[0];
-                string type = decl[1];
-                string value = args[2];
-                if(type == "string")
-                    this.varsManager.setValue(token, value, Value.Types.STRING);
-                else if(type == "float")
-                    this.varsManager.setValue(token, value, Value.Types.FLOAT);
-                else if(type == "vector")
-                    this.varsManager.setValue(token, value, Value.Types.VECTOR2);
-                else if (type == "number")
-                    this.varsManager.setValue(token, value, Value.Types.NUMBER);
-            }
-            else if (args[0] == Command.SET)
-            {
-                string token = args[1];
-                string value = args[2];
-                this.varsManager.setValue(token, value, Value.Types.FLOAT);
-            }
+            
             else if (args[0] == Command.FREE)
             {
                 string token = args[1];
                 this.varsManager.removeValue(token);
             }
-            else if (args[0] == Command.ADD)
-            {
-                string token = args[1];
-                float v1 = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                float v2 = this.varsManager.valueEvaluator.parseFloat(args[3]);
-                this.varsManager.setValue(token, StringHelper.FormatFloat(v1+v2), Value.Types.FLOAT);
-            }
-            else if (args[0] == Command.SUB)
-            {
-                string token = args[1];
-                float v1 = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                float v2 = this.varsManager.valueEvaluator.parseFloat(args[3]);
-                this.varsManager.setValue(token, StringHelper.FormatFloat(v1 - v2), Value.Types.FLOAT);
-            }
-            else if (args[0] == Command.DIV)
-            {
-                string token = args[1];
-                float v1 = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                float v2 = this.varsManager.valueEvaluator.parseFloat(args[3]);
-                this.varsManager.setValue(token, StringHelper.FormatFloat(v1 / v2), Value.Types.FLOAT);
-            }
-            else if (args[0] == Command.MUL)
-            {
-                string token = args[1];
-                float v1 = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                float v2 = this.varsManager.valueEvaluator.parseFloat(args[3]);
-                this.varsManager.setValue(token, StringHelper.FormatFloat(v1 * v2), Value.Types.FLOAT);
-            }
-            else if (args[0] == Command.VMUL)
-            {
-                string token = args[1];
-                JsonVector2 v1 = JsonVector2.convertString(this.varsManager.valueEvaluator.parseVector(args[2]));
-                JsonVector2 v2 = JsonVector2.convertString(this.varsManager.valueEvaluator.parseVector(args[3]));
-                this.varsManager.setValue(token, (v1*v2).ToString(), Value.Types.VECTOR2);
-            }
-            else if (args[0] == Command.MOD)
-            {
-                string token = args[1];
-                float v1 = this.varsManager.valueEvaluator.parseLong(args[2]);
-                float v2 = this.varsManager.valueEvaluator.parseLong(args[3]);
-                this.varsManager.setValue(token, (v1%v2).ToString(), Value.Types.NUMBER);
-            }
+           
+        }*/
+
+        private void setBehaviors(Dictionary<string, Dictionary<string, Types>> decl, Dictionary<string, List<string>> beh)
+        {
+            this.argsDeclarationBehaviors = decl;
+            this.behaviorsBuffer = beh;
         }
 
-        private void specifyBehaviors(Dictionary<string, List<string[]>> behaviors,  Dictionary<string, Dictionary<string, Value.Types>> argsDeclarationsBehaviors)
+        private void setBehaviorCallValues(Dictionary<string, Value> args)
         {
-            this.behaviors = behaviors;
-            this.argsDeclarationBehaviors = argsDeclarationsBehaviors;
-        }
-
-        private long parseBehavior(string behaviorToken, object[] valuesArgs)
-        {
-            SpellEvaluator sp = new SpellEvaluator(null, time, targetId, particleId, spells, particleId-1, initTime);
-            sp.initializeGrids(shoot, particleMove);
-            sp.specifyBehaviorArgs(argsDeclarationBehaviors[behaviorToken], valuesArgs);
-            sp.specifyBehaviors(behaviors, argsDeclarationBehaviors);
-            particleId = sp.evaluate(behaviors[behaviorToken]);
-            return particleId;
-        }
-
-        private void specifyBehaviorArgs(Dictionary<string, Types> argsDeclarations, object[] values)
-        {
-            int i = 0;
-            foreach(string key in argsDeclarations.Keys)
-            {
-                this.varsManager.setValue(key, values[i].ToString(), argsDeclarations[key]);
-                i++;
-            }
-        }
-
-        private long executeBehavior(List<string[]> behavior)
-        {
-            return evaluate(behavior);
+            this.varsManager.setValues(args);
         }
     }
 }

@@ -6,12 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StageMaker.spell_maker.models.Value;
 
 namespace StageMaker.spell_maker.evaluators
 {
     public class ValueEvaluator
     {
         private Dictionary<string, Value> vars;
+        private long behaviorIdParticle;
+
+        public ValueEvaluator(Dictionary<string, Value> vars, long behaviorIdParticle)
+        {
+            this.vars = vars;
+            this.behaviorIdParticle = behaviorIdParticle;
+        }
 
         public static bool isRuntimeValue(string value)
         {
@@ -32,204 +40,183 @@ namespace StageMaker.spell_maker.evaluators
             return false;
         }
 
-        public bool isFloat(string arg)
+        public string evaluateRuntimeValue(string value)
         {
-            return parseFloat(arg) != float.NaN;
-        }
+            string result = null;
 
-        public bool isLong(string arg)
-        {
-            return parseLong(arg) != -1;
-        }
-
-        public bool isVector(string arg)
-        {
-            return parseVector(arg) != null;
-        }
-
-        public ValueEvaluator(Dictionary<string, Value> vars)
-        {
-            this.vars = vars;
-        }
-
-        public float parseFloat(string arg)
-        {
-            return parseFloat(arg, false);
-        }
-
-        public float parseFloat(string arg, bool isDeclaration)
-        {
-            float value;
-            bool statusParse = float.TryParse(arg.Replace(".", ","), out value);
-            if (statusParse)
-                return value;
-
-            Value var;
-            if (!isDeclaration && vars.TryGetValue(arg, out var) && var.type == Value.Types.FLOAT)
-                return (float)var.value;
-
-            return float.NaN;
-        }
-
-        public string[] parseArgsValues(string[] args, int offset)
-        {
-            string[] argsV = new string[args.Length - offset];
-            for (int j = 0; j < argsV.Length; j++)
+            if (value.StartsWith("%") && value.EndsWith("%"))
             {
-                argsV[j] = args[j + offset];
-            }
-            return argsV;
-        }
-
-        public string[] parseArgsNames(string[] args, int offset)
-        {
-            string[] argsN = new string[args.Length - offset];
-            for (int j = 0; j < argsN.Length; j++)
-            {
-                argsN[j] = args[j + offset];
-            }
-            return argsN;
-        }
-
-        public string parseVector(string arg)
-        {
-            return parseVector(arg, false);
-        }
-
-        public string parseVector(string arg, bool isDeclaration)
-        {
-            if (arg.StartsWith("[") && arg.EndsWith("]"))
-            {
-                string sx = arg.substring(1, arg.IndexOf(",") - 1);
-                string sy = arg.substring(arg.IndexOf(",") + 1, arg.Length - 2);
-                float x = parseFloat(sx);
-                float y = parseFloat(sy);
-                return new JsonVector2(x, y).ToString();
+                value = value.Replace("%", String.Empty);
+                if (value == "PLAYER_POSITION")
+                    result = "%PLAYER_POSITION%";
+                else if (behaviorIdParticle != -1 && value == "PARTICLE_POSITION")
+                 result = string.Format("%PARTICLE_POSITION_{0}%", behaviorIdParticle);
             }
 
-            Value var;
-            if (!isDeclaration && vars.TryGetValue(arg, out var) && var.type == Value.Types.VECTOR2)
-                return (string)var.value;
-
-            if (ValueEvaluator.isRuntimeValue(arg))
-                return arg;
-
-            return null;
+            return result;
         }
 
-        public string parseString(string arg)
+        public bool evaluateCase(string v1, string v2, string op)
         {
-            if (arg.StartsWith("'") && arg.EndsWith("'"))
-                return arg.Replace("'", String.Empty);
+            float fV1 = this.evaluateArithmeticOperation(v1);
+            float fV2 = this.evaluateArithmeticOperation(v2);
 
-                Value var;
-            if (vars.TryGetValue(arg, out var) && var.type == Value.Types.STRING)
-                return (string)var.value;
+            bool result = false;
+            if (op == "==" && fV1 == fV2)
+                result = true;
+            else if (op == "!=" && fV1 != fV2)
+                result = true;
+            else if (op == ">" && fV1 > fV2)
+                result = true;
+            else if (op == "<" && fV1 < fV2)
+                result = true;
+            else if (op == ">=" && fV1 >= fV2)
+                result = true;
+            else if (op == "<=" && fV1 <= fV2)
+                result = true;
 
-            if (ValueEvaluator.isRuntimeValue(arg))
-                return arg;
-
-            return null;
+            return result;
         }
 
-        public string parseVector(string arg, long particleId)
+        public Dictionary<string, Types> evaluateBehaviorDeclarationArgs(string behaviorArgs)
         {
-            if (particleId == -1)
-                return parseVector(arg);
-
-            if (ValueEvaluator.isRuntimeValue(arg))
-                return arg;
-
-            if (arg.StartsWith("%") && arg.EndsWith("%"))
+            Dictionary<string, Types> args = new Dictionary<string, Types>();
+            string[] splittedArgs = behaviorArgs.Trim(new char[] { ' ', '[', ']' }).Split('|');
+            for(int i=0;i<splittedArgs.Length;i++)
             {
-                arg = arg.Replace("%", String.Empty);
-                if (arg == "PARTICLE_POSITION")
-                    return "%PARTICLE_POSITION_" + particleId + "%";
+                string[] pair = splittedArgs[i].Trim(new char[] { ' ', '(', ')' }).Split(':');
+                string id = pair[0];
+                string type = pair[1];
+                args[id] = StringHelper.StringToTypesEnum(type);
             }
-
-            return null;
+            return args;
         }
 
-        public string parseBehaviorName(string arg)
+        public Dictionary<string, Value> evaluateBehaviorCallArgs(Dictionary<string, Types> behaviorDeclarationArgs, string behaviorCallArgs)
         {
-            return arg.substring(0, arg.IndexOf("(") - 1);
-        }
-
-        public Dictionary<string, Value.Types> parseBehaviorArgsName(string arg)
-        {
-            arg = arg.Substring(arg.IndexOf("("));
-            arg = arg.Replace(")", String.Empty);
-            arg = arg.Replace("(", String.Empty);
-            arg = arg.Trim();
-            if (arg != String.Empty)
-            {
-                string[] args = arg.Split(',');
-                Dictionary<string, Value.Types> argsDeclarationsBehaviors = new Dictionary<string, Value.Types>();
-                for (int i = 0; i < args.Length; i++)
-                {
-                    string[] decl = args[i].Split(':');
-                    if (decl[1] == "string")
-                        argsDeclarationsBehaviors[decl[0]] = Value.Types.STRING;
-                    else if (decl[1] == "float")
-                        argsDeclarationsBehaviors[decl[0]] = Value.Types.FLOAT;
-                    else if (decl[1] == "vector")
-                        argsDeclarationsBehaviors[decl[0]] = Value.Types.VECTOR2;
-                    else if (decl[1] == "number")
-                        argsDeclarationsBehaviors[decl[0]] = Value.Types.NUMBER;
-                }
-                return argsDeclarationsBehaviors;
-            }
+            Dictionary<string, Value> values = new Dictionary<string, Value>();
+            string[] splittedArgs = behaviorCallArgs.Substring(1, behaviorCallArgs.Length - 2).Split('|');
+            if (behaviorDeclarationArgs.Keys.Count != splittedArgs.Length)
+                throw new Exception("Bad args length.");
             else
-                return new Dictionary<string, Value.Types>();
-        }
-
-        public object[] parseBehaviorArgsValues(string arg)
-        {
-            arg = arg.Substring(arg.IndexOf("("));
-            arg = arg.Replace(")", String.Empty);
-            arg = arg.Replace("(", String.Empty);
-            arg = arg.Trim();
-            string[] args = arg.Split(',');
-            object[] values = new object[args.Length];
-            for(int i=0;i<values.Length;i++)
             {
-                Value v;
-                if(this.vars.TryGetValue(args[i], out v))
+                int i = 0;
+                foreach(string key in behaviorDeclarationArgs.Keys)
                 {
-                    values[i] = v.value;
-                }
-                else
-                {
-                    if (isFloat(arg))
-                        values[i] = parseFloat(arg);
-                    else if (isVector(arg))
-                        values[i] = parseVector(arg);
-                    else if (isLong(arg))
-                        values[i] = parseFloat(arg);
+                    Types type = behaviorDeclarationArgs[key];
+                    string value = splittedArgs[i];
+                    object result = null;
+
+                    if (type == Types.FLOAT)
+                    {
+                        float f = evaluateArithmeticOperation(value);
+                        if (float.IsNaN(f))
+                            result = null;
+                        else
+                            result = f;
+                    }
+                    else if (type == Types.VECTOR)
+                        result = evaluateVector(value);
+                    else if (type == Types.STRING)
+                        result = evaluateString(value);
                     else
-                        values[i] = arg;
+                        throw new Exception("Type error.");
+
+                    if (result != null)
+                        values[key] = new Value(result, type);
+                    else
+                        throw new Exception("Value-Type error.");
+
+                    i++;
                 }
             }
             return values;
         }
 
-        public long parseLong(string arg, bool isDeclaration)
+        public string evaluateString(string value)
         {
-            long value;
-            bool statusParse = long.TryParse(arg, out value);
-            if (statusParse)
-                return value;
+            string result = null;
+            value = value.Trim();
+            if (value.StartsWith("\"") && value.EndsWith("\""))
+                result = value.Replace("\"", String.Empty);
 
             Value var;
-            if (!isDeclaration && vars.TryGetValue(arg, out var) && var.type == Value.Types.NUMBER)
-                return (long)var.value;
+            if (vars.TryGetValue(value, out var) && var.type == Value.Types.STRING)
+                result = (string)var.value;
 
-            return -1;
+            return result;
         }
 
-        public long parseLong(string arg)
+        public string evaluateVector(string value)
         {
-            return parseLong(arg, false);
+            string result = null;
+            value = value.Trim();
+            if (value.StartsWith("[") && value.EndsWith("]"))
+            {
+                string left = value.Substring(1, value.IndexOf(";")-1);
+                string right = value.Substring(value.IndexOf(";") + 1, value.IndexOf("]") - value.IndexOf(";") - 1);
+                float fLeft = evaluateArithmeticOperation(left);
+                float fRight = evaluateArithmeticOperation(right);
+                result = new JsonVector2(fLeft, fRight).ToString();
+            }
+            else
+            {
+                Value var;
+                if (vars.TryGetValue(value, out var) && var.type == Value.Types.VECTOR)
+                    result = (string)var.value;
+
+                string rv = evaluateRuntimeValue(value);
+                if (rv != null)
+                    result = rv;
+            }
+            return result;
+        }
+        
+        public float evaluateArithmeticOperation(string value)
+        {
+            float result = float.NaN;
+            value = value.Trim();
+
+            if (value.StartsWith("ADD") || value.StartsWith("MUL") || value.StartsWith("SUB") || value.StartsWith("DIV") || value.StartsWith("MOD"))
+            {
+                string op = value.substring(0, 2);
+                value = value.Substring(3);
+                value = value.Substring(1, value.Length - 2);
+                string left = value.Substring(0, value.IndexOf(";"));
+                string right = value.Substring(value.IndexOf(";") + 1);
+                float fLeft = evaluateArithmeticOperation(left);
+                float fRight = evaluateArithmeticOperation(right);
+
+                if (op == "ADD")
+                    result = fLeft + fRight;
+                else if (op == "SUB")
+                    result = fLeft - fRight;
+                else if (op == "MUL")
+                    result = fLeft * fRight;
+                else if (op == "DIV")
+                    result = fLeft / fRight;
+                else if (op == "MOD")
+                    result = fLeft % fRight;
+            }
+            else
+                result = evaluateFloat(value);
+
+            return result;
+        }
+
+        public float evaluateFloat(string arg)
+        {
+            float result = float.NaN;
+            float value;
+            bool statusParse = float.TryParse(arg.Replace(".", ","), out value);
+            if (statusParse)
+                result = value;
+
+            Value var;
+            if (vars.TryGetValue(arg, out var) && var.type == Value.Types.FLOAT)
+                result = (float)var.value;
+
+            return result;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace PeaceGame
 {
@@ -10,9 +11,21 @@ namespace PeaceGame
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            string scriptData = Environment.GetEnvironmentVariable("scriptData");
+            if (scriptData != null)
             {
-                game.Run();
+                //File.WriteAllText(@"test", scriptData);
+                using (Game1 game = new Game1(scriptData))
+                {
+                    game.Run();
+                }
+            }
+            else
+            {
+                using (Game1 game = new Game1())
+                {
+                    game.Run();
+                }
             }
         }
     }

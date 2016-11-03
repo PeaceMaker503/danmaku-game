@@ -13,14 +13,10 @@ namespace gameLIB.components.stage.parser
     public sealed class StageMaker
     {
         private Stage _stage;
-        private String _path;
-        private Dictionary<String, String> _stack;
 
-        public StageMaker(Stage stage, String path)
+        public StageMaker(Stage stage)
         {
             _stage = stage;
-            _path = path;
-            _stack = new Dictionary<String, String>();
         }
 
         private void addTask(float time, Instruction ins)
@@ -29,10 +25,15 @@ namespace gameLIB.components.stage.parser
             _stage.addTask(task);
         }
 
-        public void createStage()
+        public void createStageFromPath(string path)
         {
-            string text = File.ReadAllText(_path, Encoding.UTF8);
-            Script script = JsonConvert.DeserializeObject<Script>(text);
+            string data = File.ReadAllText(path, Encoding.UTF8);
+            this.createStage(data);
+        }
+
+        public void createStage(string data)
+        {
+            Script script = JsonConvert.DeserializeObject<Script>(data);
             foreach(CreateEvent e in script.create)
             {
                 InstructionCreate ins = JsonHelper.createInstructionCreate(e);

@@ -16,7 +16,7 @@ namespace StageMaker.utils
 {
     public class JsonGridConverter
     {
-        public static long importJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
+        public static long importJson(DataGridView enemies, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
         {
             try
             {
@@ -24,14 +24,12 @@ namespace StageMaker.utils
                 Script script = JsonConvert.DeserializeObject<Script>(text);
                 long idEnemy = 0;
                 enemies.Rows.Clear();
-                create.Rows.Clear();
                 shoot.Rows.Clear();
                 move.Rows.Clear();
 
                 foreach (CreateEvent ev in script.create)
                 {
-                    JsonGridHelper.insertEnemy(enemies, ev.target);
-                    JsonGridHelper.insertCreate(create, ev);
+                    JsonGridHelper.insertEnemy(enemies, ev);
                     idEnemy = Math.Max(idEnemy, ev.target.id);
                 }
                 idEnemy++;
@@ -59,7 +57,7 @@ namespace StageMaker.utils
             }
         }
 
-        public static void exportJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
+        public static string exportJson(DataGridView enemies, DataGridView shoot, DataGridView move, DataGridView particleMove, bool isIndented)
         {
             try
             {
@@ -68,40 +66,40 @@ namespace StageMaker.utils
                 script.shoot = new List<ShootEvent>();
                 script.move = new List<MoveEvent>();
                 script.particleMove = new List<ParticleMoveEvent>();
+
                 Dictionary<long, Target> targets = new Dictionary<long, Target>();
 
                 foreach (DataGridViewRow row in enemies.Rows)
                 {
-                    Target t = JsonModelHelper.createTarget(row);
-                    targets[t.id] = t;
-                }
-                
-                foreach (DataGridViewRow row in create.Rows)
-                {
-                    CreateEvent ev = JsonModelHelper.createCreateEvent(row, targets);
+                    CreateEvent ev = JsonModelHelper.generateCreateEvent(row);
                     script.create.Add(ev);
                 }
-
+                
                 foreach (DataGridViewRow row in shoot.Rows)
                 {
-                    ShootEvent ev = JsonModelHelper.createShootEvent(row);
+                    ShootEvent ev = JsonModelHelper.generatecreateShootEvent(row);
                     script.shoot.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in move.Rows)
                 {
-                    MoveEvent ev = JsonModelHelper.createMoveEvent(row);
+                    MoveEvent ev = JsonModelHelper.generateMoveEvent(row);
                     script.move.Add(ev);
                 }
 
                 foreach (DataGridViewRow row in particleMove.Rows)
                 {
-                    ParticleMoveEvent ev = JsonModelHelper.createParticleMoveEvent(row);
+                    ParticleMoveEvent ev = JsonModelHelper.generateParticleMoveEvent(row);
                     script.particleMove.Add(ev);
                 }
 
-                string text = JsonConvert.SerializeObject(script, Formatting.Indented);
-                File.WriteAllText(path, text, Encoding.UTF8);
+                string data;
+                if (isIndented)
+                    data = JsonConvert.SerializeObject(script, Formatting.Indented);
+                else
+                    data = JsonConvert.SerializeObject(script, Formatting.None);
+
+                return data;
             }
             catch (Exception e)
             {
@@ -109,97 +107,21 @@ namespace StageMaker.utils
             }
         }
 
-        public static OpenJsonResults openJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, string path)
+        public static string exportConfigJson(Dictionary<string, List<EnemyType>> enemyTypes, List<SpellLine> spells, bool isIndented)
         {
             try
             {
-                string text = File.ReadAllText(path);
-                ScriptSave script = JsonConvert.DeserializeObject<ScriptSave>(text);
-                long idEnemy = 0;
-                enemies.Rows.Clear();
-                create.Rows.Clear();
-                shoot.Rows.Clear();
-                move.Rows.Clear();
+                Config config = new Config();
+                config.enemyTypes = enemyTypes;
+                config.spells = spells;
 
-                foreach (Target target in script.enemies)
-                {
-                    JsonGridHelper.insertEnemy(enemies, target);
-                }
+                string data;
+                if (isIndented)
+                    data  = JsonConvert.SerializeObject(config, Formatting.Indented);
+                else
+                    data = JsonConvert.SerializeObject(config, Formatting.None);
 
-                foreach (CreateEventSave ev in script.create)
-                {
-                    JsonGridHelper.insertCreateSave(create, ev);
-                    idEnemy = Math.Max(idEnemy, ev.targetId);
-                }
-                idEnemy++;
-
-                foreach (ShootEvent ev in script.shoot)
-                {
-                    JsonGridHelper.insertShoot(shoot, ev);
-                }
-
-                foreach (MoveEvent ev in script.move)
-                {
-                    JsonGridHelper.insertMove(move, ev);
-                }
-
-                foreach (ParticleMoveEvent ev in script.particleMove)
-                {
-                    JsonGridHelper.insertParticleMove(particleMove, ev);
-                }
-
-                return new OpenJsonResults(idEnemy, script.spells);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        public static void saveJson(DataGridView enemies, DataGridView create, DataGridView shoot, DataGridView move, DataGridView particleMove, List<SpellLine> jsonSpells, string path)
-        {
-            try
-            {
-                ScriptSave script = new ScriptSave();
-                script.enemies = new List<Target>();
-                script.create = new List<CreateEventSave>();
-                script.shoot = new List<ShootEvent>();
-                script.move = new List<MoveEvent>();
-                script.particleMove = new List<ParticleMoveEvent>();
-                script.spells = jsonSpells;
-
-                foreach (DataGridViewRow row in enemies.Rows)
-                {
-                    Target t = JsonModelHelper.createTarget(row);
-                    script.enemies.Add(t);
-                }
-
-                foreach (DataGridViewRow row in create.Rows)
-                {
-                    CreateEventSave ev = JsonModelHelper.createCreateEventSave(row);
-                    script.create.Add(ev);
-                }
-
-                foreach (DataGridViewRow row in shoot.Rows)
-                {
-                    ShootEvent ev = JsonModelHelper.createShootEvent(row);
-                    script.shoot.Add(ev);
-                }
-
-                foreach (DataGridViewRow row in move.Rows)
-                {
-                    MoveEvent ev = JsonModelHelper.createMoveEvent(row);
-                    script.move.Add(ev);
-                }
-
-                foreach(DataGridViewRow row in particleMove.Rows)
-                {
-                    ParticleMoveEvent ev = JsonModelHelper.createParticleMoveEvent(row);
-                    script.particleMove.Add(ev);
-                }
-
-                string text = JsonConvert.SerializeObject(script, Formatting.Indented);
-                File.WriteAllText(path, text, Encoding.UTF8);
+                return data;
             }
             catch (Exception e)
             {

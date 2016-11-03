@@ -1,0 +1,9 @@
+let sp:float = 5;
+let t:string = "RED_KNIFE";
+let n:float = 10;
+
+loop(n) {
+
+   make(type=t, speed=sp*(2/2), angle = 180-n, position = [200-n, 200+n]);
+   delay(5-n);
+}

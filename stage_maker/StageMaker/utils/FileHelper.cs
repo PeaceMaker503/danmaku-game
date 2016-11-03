@@ -28,7 +28,7 @@ namespace StageMaker.utils
                         else if(decl[1] == "float")
                             argsDeclaration[decl[0]] = Types.FLOAT;
                         else if(decl[1] == "vector")
-                            argsDeclaration[decl[0]] = Types.VECTOR2;
+                            argsDeclaration[decl[0]] = Types.VECTOR;
                         else if (decl[1] == "number")
                             argsDeclaration[decl[0]] = Types.NUMBER;
                     }

@@ -13,19 +13,20 @@ namespace StageMaker.spell_maker.evaluators
 {
     public class GrammarEvaluator
     {
-        
         private List<string> tokens;
         private Dictionary<string, GrammarAction> grammar;
         private List<string> values;
         private Dictionary<string, List<string>> rules;
         public List<string> loopPatterns { get; set; }
         private Dictionary<string, string> grammarPatterns;
-        public Dictionary<string, string> behaviorPatterns { get; set; }
+        public List<string> behaviorPatterns { get; set; }
         private CaseAction caseHandler;
         private LoopAction loopHandler;
-        public Dictionary<string, string> casePatterns { get; set; }
+        public List<string> casePatterns { get; set; }
         public CaseConditionAction caseConditionHandler { get; set; }
         public LoopGetterAction loopGetterHandler { get; set; }
+        public BehaviorBeginAction behaviorBeginHandler { get; set; }
+        public BehaviorEndAction behaviorEndHandler { get; set; }
         public Action loopBeginHandler { get; set; }
         public Action loopEndHandler { get; set; }
         public Action caseBeginHandler { get; set; }
@@ -35,14 +36,16 @@ namespace StageMaker.spell_maker.evaluators
         public string tEndl { get; set; }
         public List<string> tValues { get; set; }
         private string splitPattern;
+        private string behaviorName;
+        public string oneBehaviorArgDecl { get; set; }
 
         public GrammarEvaluator(List<string> values)
         {
             this.grammar = new Dictionary<string, GrammarAction>();
             this.values = values;
             this.loopPatterns = new List<string>();
-            this.casePatterns = new Dictionary<string, string>();
-            this.behaviorPatterns = new Dictionary<string, string>();
+            this.casePatterns = new List<string>();
+            this.behaviorPatterns = new List<string>();
             this.tValues = new List<string>();
             this.caseHandler = new CaseAction(case_handler);
             this.loopHandler = new LoopAction(loop_handler);
@@ -84,12 +87,15 @@ namespace StageMaker.spell_maker.evaluators
             int currentLevel = 0;
             int caseLevel = 0;
             int loopLevel = 0;
+            int behaviorLevel = 0;
             bool inCase = false;
             bool conditionState = false;
             bool inLoop = false;
+            bool inBehavior = false;
             string loopTimes = String.Empty;
             List<string> loopBuffer = new List<string>();
             List<string> caseBuffer = new List<string>();
+            List<string> behaviorBuffer = new List<string>();
 
             for (int i =0;i<tokens.Length; i++)
             {
@@ -109,7 +115,7 @@ namespace StageMaker.spell_maker.evaluators
                         if (currentLevel == loopLevel)
                         {
                             string[] loopBufferArray = loopBuffer.ToArray();
-                            loopHandler(new LoopArgs(loopBufferArray, loopGetterHandler(loopTimes), valuesCursor));
+                            loopHandler(new LoopArgs(loopBufferArray, loopGetterHandler(new LoopGetterArgs(loopTimes)), valuesCursor));
                             int nbValues = countValuesInTokens(loopBufferArray);
                             valuesCursor += nbValues;
                             loopTimes = String.Empty;
@@ -142,6 +148,25 @@ namespace StageMaker.spell_maker.evaluators
                     }
                     else if(currentToken != tOpen || currentLevel - caseLevel > 1) //on ne prend pas le tOpen du first case
                         caseBuffer.Add(currentToken);
+                }
+                else if(inBehavior)
+                {
+                   if (currentToken == tClose)
+                    {
+                        if (currentLevel == behaviorLevel)
+                        {
+                            string[] behaviorBufferArray = behaviorBuffer.ToArray();
+                            inBehavior = false;
+                            int nbValues = countValuesInTokens(behaviorBufferArray);
+                            behaviorEndHandler(new BehaviorEndArgs(behaviorName, behaviorBuffer, valuesCursor));
+                            valuesCursor += nbValues;
+                            behaviorBuffer.Clear();
+                        }
+                        else
+                            behaviorBuffer.Add(currentToken);
+                    }
+                    else if (currentToken != tOpen || currentLevel - caseLevel > 1) //on ne prend pas le tOpen du first behavior
+                        behaviorBuffer.Add(currentToken);
                 }
                 else
                 {
@@ -178,6 +203,23 @@ namespace StageMaker.spell_maker.evaluators
                         continue;
                     }
 
+                    string behaviorPattern = getPatternLikeBehavior(currentTokensLine);
+                    if (behaviorPattern != null)
+                    {
+                        inBehavior = true;
+                        int countValues = countValuesInTokens(currentTokens.ToArray());
+                        dynamic groupedValues;
+                        int cursorOnVs = 0;
+                        string[] vs = values.GetRange(valuesCursor + 1, countValues).ToArray();
+                        groupValues(currentTokensLine.Replace(tEndl, String.Empty), behaviorPattern, vs, out groupedValues, ref cursorOnVs);
+                        groupValuesBehavior(currentTokensLine.Replace(tEndl, String.Empty), vs);
+                        valuesCursor += countValues;
+                        currentTokens.Clear();
+                        behaviorLevel = currentLevel;
+                        behaviorName = behaviorBeginHandler(new BehaviorBeginArgs(groupedValues));
+                        continue;
+                    }
+
                     string grammarPattern = getPatternLikeGrammar(currentTokensLine);
                     if(grammarPattern != null)
                     {
@@ -188,8 +230,7 @@ namespace StageMaker.spell_maker.evaluators
                         dynamic groupedValues;
                         int cursorOnVs = 0;
                         groupValues(currentTokensLine.Replace(tEndl, String.Empty), rulePattern, vs, out groupedValues, ref cursorOnVs);
-                        GrammarArgs args = new GrammarArgs((dynamic[])groupedValues);
-                        handler(args);
+                        handler(new GrammarArgs((dynamic[])groupedValues));
                         currentTokens.Clear();
                         valuesCursor += cursorOnVs;
                     }
@@ -200,69 +241,99 @@ namespace StageMaker.spell_maker.evaluators
             }
         }
         
+        public int groupValuesBehavior(string tokensLine, string[] values)
+        {
+            int valuesCursorPlus = 0;
+            MatchCollection ruleTokens = new Regex(this.getPatternRegexValue(oneBehaviorArgDecl)).Matches(tokensLine);
+            foreach(Match m in ruleTokens)
+            {
+                dynamic x;
+                groupValues(m.Value, oneBehaviorArgDecl, values, out x, ref valuesCursorPlus);
+            }
+            return valuesCursorPlus;
+        }
+
         public int groupValues(string tokensLine, string rulePattern, string[] values, out dynamic result, ref int cursorOnVs)
         {
-            string[] ruleTokens = new Regex(splitPattern).Split(rulePattern)
-                                    .Select(s => s.Trim())
-                                    .Where(str => str != String.Empty && str != tEndl && str != "(" && str != ")")
-                                    .ToArray();
-
-            int groupCount = ruleTokens.Count(s => tValues.Contains(s) || rules.ContainsKey(s));
-            dynamic[] groupedValues = new object[1];
-            int groupedIndex = 0;
-            int lengthRemovedFromTokensLine = 0;
-            for(int i=0;i< ruleTokens.Length; i++)
+            if(rulePattern.Contains("*"))
             {
-                string token = ruleTokens[i];
-                int currentLengthToRemove = token.Length;
-                if (tValues.Contains(token) && !rules.ContainsKey(token))
+                string p = rulePattern.Split('*')[0];
+                MatchCollection ruleTokens = new Regex(p).Matches(tokensLine);
+                result = null;
+                return -1;
+            }
+            else
+            {
+                string[] ruleTokens = new Regex(splitPattern).Split(rulePattern)
+                                    .Select(s => s.Trim())
+                                    .Where(str => str != String.Empty && str != tEndl && str != "(" && str != ")" && str != "|")
+                                    .ToArray();
+                int groupCount = ruleTokens.Count(s => tValues.Contains(s) || rules.ContainsKey(s));
+                dynamic[] groupedValues = new object[groupCount];
+                int groupedIndex = 0;
+                int lengthRemovedFromTokensLine = 0;
+                for (int i = 0; i < ruleTokens.Length; i++)
                 {
-                    groupedValues[groupedIndex++] = values[cursorOnVs++];
-                }
-                else if(!tValues.Contains(token) && rules.ContainsKey(token))
-                {
-                    string line = string.Empty;
-                    foreach (string rule in rules[token])
+                    string token = ruleTokens[i];
+                    int currentLengthToRemove = token.Length;
+                    if (tValues.Contains(token) && !rules.ContainsKey(token))
                     {
-                        string p = getPatternRegexValue(rule);
-                        Regex r = new Regex("^" + p);
-                        if(r.IsMatch(tokensLine))
+                        groupedValues[groupedIndex++] = values[cursorOnVs++];
+                    }
+                    else if (!tValues.Contains(token) && rules.ContainsKey(token))
+                    {
+                        string line = string.Empty;
+                        foreach (string rule in rules[token])
                         {
-                            currentLengthToRemove = groupValues(tokensLine, rule, values, out groupedValues[groupedIndex++], ref cursorOnVs);
-                            break;
+                            string p = getPatternRegexValue(rule);
+                            Regex r = new Regex("^" + p);
+                            if (r.IsMatch(tokensLine))
+                            {
+                                currentLengthToRemove = groupValues(tokensLine, rule, values, out groupedValues[groupedIndex++], ref cursorOnVs);
+                                break;
+                            }
                         }
                     }
+                    tokensLine = tokensLine.Substring(currentLengthToRemove);
+                    lengthRemovedFromTokensLine += currentLengthToRemove;
                 }
-                tokensLine = tokensLine.Substring(currentLengthToRemove);
-                lengthRemovedFromTokensLine += currentLengthToRemove;
+                result = groupedValues;
+                return lengthRemovedFromTokensLine;
             }
-            result = groupedValues;
-            return lengthRemovedFromTokensLine;
         }
 
         public void addLoopPattern(string pattern)
         {
-            string regex = this.getPatternRegexValue(pattern);
-            this.loopPatterns.Add(regex);
+            this.loopPatterns.Add(pattern);
         }
 
         public void addBehaviorPattern(string pattern)
         {
-            string regex = this.getPatternRegexValue(pattern);
-            this.behaviorPatterns[regex] = pattern;
+            this.behaviorPatterns.Add(pattern);
         }
 
         public void addCasePattern(string pattern)
         {
-            string regex = this.getPatternRegexValue(pattern);
-            this.casePatterns[regex] = pattern;
+            this.casePatterns.Add(pattern);
+        }
+
+        private string getPatternLikeBehavior(string tokens)
+        {
+            string regex = this.getPatternRegexValue("tBEHAVIOR tID tPO (" + oneBehaviorArgDecl + " tV )* " + oneBehaviorArgDecl + "tPF");
+            Regex r = new Regex("^" + regex);
+            if (r.IsMatch(tokens))
+            {
+                return regex;
+            }
+            return null;
         }
 
         private string getPatternLikeLoop(string tokens)
         {
             foreach (string loopPattern in loopPatterns)
             {
-                Regex r = new Regex("^" + loopPattern);
+                string regex = this.getPatternRegexValue(loopPattern);
+                Regex r = new Regex("^" + regex);
                 if (r.IsMatch(tokens))
                 {
                     return loopPattern;
@@ -273,12 +344,13 @@ namespace StageMaker.spell_maker.evaluators
 
         private string getPatternLikeCase(string tokens)
         {
-            foreach (string casePattern in casePatterns.Keys)
+            foreach (string casePattern in casePatterns)
             {
-                Regex r = new Regex("^" + casePattern);
+                string regex = this.getPatternRegexValue(casePattern);
+                Regex r = new Regex("^" + regex);
                 if (r.IsMatch(tokens))
                 {
-                    return casePatterns[casePattern];
+                    return casePattern;
                 }
             }
             return null;

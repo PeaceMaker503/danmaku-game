@@ -14,7 +14,7 @@ namespace StageMaker.spell_maker.models
             this.value = value;
         }
 
-        public enum Types { NULL, FLOAT, NUMBER, STRING, VECTOR2 };
+        public enum Types { NULL, FLOAT, NUMBER, STRING, VECTOR };
         public Types type { get; set; }
         public object value { get; set; }
     }

@@ -13,86 +13,76 @@ namespace StageMaker.spell_maker.parser
     {
         public ValueEvaluator valueEvaluator { get; private set; }
         private Dictionary<string, Value> vars;
-        private Dictionary<string, Types> argsDeclaration;
 
-        public VarsManager()
+        public VarsManager(long behaviorIdParticle =-1)
         {
             vars = new Dictionary<string, Value>();
-            this.valueEvaluator = new ValueEvaluator(vars);
+            this.valueEvaluator = new ValueEvaluator(vars, behaviorIdParticle);
+        }
+
+        public void setValue(string name, string value, string type)
+        {
+            if (type == "FLOAT")
+                setValue(name, value, Types.FLOAT);
+            else if (type == "VECTOR")
+                setValue(name, value, Types.VECTOR);
+            else if (type == "STRING")
+                setValue(name, value, Types.STRING);
+            else
+                throw new Exception("Type error.");
+        }
+
+        public void setValues(Dictionary<string, Value> values)
+        {
+            foreach(string key in values.Keys)
+            {
+                vars[key] = values[key];
+            }
         }
 
         public void setValue(string name, string value, Types type)
         {
-            this.setValue(name, value, type, false);
-        }
+            object result = null;
 
-        public void setValue(string name, string value, Types type, bool isDeclaration)
-        {
             if (type == Types.FLOAT)
             {
-                float pValue = valueEvaluator.parseFloat(value, isDeclaration);
-                vars[name] = new Value(pValue, Types.FLOAT);
+                float f = valueEvaluator.evaluateArithmeticOperation(value);
+                if (float.IsNaN(f))
+                    result = null;
+                else
+                    result = f;
             }
-            else if (type == Types.NUMBER)
-            {
-                long pValue = valueEvaluator.parseLong(value, isDeclaration);
-                vars[name] = new Value(pValue, Types.NUMBER);
-            }
-            else if (type == Types.VECTOR2)
-            {
-                string pValue = valueEvaluator.parseVector(value, isDeclaration);
-                vars[name] = new Value(pValue, Types.VECTOR2);
-            }
+            else if (type == Types.VECTOR)
+                result = valueEvaluator.evaluateVector(value);
+            else if (type == Types.STRING)
+                result = valueEvaluator.evaluateString(value);
             else
-            {
-                vars[name] = new Value(value, Types.STRING);
-            }
-        }
-        public bool empty()
-        {
-            return vars.Count == 0;
+                throw new Exception("Type error.");
+
+            if (result != null)
+                vars[name] = new Value(result, type);
+            else
+                throw new Exception("Value-Type error.");
         }
 
-        public void specifyArgs(string[] argsDeclarationValues)
+        public void updateValue(string name, string value)
         {
-            int i = 0;
-            foreach (string key in argsDeclaration.Keys)
-            {
-                this.setValue(key, argsDeclarationValues[i], vars[key].type, true);
-                i++;
-            }
+            Value var = getValue(name);
+            if (var != null)
+                setValue(name, value, var.type);
+            else
+                throw new Exception("Var doesn't exist.");
         }
-        
-        public void declareArgs(Dictionary<string, Types> argsDeclaration)
-        {
-            foreach(string key in argsDeclaration.Keys)
-            {
-                vars[key] = new Value(null, argsDeclaration[key]);
-            }
-            this.argsDeclaration = argsDeclaration;
-        }
-
-        public Dictionary<string, Types> getArgsDeclaration()
-        {
-            return this.argsDeclaration;
-        }
-
         public void removeValue(string name)
         {
             vars.Remove(name);
         }
 
-        public object getValue(string name)
+        public Value getValue(string name)
         {
             Value value = null;
             vars.TryGetValue(name, out value);
             return value;
         }
-
-        public Types getType(string name)
-        {
-            return vars[name].type;
-        }
-
     }
 }

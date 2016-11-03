@@ -194,10 +194,16 @@ namespace gameLIB.main.engines
             _common.currentStage.updateEnemiesPositions();
         }
 
-        public void createStage(String scriptPath)
+        public void createStageFromPath(String scriptPath)
         {
-            StageMaker sm = new StageMaker(_common.currentStage, scriptPath);
-            sm.createStage();
+            StageMaker sm = new StageMaker(_common.currentStage);
+            sm.createStageFromPath(scriptPath);
+        }
+
+        public void createStage(String data)
+        {
+            StageMaker sm = new StageMaker(_common.currentStage);
+            sm.createStage(data);
         }
 
         public void createPlayer(Image image, Rectangle[] parts, int nbFrames, float scale, int lifes, Vector2 position)

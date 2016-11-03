@@ -93,38 +93,74 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="ImageCutterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ImageCutterForm.Designer.cs">
+      <DependentUpon>ImageCutterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form2.cs">
+    <Compile Include="MainControllerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="MainControllerForm.Designer.cs">
+      <DependentUpon>MainControllerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form3.cs">
+    <Compile Include="ManageEnemiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form3.Designer.cs">
-      <DependentUpon>Form3.cs</DependentUpon>
+    <Compile Include="ManageEnemiesForm.Designer.cs">
+      <DependentUpon>ManageEnemiesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form4.cs">
+    <Compile Include="models\Config.cs" />
+    <Compile Include="models\EnemyType.cs" />
+    <Compile Include="NewSpellForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form4.Designer.cs">
-      <DependentUpon>Form4.cs</DependentUpon>
+    <Compile Include="NewSpellForm.Designer.cs">
+      <DependentUpon>NewSpellForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="models\CreateEventSave.cs" />
+    <Compile Include="ManageSpellsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSpellsForm.Designer.cs">
+      <DependentUpon>ManageSpellsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetArgsDeclarationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetArgsDeclarationForm.Designer.cs">
+      <DependentUpon>SetArgsDeclarationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="iEnemyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="iEnemyForm.Designer.cs">
+      <DependentUpon>iEnemyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="bEnemyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="bEnemyForm.Designer.cs">
+      <DependentUpon>bEnemyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="iParticleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="iParticleForm.Designer.cs">
+      <DependentUpon>iParticleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="bParticleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="bParticleForm.Designer.cs">
+      <DependentUpon>bParticleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="models\JsonFloat.cs" />
     <Compile Include="models\JsonVector2.cs" />
     <Compile Include="models\Bullet.cs" />
     <Compile Include="models\CreateEvent.cs" />
     <Compile Include="models\ParticleMoveEvent.cs" />
     <Compile Include="models\MoveEvent.cs" />
-    <Compile Include="models\ScriptSave.cs" />
     <Compile Include="models\Script.cs" />
     <Compile Include="models\ShootEvent.cs" />
     <Compile Include="models\SpellLine.cs" />
@@ -132,6 +168,9 @@
     <Compile Include="models\OpenJsonResults.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="spell_maker\models\BehaviorEndArgs.cs" />
+    <Compile Include="spell_maker\models\BehaviorBeginArgs.cs" />
+    <Compile Include="spell_maker\models\LoopGetterArgs.cs" />
     <Compile Include="spell_maker\models\CaseArgs.cs" />
     <Compile Include="spell_maker\models\CaseConditionArgs.cs" />
     <Compile Include="spell_maker\models\Delegates.cs" />
@@ -152,17 +191,35 @@
     <Compile Include="utils\StringExtension.cs" />
     <Compile Include="utils\StringHelper.cs" />
     <Compile Include="utils\Vector2Extension.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="ImageCutterForm.resx">
+      <DependentUpon>ImageCutterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <EmbeddedResource Include="MainControllerForm.resx">
+      <DependentUpon>MainControllerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form3.resx">
-      <DependentUpon>Form3.cs</DependentUpon>
+    <EmbeddedResource Include="ManageEnemiesForm.resx">
+      <DependentUpon>ManageEnemiesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form4.resx">
-      <DependentUpon>Form4.cs</DependentUpon>
+    <EmbeddedResource Include="NewSpellForm.resx">
+      <DependentUpon>NewSpellForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSpellsForm.resx">
+      <DependentUpon>ManageSpellsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetArgsDeclarationForm.resx">
+      <DependentUpon>SetArgsDeclarationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="iEnemyForm.resx">
+      <DependentUpon>iEnemyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="bEnemyForm.resx">
+      <DependentUpon>bEnemyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="iParticleForm.resx">
+      <DependentUpon>iParticleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="bParticleForm.resx">
+      <DependentUpon>bParticleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
