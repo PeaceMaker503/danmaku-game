@@ -12,12 +12,12 @@ namespace StageMaker.spell_maker.parser
     public class VarsManager
     {
         public ValueEvaluator valueEvaluator { get; private set; }
-        private Dictionary<string, Value> vars;
+        public Dictionary<string, Value> vars { get; private set; }
 
-        public VarsManager(long behaviorIdParticle =-1)
+        public VarsManager(ValueEvaluator valueEvaluator)
         {
             vars = new Dictionary<string, Value>();
-            this.valueEvaluator = new ValueEvaluator(vars, behaviorIdParticle);
+            this.valueEvaluator = valueEvaluator;
         }
 
         public void setValue(string name, string value, string type)

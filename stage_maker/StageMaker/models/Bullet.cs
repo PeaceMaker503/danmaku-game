@@ -8,6 +8,12 @@ namespace StageMaker.models
 {
     public sealed class Bullet
     {
+
+        public Bullet()
+        {
+            speed = float.NaN;
+        }
+
         public string type { get; set; }
         public long id { get; set; }
         public string direction { get; set; }

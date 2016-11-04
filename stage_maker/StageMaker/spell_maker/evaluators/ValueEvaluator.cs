@@ -1,5 +1,6 @@
 ﻿using StageMaker.models;
 using StageMaker.spell_maker.models;
+using StageMaker.spell_maker.parser;
 using StageMaker.utils;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,17 @@ namespace StageMaker.spell_maker.evaluators
 {
     public class ValueEvaluator
     {
-        private Dictionary<string, Value> vars;
+        private VarsManager varsManager;
         private long behaviorIdParticle;
 
-        public ValueEvaluator(Dictionary<string, Value> vars, long behaviorIdParticle)
+        public ValueEvaluator(long behaviorIdParticle=-1)
         {
-            this.vars = vars;
             this.behaviorIdParticle = behaviorIdParticle;
+        }
+
+        public void initializeVarsManager(VarsManager varsManager)
+        {
+            this.varsManager = varsManager;
         }
 
         public static bool isRuntimeValue(string value)
@@ -58,30 +63,46 @@ namespace StageMaker.spell_maker.evaluators
 
         public bool evaluateCase(string v1, string v2, string op)
         {
-            float fV1 = this.evaluateArithmeticOperation(v1);
-            float fV2 = this.evaluateArithmeticOperation(v2);
-
+            Value vv1 = this.varsManager.getValue(v1);
+            Value vv2 = this.varsManager.getValue(v2);
             bool result = false;
-            if (op == "==" && fV1 == fV2)
-                result = true;
-            else if (op == "!=" && fV1 != fV2)
-                result = true;
-            else if (op == ">" && fV1 > fV2)
-                result = true;
-            else if (op == "<" && fV1 < fV2)
-                result = true;
-            else if (op == ">=" && fV1 >= fV2)
-                result = true;
-            else if (op == "<=" && fV1 <= fV2)
-                result = true;
-
+            if (vv1 != null && vv2 != null)
+            {
+                if(vv1.type == vv2.type)
+                {
+                    Types t = vv1.type;
+                    if (t == Types.FLOAT)
+                    {
+                        //TODO
+                    }
+                    else if(t == Types.STRING)
+                    {
+                        //TODO
+                    }
+                    else if(t == Types.VECTOR)
+                    {
+                        //TODO
+                    }
+                }
+                else
+                {
+                    throw new Exception("Can't compare values of different types.");
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid code.");
+            }
             return result;
         }
 
-        public Dictionary<string, Types> evaluateBehaviorDeclarationArgs(string behaviorArgs)
+        public Dictionary<string, Types> evaluateDeclarationArgs(string declArgs)
         {
+            if (declArgs.Trim() == "[]")
+                return new Dictionary<string, Types>(); 
+
             Dictionary<string, Types> args = new Dictionary<string, Types>();
-            string[] splittedArgs = behaviorArgs.Trim(new char[] { ' ', '[', ']' }).Split('|');
+            string[] splittedArgs = declArgs.Trim(new char[] { ' ', '[', ']' }).Split(';');
             for(int i=0;i<splittedArgs.Length;i++)
             {
                 string[] pair = splittedArgs[i].Trim(new char[] { ' ', '(', ')' }).Split(':');
@@ -92,14 +113,24 @@ namespace StageMaker.spell_maker.evaluators
             return args;
         }
 
-        public Dictionary<string, Value> evaluateBehaviorCallArgs(Dictionary<string, Types> behaviorDeclarationArgs, string behaviorCallArgs)
+        public Dictionary<string, Value> evaluateCallArgs(Dictionary<string, Types> declarationArgs, string argsCallValues)
+        {
+            if (argsCallValues.Trim() == "[]")
+                return new Dictionary<string, Value>();
+
+            string[] splittedArgs = argsCallValues.Substring(1, argsCallValues.Length - 2).Split(';');
+            return evaluateCallArgs(declarationArgs, splittedArgs);
+        }
+
+        public Dictionary<string, Value> evaluateCallArgs(Dictionary<string, Types> behaviorDeclarationArgs, string[] splittedArgs)
         {
             Dictionary<string, Value> values = new Dictionary<string, Value>();
-            string[] splittedArgs = behaviorCallArgs.Substring(1, behaviorCallArgs.Length - 2).Split('|');
             if (behaviorDeclarationArgs.Keys.Count != splittedArgs.Length)
                 throw new Exception("Bad args length.");
+            else if (behaviorDeclarationArgs.Count == 0)
+                return new Dictionary<string, Value>();
             else
-            {
+            { 
                 int i = 0;
                 foreach(string key in behaviorDeclarationArgs.Keys)
                 {
@@ -140,8 +171,8 @@ namespace StageMaker.spell_maker.evaluators
             if (value.StartsWith("\"") && value.EndsWith("\""))
                 result = value.Replace("\"", String.Empty);
 
-            Value var;
-            if (vars.TryGetValue(value, out var) && var.type == Value.Types.STRING)
+            Value var = this.varsManager.getValue(value);
+            if (var != null && var.type == Types.STRING)
                 result = (string)var.value;
 
             return result;
@@ -161,8 +192,8 @@ namespace StageMaker.spell_maker.evaluators
             }
             else
             {
-                Value var;
-                if (vars.TryGetValue(value, out var) && var.type == Value.Types.VECTOR)
+                Value var = this.varsManager.getValue(value);
+                if (var != null && var.type == Value.Types.VECTOR)
                     result = (string)var.value;
 
                 string rv = evaluateRuntimeValue(value);
@@ -204,16 +235,16 @@ namespace StageMaker.spell_maker.evaluators
             return result;
         }
 
-        public float evaluateFloat(string arg)
+        public float evaluateFloat(string value)
         {
             float result = float.NaN;
-            float value;
-            bool statusParse = float.TryParse(arg.Replace(".", ","), out value);
+            float fValue;
+            bool statusParse = float.TryParse(value.Replace(".", ","), out fValue);
             if (statusParse)
-                result = value;
+                result = fValue;
 
-            Value var;
-            if (vars.TryGetValue(arg, out var) && var.type == Value.Types.FLOAT)
+            Value var = this.varsManager.getValue(value);
+            if (var != null && var.type == Value.Types.FLOAT)
                 result = (float)var.value;
 
             return result;

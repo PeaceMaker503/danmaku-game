@@ -12,6 +12,7 @@ using System.IO;
 using StageMaker.models;
 using StageMaker.spell_maker;
 using StageMaker.spell_maker.evaluators;
+using static StageMaker.spell_maker.models.Value;
 
 namespace StageMaker
 {
@@ -56,19 +57,23 @@ namespace StageMaker
                 long targetId = -1;
                 if (textBox2.Text == String.Empty || long.TryParse(textBox2.Text, out targetId))
                 {
-                    string path = spells[comboBox1.Text];
-                    if (File.Exists(path))
+                    string spellName = comboBox1.Text;
+                    string spellPath = spells[spellName];
+                    if (File.Exists(spellPath))
                     {
-                        SpellEvaluator spellEvaluator = new SpellEvaluator(comboBox1.Text, time, targetId, particleId, this.spells);
+                        SpellCompiler.clearCompiledSpells();
+                        SpellEvaluator spellEvaluator = new SpellEvaluator(time, targetId, particleId);
                         spellEvaluator.initializeGrids(shoot, particleMove);
-
-                        if (spellEvaluator.mustSpecifyArgs())
+                        spellEvaluator.initializeSpells(spells);
+                        string[] compiledSpellLines = SpellCompiler.compileSpell(spellPath);
+                        Dictionary<string, Types> declarationArgs = spellEvaluator.evaluate_declaration_args(compiledSpellLines[0]);
+                        if (declarationArgs.Count > 0)
                         {
-                            SetArgsDeclarationForm f = new SetArgsDeclarationForm(spellEvaluator.getArgsDeclaration());
+                            SetArgsDeclarationForm f = new SetArgsDeclarationForm(declarationArgs);
                             f.ShowDialog();
                             if(f.DialogResult == DialogResult.OK)
                             {
-                                spellEvaluator.specifyArgs(f.args);
+                                spellEvaluator.setArgs(declarationArgs, f.args);
                             }
                             else
                             {
@@ -78,7 +83,8 @@ namespace StageMaker
                                 return;
                             }
                         }
-                        particleId = spellEvaluator.evaluate(File.ReadAllLines(path));
+                        spellEvaluator.evaluate(compiledSpellLines);
+                        particleId += SpellEvaluator.getParticleId();
                         this.DialogResult = DialogResult.OK;
                         this.Close();
                     }

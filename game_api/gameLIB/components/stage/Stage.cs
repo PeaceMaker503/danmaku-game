@@ -212,9 +212,6 @@ namespace gameLIB.components.stage
                 e.fspeed = fspeed;
             }
         }
-        
-        
-
 
         public void orderToParticleMove(long id, string destination, string direction, float speed)
         {
@@ -222,7 +219,7 @@ namespace gameLIB.components.stage
             if(p!= null)
             { 
                 if (float.IsNaN(speed))
-                    speed = 0f;
+                    speed = p.speed;
 
                 Vector2 vDirection = parseValueV(direction);
                 Vector2 vDestination = parseValueV(destination);
@@ -232,7 +229,7 @@ namespace gameLIB.components.stage
                 else if (Vector2Extension.isNaN(vDestination) && !Vector2Extension.isNaN(vDirection))
                     p.setDirection(vDirection, speed);
                 else
-                    p.setDestination(Vector2.Zero, speed);
+                    p.speed = speed;
             }
         }
 

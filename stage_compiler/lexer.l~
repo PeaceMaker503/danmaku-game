@@ -47,6 +47,7 @@
 "*" return tMUL;
 "/" return tDIV;
 "." return tDOT;
+[%][A-Za-z_]+[%] { yylval.string = strdup(yytext); return tRUNVAR ; } ;
 "%" return tMOD;
 \t ;
 \n ;

@@ -1,9 +1,18 @@
-let sp:float = 5;
-let t:string = "RED_KNIFE";
-let n:float = 1000;
-
-loop(n) {
-
-   make(type=t, speed=sp*(2/2), angle = 180-n, position = [200-n, 200+n]);
-   delay(5-n);
+behavior circle()
+{
+	let a:float = 270;
+	move(speed=x);
+	loop(1000)
+	{
+		a = a + 1;
+		move(angle=a);
+		delay(0.01);
+	}
 }
+
+make(type="RED_KNIFE", speed=0, angle=270, position=[200, 200]) with circle();
+
+
+
+
+

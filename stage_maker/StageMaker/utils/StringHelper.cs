@@ -47,7 +47,7 @@ namespace StageMaker.utils
 
         public static Types StringToTypesEnum(string s)
         {
-            s = s.ToLower();
+            s = s.Trim().ToLower();
             if (s == "float")
                 return Types.FLOAT;
             else if (s == "number")

@@ -36,3 +36,5 @@ D:\git\danmaku-game\stage_maker\StageMaker\obj\x86\Debug\StageMaker.SetArgsDecla
 D:\git\danmaku-game\stage_maker\StageMaker\obj\x86\Debug\StageMaker.NewSpellForm.resources
 D:\git\danmaku-game\stage_maker\StageMaker\obj\x86\Debug\StageMaker.ImageCutterForm.resources
 D:\git\danmaku-game\stage_maker\StageMaker\obj\x86\Debug\StageMaker.ManageEnemiesForm.resources
+D:\git\danmaku-game\stage_maker\StageMaker\bin\x86\Debug\spell_compiler.exe
+D:\git\danmaku-game\stage_maker\StageMaker\bin\x86\Debug\launcher.bat

@@ -28,6 +28,7 @@
 "delay" return tDELAY;
 "call" return tCALL;
 "args" return tARGS;
+"subId" return tSUBID;
 "\"" return tQUOTE;
 "<" return tINF;
 ">" return tSUP;

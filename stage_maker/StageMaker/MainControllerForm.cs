@@ -22,8 +22,8 @@ namespace StageMaker
         private bParticleForm bParticlesForm;
 
         private List<SpellLine> spellsPath = new List<SpellLine> {
-            new SpellLine("CIRCLE", @"spells\circle.sp"),
-            new SpellLine("SPELL_TEST", @"spells\spell.sp")
+            new SpellLine("circle", Path.GetFullPath(@"spells\circle.sp")),
+            new SpellLine("spell", Path.GetFullPath(@"spells\spell.sp"))
         };
 
         private Dictionary<string, List<EnemyType>> enemyTypes = new Dictionary<string, List<EnemyType>>();

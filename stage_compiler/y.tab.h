@@ -79,9 +79,10 @@
      tDELAY = 295,
      tCALL = 296,
      tARGS = 297,
-     tNB = 298,
-     tID = 299,
-     tRUNVAR = 300
+     tSUBID = 298,
+     tNB = 299,
+     tID = 300,
+     tRUNVAR = 301
    };
 #endif
 /* Tokens.  */
@@ -125,9 +126,10 @@
 #define tDELAY 295
 #define tCALL 296
 #define tARGS 297
-#define tNB 298
-#define tID 299
-#define tRUNVAR 300
+#define tSUBID 298
+#define tNB 299
+#define tID 300
+#define tRUNVAR 301
 
 
 
@@ -144,7 +146,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 148 "y.tab.h"
+#line 150 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

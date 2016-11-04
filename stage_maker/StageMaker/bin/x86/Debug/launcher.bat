@@ -1,0 +1,1 @@
+spell_compiler.exe %1 < %2

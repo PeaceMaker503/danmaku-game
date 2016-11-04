@@ -41,7 +41,7 @@
 %}
 
 %start Script ;
-%token tLET tWITH tTYPE tDESTINATION tDIRECTION tPOSITION tMOVE tMAKE tSPEED tANGLE tLOOP tCASE tFLOAT tVECTOR tSTRING tNUMBER tBEHAVIOR tQUOTE tINF tSUP tDIFF tEQ tDP tV tCO tCF tAO tAF tPO tPF tPV tADD tSUB tMUL tDIV tDOT tMOD tDELAY tCALL tARGS;
+%token tLET tWITH tTYPE tDESTINATION tDIRECTION tPOSITION tMOVE tMAKE tSPEED tANGLE tLOOP tCASE tFLOAT tVECTOR tSTRING tNUMBER tBEHAVIOR tQUOTE tINF tSUP tDIFF tEQ tDP tV tCO tCF tAO tAF tPO tPF tPV tADD tSUB tMUL tDIV tDOT tMOD tDELAY tCALL tARGS tSUBID;
 %left tADD tSUB
 %left tMUL tDIV tMOD
 %left tPO tPF
@@ -74,12 +74,26 @@ Instruction : Delay;
 Instruction : Make;
 Instruction : Call;
 Instruction : SpellDeclaration;
+Instruction : Move;
 
 SpellDeclaration : tARGS tPO ArgsDeclaration tPF tPV { fprintf(out, "ARGS([%s])\n", $3); free($3); } ;
+Move : tMOVE tPO MoveArgs tPF tPV {fprintf(out, "MOVE(1)\n"); };
+Move : tMOVE tPO MoveArgs tPF tWITH tSUBID tEQ Number tPV {fprintf(out, "MOVE(%s)\n", $8); free($8); };
+
+MoveArgs : MoveArg tV MoveArgs;
+MoveArgs : MoveArg;
+
+MoveArg : tANGLE tEQ ArithmeticExp {fprintf(out, "WITH_ANGLE(%s)\n", $3); free($3); } ;
+MoveArg : tSPEED tEQ ArithmeticExp {fprintf(out, "WITH_SPEED(%s)\n", $3); free($3); } ;
+MoveArg : tDESTINATION tEQ Vector { fprintf(out, "WITH_DESTINATION(%s)\n", $3); free($3); } ;
+MoveArg : tPOSITION tEQ Vector { fprintf(out, "WITH_POSITION(%s)\n", $3); free($3); } ;
+
 Call : tCALL tID tPO ArgsCall tPF tPV {fprintf(out, "CALL(%s, [%s])\n", $2, $4); free($4); };
+Call : tCALL tID tPO tPF tPV {fprintf(out, "CALL(%s, [])\n", $2); };
 Delay : tDELAY tPO ArithmeticExp tPF tPV {fprintf(out, "DELAY(%s)\n", $3); free($3); } ;
 Make : tMAKE tPO MakeArgs tPF tPV {fprintf(out, "MAKE()\n"); };
 Make : tMAKE tPO MakeArgs tPF tWITH tID tPO ArgsCall tPF tPV {fprintf(out, "MAKE(%s, [%s])\n", $6, $8); free($6); } ;
+Make : tMAKE tPO MakeArgs tPF tWITH tID tPO tPF tPV {fprintf(out, "MAKE(%s, [])\n", $6); free($6); } ;
 MakeArgs : MakeArg tV MakeArgs;
 MakeArgs : MakeArg;
 MakeArg : tANGLE tEQ ArithmeticExp {fprintf(out, "WITH_ANGLE(%s)\n", $3); free($3); } ;
@@ -87,9 +101,10 @@ MakeArg : tSPEED tEQ ArithmeticExp {fprintf(out, "WITH_SPEED(%s)\n", $3); free($
 MakeArg : tTYPE tEQ String {fprintf(out, "WITH_TYPE(%s)\n", $3); free($3); } ;
 MakeArg : tDESTINATION tEQ Vector { fprintf(out, "WITH_DESTINATION(%s)\n", $3); free($3); } ;
 MakeArg : tPOSITION tEQ Vector { fprintf(out, "WITH_POSITION(%s)\n", $3); free($3); } ;
-Loop : tLOOP tPO Number tPF {fprintf(out, "START_LOOP(%d, %s)\n", loopId++, $3); } tAO Script tAF {fprintf(out, "END_LOOP(%d)\n", --loopId); };
-Case : tCASE tPO ArithmeticExp BoolOp ArithmeticExp tPF {fprintf(out, "START_CASE(%d, %s, %s, %s)\n", caseId++, $3, $4, $5); free($3); free($5); } tAO Script tAF {fprintf(out, "END_CASE(%d)\n", --caseId); } ;
+Loop : tLOOP tPO Number tPF {fprintf(out, "START_LOOP(%d, %s)\n", loopId++, $3); free($3); } tAO Script tAF {fprintf(out, "END_LOOP(%d)\n", --loopId); };
+Case : tCASE tPO Value BoolOp Value tPF {fprintf(out, "START_CASE(%d, %s, %s, %s)\n", caseId++, $3, $4, $5); free($3); free($5); } tAO Script tAF {fprintf(out, "END_CASE(%d)\n", --caseId); } ;
 Behavior : tBEHAVIOR tID tPO ArgsDeclaration tPF { fprintf(out, "START_BEHAVIOR(%d, %s, [%s])\n", behaviorId++, $2, $4); free($4); } tAO Script tAF {fprintf(out, "END_BEHAVIOR(%d)\n", --behaviorId); };
+Behavior : tBEHAVIOR tID tPO tPF { fprintf(out, "START_BEHAVIOR(%d, %s, [])\n", behaviorId++, $2); } tAO Script tAF {fprintf(out, "END_BEHAVIOR(%d)\n", --behaviorId); };
 
 //every ArgsDeclaration must be freed
 ArgsDeclaration : tID tDP Type { $$ = getFirstArgsDeclaration($1, $3); } ;
@@ -124,18 +139,19 @@ Type : tNUMBER { $$ = TYPE_NUMBER; };
 
 //every string must be freed
 String : tQUOTE tID tQUOTE { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, \"%s\")\n", tempName, TYPE_STRING, $2); $$ = tempName; } ;
-String : tID { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_STRING, $1); $$ = tempName; } ;
+String : tID { $$ = $1; } ;
 
 //every vector must be freed
-Vector : tID { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_VECTOR, $1); $$ = tempName; } ;
+Vector : tID { $$ = $1; } ;
 Vector : tCO ArithmeticExp tV ArithmeticExp tCF { char* tempName = getNewVarTempName(); char* vector = getNewVector($2, $4); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_VECTOR, vector); free(vector); $$ = tempName; } ;
 Vector : tRUNVAR { $$ = $1; } ;
 
-Number : tID { $$ = $1; };
-Number : tNB { $$ = $1; };
+//every number must be freed
+Number : tID { $$ = $1; } ;
+Number : tNB  { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_FLOAT, $1); $$ = tempName; } ;
 
 //every arithmetic expression must be freed
-ArithmeticExp : tID { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_FLOAT, $1); $$ = tempName; };
+ArithmeticExp : tID { $$ = $1; } ;
 ArithmeticExp : tNB tDOT tNB { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, %s.%s)\n", tempName, TYPE_FLOAT, $1, $3); $$ = tempName; };
 ArithmeticExp : tNB { char* tempName = getNewVarTempName(); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_FLOAT, $1); $$ = tempName; };
 ArithmeticExp : ArithmeticExp tADD ArithmeticExp { char* tempName = getNewVarTempName(); char* opArith = getNewArithmeticOperation($1, $3, ARITHMETIC_OPERATION_CODE_ADD); fprintf(out, "LET_AFF(%s, %s, %s)\n", tempName, TYPE_FLOAT, opArith); free(opArith); $$ = tempName; };
@@ -148,9 +164,17 @@ ArithmeticExp : tPO ArithmeticExp tPF { $$ = $2; } ;
 %%
 
 void main(int argc, char** argv) {
-   out = fopen("out.txt", "w" );
+
+   if(argc == 1)
+   {
+      printf("No path specified.");
+      exit(-1);
+   }
+      
+   out = fopen(argv[1], "w" );
    yyparse();
    fclose(out);
+   exit(0);
 }
 
 void yyerror(const char *s)
@@ -213,8 +237,8 @@ char* getNewString(char* value)
 
 char* getNewVarTempName()
 {
-   char* result = (char*)malloc(10);
-   snprintf(result, 10, "<temp%d>", varTempId++);
+   char* result = (char*)malloc(12);
+   snprintf(result, 12, "<temp%d>", varTempId++);
    return result;
 }
 
@@ -222,7 +246,7 @@ char* getArgsDeclaration(char * id, char * type, char* currentDeclaration)
 {
    int size = strlen(currentDeclaration) + strlen(id) + strlen(type) + 7;
    char* result = (char*)malloc(size);
-   snprintf(result, size, "(%s: %s)| %s", id, type, currentDeclaration);
+   snprintf(result, size, "(%s: %s); %s", id, type, currentDeclaration);
    free(id); 
    free(currentDeclaration);
    return result;
@@ -241,7 +265,7 @@ char* getArgsCall(char * value, char* currentValues)
 {
    int size = strlen(value) + strlen(currentValues) + 3;
    char* result = (char*)malloc(size);
-   snprintf(result, size, "%s| %s", value, currentValues);
+   snprintf(result, size, "%s; %s", value, currentValues);
    free(value); 
    free(currentValues);
    return result;

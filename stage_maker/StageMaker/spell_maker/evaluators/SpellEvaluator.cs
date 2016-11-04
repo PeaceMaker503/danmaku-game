@@ -19,96 +19,49 @@ namespace StageMaker.spell_maker.evaluators
 {
     public class SpellEvaluator
     {
+        private ValueEvaluator valueEvaluator;
         private VarsManager varsManager;
         private Dictionary<string, string> spells;
         private Dictionary<string, List<string>> behaviorsBuffer;
-        private Dictionary<string, int> behaviorsValuesCursor;
-        private Dictionary<string, Dictionary<string, Types>> argsDeclarationBehaviors;
+        private Dictionary<string, Dictionary<string, Types>> behaviorsDeclarationArgs;
+        private static long particleId = 0;
         private float time;
-        private float initTime;
         private long targetId;
-        private long particleId;
         private DataGridView shoot;
         private DataGridView particleMove;
         private Bullet lastBullet;
-        private string spellName;
         private long behaviorParticleId;
 
-        public sealed class Command
+        public SpellEvaluator(float time, long targetId, long particleId)
         {
-            public static readonly string ARGS = "args";
-            public static readonly string COMMENT = "#";
-            public static readonly string OPEN = "{";
-            public static readonly string CLOSE = "}";
-            public static readonly string BEHAVIOR = "behavior";
-            public static readonly string MAKE = "make";
-            public static readonly string LOOP = "loop";
-            public static readonly string INDEX = "INDEX";
-            public static readonly string TIMESET = "timeset";
-            public static readonly string DIMOVE = "dimove";
-            public static readonly string DMOVE = "dmove";
-            public static readonly string CALL = "call";
-            public static readonly string LET = "let";
-            public static readonly string ADD = "add";
-            public static readonly string SUB = "sub";
-            public static readonly string MOD = "mod";
-            public static readonly string MUL = "mul";
-            public static readonly string DIV = "div";
-            public static readonly string VMUL = "vmul";
-            public static readonly string SET = "set";
-            public static readonly string FREE = "free";
-            public static readonly string DELAY = "delay";
-            public static readonly string WITH = "with";
-            public static readonly string POSITION = "position";
-            public static readonly string DESTINATION = "destination";
-            public static readonly string DIRECTION = "direction";
-            public static readonly string SPEED = "speed";
-            public static readonly string TYPE = "type";
-            public static readonly string ANGLE = "angle";
-            public static readonly string COMPARE = "compare";
-            public static readonly string CASE = "case";
-        }
-
-        public sealed class Operator
-        {
-            public static readonly string EQUALS = "==";
-            public static readonly string DIFFERENT = "!=";
-            public static readonly string SUPERIOR = ">";
-            public static readonly string INFERIOR = "<";
-            public static readonly string INFERIOR_EQUALS = "<=";
-            public static readonly string SUPERIOR_EQUALS = ">=";
-        }
-
-        public SpellEvaluator(string spellName, float time, long targetId, long particleId, Dictionary<string, string> spells)
-        {
-            this.initTime = time;
-            this.behaviorsValuesCursor = new Dictionary<string, int>();
             this.behaviorParticleId = -1;
-            this.spellName = spellName;
             this.time = time;
             this.targetId = targetId;
-            this.particleId = particleId;
-            this.spells = spells;
+            this.valueEvaluator = new ValueEvaluator();
+            this.varsManager = new VarsManager(this.valueEvaluator);
+            this.valueEvaluator.initializeVarsManager(this.varsManager);
             this.behaviorsBuffer = new Dictionary<string, List<string>>();
-            this.argsDeclarationBehaviors = new Dictionary<string, Dictionary<string, Types>>();
-            this.varsManager = new VarsManager();
-            this.argsDeclarationBehaviors = new Dictionary<string, Dictionary<string, Types>>();
-            if (spellName != null)
-                this.declareArgs();
+            this.behaviorsDeclarationArgs = new Dictionary<string, Dictionary<string, Types>>();
+            this.behaviorsDeclarationArgs = new Dictionary<string, Dictionary<string, Types>>();
         }
 
-        private SpellEvaluator(string spellName, float time, long targetId, long particleId, Dictionary<string, string> spells, long behaviorParticleId, float initTime)
-            : this(spellName, time, targetId, particleId, spells)
+        private SpellEvaluator(float time, long targetId, long particleId, long behaviorParticleId)
+            : this(time, targetId, particleId)
         {
-            this.initTime = initTime;
             this.behaviorParticleId = behaviorParticleId;
-            this.varsManager = new VarsManager(behaviorParticleId);
+            this.valueEvaluator = new ValueEvaluator(behaviorParticleId);
+            this.varsManager = new VarsManager(this.valueEvaluator);
+            this.valueEvaluator.initializeVarsManager(this.varsManager);
         }
 
-        private void declareArgs()
+        public static long getParticleId()
         {
-            /*Dictionary<string, Types> spellArgsDeclaration = FileHelper.getArgsDeclaration(spells[spellName]);
-            this.varsManager.declareArgs(spellArgsDeclaration);*/
+            return particleId;
+        }
+
+        public void initializeSpells(Dictionary<string, string> spells)
+        {
+            this.spells = spells;
         }
 
         public void initializeGrids(DataGridView shoot, DataGridView particleMove)
@@ -117,7 +70,7 @@ namespace StageMaker.spell_maker.evaluators
             this.particleMove = particleMove;
         }
 
-        public bool mustSpecifyArgs()
+        public bool hasArgs(string firstLine)
         {
             return false;
         }
@@ -127,12 +80,7 @@ namespace StageMaker.spell_maker.evaluators
             return new Dictionary<string, Types>();
         }
 
-        public void specifyArgs(string[] argsValues)
-        {
-            // this.varsManager.specifyArgs(argsValues);
-        }
-
-        public long evaluate(string[] text)
+        public void evaluate(string[] text)
         {
             List<string> loopBuffer = new List<string>();
             int loopCount = -1;
@@ -167,7 +115,7 @@ namespace StageMaker.spell_maker.evaluators
                     behaviorId = int.Parse(args[0]);
                     behaviorName = args[1];
                     string behaviorArgs = args[2];
-                    argsDeclarationBehaviors[behaviorName] = this.varsManager.valueEvaluator.evaluateBehaviorDeclarationArgs(behaviorArgs);
+                    behaviorsDeclarationArgs[behaviorName] = this.valueEvaluator.evaluateDeclarationArgs(behaviorArgs);
                     behaviorsBuffer[behaviorName] = new List<string>();
                     inBehavior = true;
                 }
@@ -185,7 +133,7 @@ namespace StageMaker.spell_maker.evaluators
                     string v1 = args[1];
                     string op = args[2];
                     string v2 = args[3];
-                    caseFalse = !this.varsManager.valueEvaluator.evaluateCase(v1, v2, op);
+                    caseFalse = !this.valueEvaluator.evaluateCase(v1, v2, op);
                 }
                 else if (line.StartsWith("END_CASE"))
                 {
@@ -197,7 +145,7 @@ namespace StageMaker.spell_maker.evaluators
                     line = line.Replace("START_LOOP", String.Empty);
                     string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
                     loopId = int.Parse(args[0]);
-                    loopCount = (int)this.varsManager.valueEvaluator.evaluateArithmeticOperation(args[1]);
+                    loopCount = (int)this.valueEvaluator.evaluateArithmeticOperation(args[1]);
                     inLoop = true;
                 }
                 else if (line.StartsWith("END_LOOP"))
@@ -220,7 +168,7 @@ namespace StageMaker.spell_maker.evaluators
                     {
                         string currentBehaviorName = args[0];
                         string behaviorCallArgs = args[1];
-                        this.evaluate_make_behavior(currentBehaviorName, behaviorCallArgs);
+                        this.evaluate_behavior(currentBehaviorName, behaviorCallArgs);
                     }
                 }
                 else if (line.StartsWith("DELAY"))
@@ -282,35 +230,96 @@ namespace StageMaker.spell_maker.evaluators
                     string value = args[2];
                     this.evaluate_let_aff(id, type, value);
                 }
+                else if(line.StartsWith("CALL"))
+                {
+                    line = line.Replace("CALL", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string spellName = args[0];
+                    string spellArgs = args[1];
+                    this.evaluate_call(spellName, spellArgs);
+                }
+                else if (line.StartsWith("MOVE"))
+                {
+                    line = line.Replace("MOVE", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string subId = args[0];
+                    this.evaluate_move(subId);
+                }
             }
-            return particleId;
         }
 
-        private void evaluate_make_behavior(string currentBehaviorName, string behaviorCallArgs)
+        private void evaluate_move(string subId)
         {
-            Dictionary<string, Types> behaviorDeclarationArgs = argsDeclarationBehaviors[currentBehaviorName];
-            Dictionary<string, Value> behaviorCallValues = this.varsManager.valueEvaluator.evaluateBehaviorCallArgs(behaviorDeclarationArgs, behaviorCallArgs);
-            SpellEvaluator spBehavior = new SpellEvaluator(null, time, targetId, particleId, spells, Math.Max(0, particleId - 1), initTime);
-            spBehavior.setBehaviorCallValues(behaviorCallValues);
+            int sId = (int)this.valueEvaluator.evaluateArithmeticOperation(subId);
+            long pId = particleId - sId;
+            if (pId < 0)
+                pId = 0;
+
+            particleMove.Rows.Add(new JsonFloat(time), pId, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed));
+            lastBullet = null;
+        }
+
+        public Dictionary<string, Types> evaluate_declaration_args(string firstLine)
+        {
+            if (firstLine.StartsWith("ARGS"))
+            {
+                string line = firstLine.Replace("ARGS", String.Empty);
+                string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                string sDeclValues = args[0];
+                Dictionary<string, Types> declarationArgs = this.valueEvaluator.evaluateDeclarationArgs(sDeclValues);
+                return declarationArgs;
+            }
+            else
+                return new Dictionary<string, Types>();
+        }
+
+        private void evaluate_call(string spellName, string spellArgs)
+        {
+            string[] compiledSpellLines;
+            string spellPath = spells[spellName];
+            if (!SpellCompiler.isSpellCompiled(spellPath))
+            {
+                compiledSpellLines = SpellCompiler.compileSpell(spellPath);
+            }
+            else
+                compiledSpellLines = SpellCompiler.getCompiledSpell(spellPath);
+
+            string firstLine = compiledSpellLines[0];
+            Dictionary<string, Types> declarationArgs = this.evaluate_declaration_args(firstLine);
+            Dictionary<string, Value> callValues = this.valueEvaluator.evaluateCallArgs(declarationArgs, spellArgs);
+            SpellEvaluator sp = new SpellEvaluator(time, targetId, particleId);
+            sp.initializeGrids(shoot, particleMove);
+            sp.initializeSpells(spells);
+            sp.setArgs(callValues);
+        }
+
+        private void evaluate_behavior(string currentBehaviorName, string behaviorCallArgs)
+        {
+            Dictionary<string, Types> behaviorDeclarationArgs = behaviorsDeclarationArgs[currentBehaviorName];
+            Dictionary<string, Value> behaviorCallValues = this.valueEvaluator.evaluateCallArgs(behaviorDeclarationArgs, behaviorCallArgs);
+            SpellEvaluator spBehavior = new SpellEvaluator(time, targetId, particleId, particleId - 1);
             spBehavior.initializeGrids(shoot, particleMove);
-            spBehavior.setBehaviors(argsDeclarationBehaviors, behaviorsBuffer);
-            particleId = spBehavior.evaluate(behaviorsBuffer[currentBehaviorName].ToArray());
+            spBehavior.initializeSpells(spells);
+            spBehavior.setBehaviors(behaviorsDeclarationArgs, behaviorsBuffer);
+            spBehavior.setArgs(behaviorCallValues);
+            spBehavior.evaluate(behaviorsBuffer[currentBehaviorName].ToArray());
         }
 
         private void evaluate_make()
         {
             if (lastBullet.position == null)
-                shoot.Rows.Add(new JsonFloat(time), particleId++, targetId, null, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
+                shoot.Rows.Add(new JsonFloat(time), particleId, targetId, null, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
             else
-                shoot.Rows.Add(new JsonFloat(time), particleId++, null, lastBullet.position, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
+                shoot.Rows.Add(new JsonFloat(time), particleId, null, lastBullet.position, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
 
+            particleId++;
             lastBullet = null;
         }
 
         private void evaluate_delay(string delay)
         {
-            float fDelay = this.varsManager.valueEvaluator.evaluateArithmeticOperation(delay);
-            time += fDelay;
+            float fDelay = this.valueEvaluator.evaluateArithmeticOperation(delay);
+            time = Math.Max(0, time + fDelay);
         }
 
         private void evaluate_with_position(string position)
@@ -318,7 +327,7 @@ namespace StageMaker.spell_maker.evaluators
             if (lastBullet == null)
                 lastBullet = new Bullet();
 
-            string vPosition = this.varsManager.valueEvaluator.evaluateVector(position);
+            string vPosition = this.valueEvaluator.evaluateVector(position);
             lastBullet.position = vPosition;
         }
 
@@ -327,7 +336,7 @@ namespace StageMaker.spell_maker.evaluators
             if (lastBullet == null)
                 lastBullet = new Bullet();
 
-            string vDestination = this.varsManager.valueEvaluator.evaluateVector(destination);
+            string vDestination = this.valueEvaluator.evaluateVector(destination);
             lastBullet.destination = vDestination;
         }
 
@@ -336,7 +345,7 @@ namespace StageMaker.spell_maker.evaluators
             if (lastBullet == null)
                 lastBullet = new Bullet();
 
-            float fAngle = this.varsManager.valueEvaluator.evaluateArithmeticOperation(angle);
+            float fAngle = this.valueEvaluator.evaluateArithmeticOperation(angle);
             Vector2 direction = Vector2Extension.valueOf(fAngle);
             lastBullet.direction = new JsonVector2(direction).ToString();
         }
@@ -346,7 +355,7 @@ namespace StageMaker.spell_maker.evaluators
             if (lastBullet == null)
                 lastBullet = new Bullet();
 
-            lastBullet.speed = this.varsManager.valueEvaluator.evaluateArithmeticOperation(speed);
+            lastBullet.speed = this.valueEvaluator.evaluateArithmeticOperation(speed);
         }
 
         private void evaluate_with_type(string type)
@@ -354,34 +363,20 @@ namespace StageMaker.spell_maker.evaluators
             if (lastBullet == null)
                 lastBullet = new Bullet();
 
-            lastBullet.type = this.varsManager.valueEvaluator.evaluateString(type);
+            lastBullet.type = this.valueEvaluator.evaluateString(type);
         }
 
         private void evaluate_aff(string id, string value)
         {
-            varsManager.updateValue(id, value);
+            this.varsManager.updateValue(id, value);
         }
 
         private void evaluate_let_aff(string id, string type, string value)
         {
-            varsManager.setValue(id, value, type);
-        }
-
-        private void evaluate_dimove(string destination)
-        {
-
+            this.varsManager.setValue(id, value, type);
         }
 
         /*
-            else if (args[0] == Command.CALL)
-            {
-                string token = args[1];
-                SpellEvaluator sp = new SpellEvaluator(token, time, targetId, particleId, spells);
-                sp.initializeGrids(shoot, particleMove);
-                string[] argsValues = this.varsManager.valueEvaluator.parseArgsValues(args, 2);
-                sp.specifyArgs(argsValues);
-                particleId = sp.evaluate();
-            }
             else if (args[0] == Command.DIMOVE)
             {
                 float speed = this.varsManager.valueEvaluator.parseFloat(args[1]);
@@ -401,16 +396,22 @@ namespace StageMaker.spell_maker.evaluators
                 string token = args[1];
                 this.varsManager.removeValue(token);
             }
-           
         }*/
+
 
         private void setBehaviors(Dictionary<string, Dictionary<string, Types>> decl, Dictionary<string, List<string>> beh)
         {
-            this.argsDeclarationBehaviors = decl;
+            this.behaviorsDeclarationArgs = decl;
             this.behaviorsBuffer = beh;
         }
 
-        private void setBehaviorCallValues(Dictionary<string, Value> args)
+        public void setArgs(Dictionary<string, Types> declarationArgs, string[] argsValues)
+        {
+            Dictionary <string, Value> callValues = this.valueEvaluator.evaluateCallArgs(declarationArgs, argsValues);
+            this.setArgs(callValues);
+        }
+
+        private void setArgs(Dictionary<string, Value> args)
         {
             this.varsManager.setValues(args);
         }

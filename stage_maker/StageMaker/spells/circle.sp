@@ -1,33 +1,17 @@
-LET_AFF(<temp0>, FLOAT, 5)
-LET_AFF(sp, FLOAT, <temp0>)
-LET_AFF(<temp1>, STRING, "RED_KNIFE")
-LET_AFF(t, STRING, <temp1>)
-LET_AFF(<temp2>, FLOAT, 1000)
-LET_AFF(n, FLOAT, <temp2>)
-START_LOOP(0, n)
-LET_AFF(<temp3>, STRING, t)
-WITH_TYPE(<temp3>)
-LET_AFF(<temp4>, FLOAT, sp)
-LET_AFF(<temp5>, FLOAT, 2)
-LET_AFF(<temp6>, FLOAT, 2)
-LET_AFF(<temp7>, FLOAT, DIV(<temp5>; <temp6>))
-LET_AFF(<temp8>, FLOAT, MUL(<temp4>; <temp7>))
-WITH_SPEED(<temp8>)
-LET_AFF(<temp9>, FLOAT, 180)
-LET_AFF(<temp10>, FLOAT, n)
-LET_AFF(<temp11>, FLOAT, SUB(<temp9>; <temp10>))
-WITH_ANGLE(<temp11>)
-LET_AFF(<temp12>, FLOAT, 200)
-LET_AFF(<temp13>, FLOAT, n)
-LET_AFF(<temp14>, FLOAT, SUB(<temp12>; <temp13>))
-LET_AFF(<temp15>, FLOAT, 200)
-LET_AFF(<temp16>, FLOAT, n)
-LET_AFF(<temp17>, FLOAT, ADD(<temp15>; <temp16>))
-LET_AFF(<temp18>, VECTOR, [<temp14>; <temp17>])
-WITH_POSITION(<temp18>)
-MAKE()
-LET_AFF(<temp19>, FLOAT, 5)
-LET_AFF(<temp20>, FLOAT, n)
-LET_AFF(<temp21>, FLOAT, SUB(<temp19>; <temp20>))
-DELAY(<temp21>)
-END_LOOP(0)
+behavior circle()
+{
+	let a:float = 270;
+	move(speed=1);
+	loop(1000)
+	{
+		a = a + 1;
+		move(angle=a);
+		delay(0.01);
+	}
+}
+
+make(type="RED_KNIFE", speed=0, angle=270, position=[200, 200]) with circle();
+
+
+
+
