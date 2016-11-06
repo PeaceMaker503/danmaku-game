@@ -16,7 +16,7 @@ namespace StageMaker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new StageMaker());
+            Application.Run(new Main());
         }
     }
 }
