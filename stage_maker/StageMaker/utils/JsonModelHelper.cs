@@ -29,6 +29,7 @@ namespace StageMaker.utils
             ParticleMoveEvent ev = new ParticleMoveEvent();
             ev.time = JsonGridHelper.parseCellValue<float>(row, ParticleMoveColumnsName.TIME);
             ev.particleId = JsonGridHelper.parseCellValue<long>(row, ParticleMoveColumnsName.PARTICLE_ID);
+            ev.position = JsonGridHelper.parseCellValue<string>(row, ParticleMoveColumnsName.POSITION);
             ev.destination = JsonGridHelper.parseCellValue<string>(row, ParticleMoveColumnsName.DESTINATION);
             ev.direction = JsonGridHelper.parseCellValue<string>(row, ParticleMoveColumnsName.DIRECTION);
             ev.speed = JsonGridHelper.parseCellValue<float>(row, ParticleMoveColumnsName.SPEED);

@@ -44,7 +44,7 @@ namespace gameLIB.utils
 
         public static InstructionParticleMove createInstructionParticleMove(ParticleMoveEvent e)
         {
-            return new InstructionParticleMove(e.particleId, e.destination, e.direction, e.speed);
+            return new InstructionParticleMove(e.particleId, e.position, e.destination, e.direction, e.speed);
         }
 
         public static Vector2 valueOf(JsonVector2 v)

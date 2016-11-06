@@ -67,7 +67,7 @@ namespace StageMaker
         
         private void addNewBehaviorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.dataGridView1.Rows.Add(JsonFloat.Zero, DataGridViewHelper.LONG_DEFAULT, JsonVector2.Zero, DataGridViewHelper.EMPTY, JsonFloat.Zero);
+            this.dataGridView1.Rows.Add(JsonFloat.Zero, DataGridViewHelper.LONG_DEFAULT, DataGridViewHelper.EMPTY, JsonVector2.Zero, DataGridViewHelper.EMPTY, JsonFloat.Zero);
         }
     }
 }

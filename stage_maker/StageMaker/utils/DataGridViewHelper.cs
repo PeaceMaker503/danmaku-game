@@ -62,6 +62,7 @@ namespace StageMaker.utils
             public static readonly string DESTINATION = "DESTINATION_PARTICLE";
             public static readonly string DIRECTION = "DIRECTION_PARTICLE";
             public static readonly string SPEED = "SPEED_PARTICLE";
+            public static readonly string POSITION = "POSITION_PARTICLE";
         }
 
         public static readonly Dictionary<string, DataType> COLUMNS_TYPE = new Dictionary<string, DataType> {
@@ -96,7 +97,7 @@ namespace StageMaker.utils
             { ParticleMoveColumnsName.DESTINATION, DataType.VECTOR2 },
             { ParticleMoveColumnsName.DIRECTION, DataType.VECTOR2 },
             { ParticleMoveColumnsName.SPEED, DataType.FLOAT },
-
+            { ParticleMoveColumnsName.POSITION, DataType.VECTOR2 },
         };
 
         public static DataGridViewRow CloneRowWithValues(DataGridViewRow row)

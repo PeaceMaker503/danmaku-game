@@ -1,4 +1,5 @@
-﻿using StageMaker.models;
+﻿using Microsoft.Xna.Framework;
+using StageMaker.models;
 using StageMaker.spell_maker.models;
 using StageMaker.spell_maker.parser;
 using StageMaker.utils;
@@ -73,15 +74,44 @@ namespace StageMaker.spell_maker.evaluators
                     Types t = vv1.type;
                     if (t == Types.FLOAT)
                     {
-                        //TODO
+                        if(op != "==" && op != "<" && op != ">" && op != "<=" && op != ">=" && op != "!=")
+                            throw new Exception("Invalid boolean operator");
+
+                        float fv1 = (float)vv1.value;
+                        float fv2 = (float)vv2.value;
+
+                        if (op == "==" && fv1 == fv2)
+                            result = true;
+                        else if (op == "<" && fv1 < fv2)
+                            result = true;
+                        else if (op == ">" && fv1 > fv2)
+                            result = true;
+                        else if (op == "<=" && fv1 <= fv2)
+                            result = true;
+                        else if (op == ">=" && fv1 >= fv2)
+                            result = true;
+                        else if (op == "!=" && fv1 != fv2)
+                            result = true;
                     }
                     else if(t == Types.STRING)
                     {
-                        //TODO
+                        if (op != "==")
+                            throw new Exception("Boolean operator not supported for strings.");
+
+                        string sv1 = (string)vv1.value;
+                        string sv2 = (string)vv2.value;
+                        if (op == "==" && sv1 == sv2)
+                            result = true;
                     }
                     else if(t == Types.VECTOR)
                     {
-                        //TODO
+                        if (op != "==")
+                            throw new Exception("Boolean operator not supported for vectors.");
+
+                        string sv1 = (string)vv1.value;
+                        string sv2 = (string)vv2.value;
+                        if (op == "==" && sv1 == sv2)
+                            result = true;
                     }
                 }
                 else
@@ -228,6 +258,18 @@ namespace StageMaker.spell_maker.evaluators
                     result = fLeft / fRight;
                 else if (op == "MOD")
                     result = fLeft % fRight;
+            }
+            else if(value.StartsWith("COS") || value.StartsWith("SIN") || value.StartsWith("TAN"))
+            {
+                string op = value.substring(0, 2);
+                value = value.Substring(4, value.Length-5);
+                float fValue = evaluateArithmeticOperation(value);
+                if (op == "COS")
+                    result = (float)Math.Cos(MathHelper.ToRadians(fValue));
+                else if (op == "SIN")
+                    result = -(float)Math.Sin(MathHelper.ToRadians(fValue));
+                else if (op == "TAN")
+                    result = -(float)Math.Tan(MathHelper.ToRadians(fValue));
             }
             else
                 result = evaluateFloat(value);

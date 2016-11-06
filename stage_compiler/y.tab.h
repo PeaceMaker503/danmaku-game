@@ -39,7 +39,7 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     tLET = 258,
+     tVAR = 258,
      tWITH = 259,
      tTYPE = 260,
      tDESTINATION = 261,
@@ -79,14 +79,18 @@
      tDELAY = 295,
      tCALL = 296,
      tARGS = 297,
-     tSUBID = 298,
-     tNB = 299,
-     tID = 300,
-     tRUNVAR = 301
+     tSID = 298,
+     tCONCAT = 299,
+     tCOS = 300,
+     tSIN = 301,
+     tTAN = 302,
+     tNB = 303,
+     tID = 304,
+     tRUNVAR = 305
    };
 #endif
 /* Tokens.  */
-#define tLET 258
+#define tVAR 258
 #define tWITH 259
 #define tTYPE 260
 #define tDESTINATION 261
@@ -126,10 +130,14 @@
 #define tDELAY 295
 #define tCALL 296
 #define tARGS 297
-#define tSUBID 298
-#define tNB 299
-#define tID 300
-#define tRUNVAR 301
+#define tSID 298
+#define tCONCAT 299
+#define tCOS 300
+#define tSIN 301
+#define tTAN 302
+#define tNB 303
+#define tID 304
+#define tRUNVAR 305
 
 
 
@@ -146,7 +154,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 150 "y.tab.h"
+#line 158 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

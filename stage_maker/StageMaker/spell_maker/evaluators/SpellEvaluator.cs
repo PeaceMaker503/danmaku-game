@@ -24,18 +24,23 @@ namespace StageMaker.spell_maker.evaluators
         private Dictionary<string, string> spells;
         private Dictionary<string, List<string>> behaviorsBuffer;
         private Dictionary<string, Dictionary<string, Types>> behaviorsDeclarationArgs;
+        private Dictionary<string, long> customIds;
         private static long particleId = 0;
         private float time;
         private long targetId;
         private DataGridView shoot;
         private DataGridView particleMove;
         private Bullet lastBullet;
+        private string lastBulletId;
         private long behaviorParticleId;
+        private Dictionary<string, Value> callValues;
 
         public SpellEvaluator(float time, long targetId, long particleId)
         {
             this.behaviorParticleId = -1;
             this.time = time;
+            this.lastBulletId = null;
+            this.customIds = new Dictionary<string, long>();
             this.targetId = targetId;
             this.valueEvaluator = new ValueEvaluator();
             this.varsManager = new VarsManager(this.valueEvaluator);
@@ -43,6 +48,7 @@ namespace StageMaker.spell_maker.evaluators
             this.behaviorsBuffer = new Dictionary<string, List<string>>();
             this.behaviorsDeclarationArgs = new Dictionary<string, Dictionary<string, Types>>();
             this.behaviorsDeclarationArgs = new Dictionary<string, Dictionary<string, Types>>();
+            this.callValues = new Dictionary<string, Value>();
         }
 
         private SpellEvaluator(float time, long targetId, long particleId, long behaviorParticleId)
@@ -168,7 +174,7 @@ namespace StageMaker.spell_maker.evaluators
                     {
                         string currentBehaviorName = args[0];
                         string behaviorCallArgs = args[1];
-                        this.evaluate_behavior(currentBehaviorName, behaviorCallArgs);
+                        this.evaluate_behavior(currentBehaviorName, behaviorCallArgs, text[0]);
                     }
                 }
                 else if (line.StartsWith("DELAY"))
@@ -177,6 +183,13 @@ namespace StageMaker.spell_maker.evaluators
                     string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
                     string delay = args[0];
                     this.evaluate_delay(delay);
+                }
+                else if (line.StartsWith("WITH_ID"))
+                {
+                    line = line.Replace("WITH_ID", String.Empty);
+                    string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
+                    string customId = args[0];
+                    lastBulletId = this.valueEvaluator.evaluateString(customId);
                 }
                 else if (line.StartsWith("WITH_POSITION"))
                 {
@@ -221,14 +234,14 @@ namespace StageMaker.spell_maker.evaluators
                     string value = args[1];
                     this.evaluate_aff(id, value);
                 }
-                else if(line.StartsWith("LET_AFF"))
+                else if(line.StartsWith("VAR_AFF"))
                 {
-                    line = line.Replace("LET_AFF", String.Empty);
+                    line = line.Replace("VAR_AFF", String.Empty);
                     string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
                     string id = args[0];
                     string type = args[1];
                     string value = args[2];
-                    this.evaluate_let_aff(id, type, value);
+                    this.evaluate_var_aff(id, type, value);
                 }
                 else if(line.StartsWith("CALL"))
                 {
@@ -242,21 +255,22 @@ namespace StageMaker.spell_maker.evaluators
                 {
                     line = line.Replace("MOVE", String.Empty);
                     string[] args = line.Substring(1, line.Length - 2).Split(',').Where(s => s != null && s != String.Empty).ToArray();
-                    string subId = args[0];
-                    this.evaluate_move(subId);
+                    this.evaluate_move();
                 }
             }
         }
-
-        private void evaluate_move(string subId)
+       
+        private void evaluate_move()
         {
-            int sId = (int)this.valueEvaluator.evaluateArithmeticOperation(subId);
-            long pId = particleId - sId;
-            if (pId < 0)
-                pId = 0;
+            long pId = particleId - 1;
+            if (lastBulletId != null)
+            {
+                pId = this.customIds[lastBulletId];
+            }
 
-            particleMove.Rows.Add(new JsonFloat(time), pId, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed));
+            particleMove.Rows.Add(new JsonFloat(time), pId, lastBullet.position, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed));
             lastBullet = null;
+            lastBulletId = null;
         }
 
         public Dictionary<string, Types> evaluate_declaration_args(string firstLine)
@@ -293,7 +307,7 @@ namespace StageMaker.spell_maker.evaluators
             sp.setArgs(callValues);
         }
 
-        private void evaluate_behavior(string currentBehaviorName, string behaviorCallArgs)
+        private void evaluate_behavior(string currentBehaviorName, string behaviorCallArgs, string currentSpellFirstLine)
         {
             Dictionary<string, Types> behaviorDeclarationArgs = behaviorsDeclarationArgs[currentBehaviorName];
             Dictionary<string, Value> behaviorCallValues = this.valueEvaluator.evaluateCallArgs(behaviorDeclarationArgs, behaviorCallArgs);
@@ -302,6 +316,8 @@ namespace StageMaker.spell_maker.evaluators
             spBehavior.initializeSpells(spells);
             spBehavior.setBehaviors(behaviorsDeclarationArgs, behaviorsBuffer);
             spBehavior.setArgs(behaviorCallValues);
+            spBehavior.setArgs(callValues);
+            spBehavior.setCustomIds(this.customIds);
             spBehavior.evaluate(behaviorsBuffer[currentBehaviorName].ToArray());
         }
 
@@ -312,8 +328,17 @@ namespace StageMaker.spell_maker.evaluators
             else
                 shoot.Rows.Add(new JsonFloat(time), particleId, null, lastBullet.position, lastBullet.destination, lastBullet.direction, new JsonFloat(lastBullet.speed), lastBullet.type);
 
+            if(lastBulletId != null)
+            {
+                if (this.customIds.ContainsKey(lastBulletId))
+                    throw new Exception("Custom id already exists.");
+                else
+                    this.customIds[lastBulletId] = particleId;
+            }
+
             particleId++;
             lastBullet = null;
+            lastBulletId = null;
         }
 
         private void evaluate_delay(string delay)
@@ -371,33 +396,10 @@ namespace StageMaker.spell_maker.evaluators
             this.varsManager.updateValue(id, value);
         }
 
-        private void evaluate_let_aff(string id, string type, string value)
+        private void evaluate_var_aff(string id, string type, string value)
         {
             this.varsManager.setValue(id, value, type);
         }
-
-        /*
-            else if (args[0] == Command.DIMOVE)
-            {
-                float speed = this.varsManager.valueEvaluator.parseFloat(args[1]);
-                float angle = this.varsManager.valueEvaluator.parseFloat(args[2]);
-                Vector2 vDirection = Vector2Extension.valueOf(this.varsManager.valueEvaluator.parseFloat(args[2]));
-                particleMove.Rows.Add(new JsonFloat(time), particleId - 1, null, new JsonVector2(vDirection).ToString(), new JsonFloat(speed));
-            }
-            else if (args[0] == Command.DMOVE)
-            {
-                float speed = this.varsManager.valueEvaluator.parseFloat(args[1]);
-                string destination = this.varsManager.valueEvaluator.parseVector(args[2], behaviorParticleId);
-                particleMove.Rows.Add(new JsonFloat(time), particleId - 1, destination, null, new JsonFloat(speed));
-            }
-            
-            else if (args[0] == Command.FREE)
-            {
-                string token = args[1];
-                this.varsManager.removeValue(token);
-            }
-        }*/
-
 
         private void setBehaviors(Dictionary<string, Dictionary<string, Types>> decl, Dictionary<string, List<string>> beh)
         {
@@ -408,7 +410,13 @@ namespace StageMaker.spell_maker.evaluators
         public void setArgs(Dictionary<string, Types> declarationArgs, string[] argsValues)
         {
             Dictionary <string, Value> callValues = this.valueEvaluator.evaluateCallArgs(declarationArgs, argsValues);
+            this.callValues = callValues;
             this.setArgs(callValues);
+        }
+
+        public void setCustomIds(Dictionary<string, long> customIds)
+        {
+            this.customIds = customIds;
         }
 
         private void setArgs(Dictionary<string, Value> args)

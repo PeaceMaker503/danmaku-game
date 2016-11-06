@@ -26,7 +26,7 @@ namespace StageMaker.utils
             if (!float.IsNaN(ev.speed))
                 speed = new JsonFloat(ev.speed);
 
-            particleMove.Rows.Add(time, particleId, ev.destination, ev.direction, speed);
+            particleMove.Rows.Add(time, particleId, ev.position, ev.destination, ev.direction, speed);
         }
 
         public static void insertMove(DataGridView move, MoveEvent ev)

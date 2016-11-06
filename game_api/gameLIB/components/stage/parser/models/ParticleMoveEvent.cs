@@ -13,5 +13,6 @@ namespace gameLIB.components.stage.parser.models
         public string direction { get; set; }
         public string destination { get; set; }
         public float speed { get; set; }
+        public string position { get; set; }
     }
 }

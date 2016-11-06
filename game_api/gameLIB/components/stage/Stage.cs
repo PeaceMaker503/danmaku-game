@@ -213,13 +213,20 @@ namespace gameLIB.components.stage
             }
         }
 
-        public void orderToParticleMove(long id, string destination, string direction, float speed)
+        public void orderToParticleMove(long id, string position, string destination, string direction, float speed)
         {
             Particle p = findParticle(id);
             if(p!= null)
-            { 
-                if (float.IsNaN(speed))
+            {
+                if (!float.IsNaN(speed))
+                    p.speed = speed;
+                else
                     speed = p.speed;
+
+                Vector2 vPosition = parseValueV(position);
+
+                if (!Vector2Extension.isNaN(vPosition))
+                    p.position = vPosition;
 
                 Vector2 vDirection = parseValueV(direction);
                 Vector2 vDestination = parseValueV(destination);
@@ -228,8 +235,6 @@ namespace gameLIB.components.stage
                     p.setDestination(vDestination, speed);
                 else if (Vector2Extension.isNaN(vDestination) && !Vector2Extension.isNaN(vDirection))
                     p.setDirection(vDirection, speed);
-                else
-                    p.speed = speed;
             }
         }
 

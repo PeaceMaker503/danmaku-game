@@ -8,8 +8,13 @@
 %}
 
 %%
-"let" return tLET;
+
+"var" return tVAR;
+"concat" return tCONCAT;
 "with" return tWITH;
+"cos" return tCOS;
+"sin" return tSIN;
+"tan" return tTAN;
 "type" return tTYPE;
 "destination" return tDESTINATION;
 "direction" return tDIRECTION;
@@ -28,6 +33,7 @@
 "delay" return tDELAY;
 "call" return tCALL;
 "args" return tARGS;
+"id" return tSID;
 "\"" return tQUOTE;
 "<" return tINF;
 ">" return tSUP;
@@ -54,6 +60,6 @@
 \r ;
 " " ;
 [0-9]+ { yylval.string = strdup(yytext); return tNB ; } ;
-[A-Za-z_]+ { yylval.string=strdup(yytext); return tID ; } ; 
+[A-Za-z_0-9]+ { yylval.string=strdup(yytext); return tID ; } ; 
 %%
 
