@@ -73,6 +73,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="gameLIB, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>game\gameLIB.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\git\danmaku-game\game_api\gameLIB\bin\x86\Debug\Microsoft.Xna.Framework.dll</HintPath>
@@ -93,133 +97,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageCutterForm.cs">
+    <Compile Include="AddNewScript.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImageCutterForm.Designer.cs">
-      <DependentUpon>ImageCutterForm.cs</DependentUpon>
+    <Compile Include="AddNewScript.Designer.cs">
+      <DependentUpon>AddNewScript.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainControllerForm.cs">
+    <Compile Include="CSharpCompiler.cs" />
+    <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainControllerForm.Designer.cs">
-      <DependentUpon>MainControllerForm.cs</DependentUpon>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManageEnemiesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ManageEnemiesForm.Designer.cs">
-      <DependentUpon>ManageEnemiesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="models\Config.cs" />
-    <Compile Include="models\EnemyType.cs" />
-    <Compile Include="NewSpellForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewSpellForm.Designer.cs">
-      <DependentUpon>NewSpellForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ManageSpellsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ManageSpellsForm.Designer.cs">
-      <DependentUpon>ManageSpellsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SetArgsDeclarationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SetArgsDeclarationForm.Designer.cs">
-      <DependentUpon>SetArgsDeclarationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="iEnemyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="iEnemyForm.Designer.cs">
-      <DependentUpon>iEnemyForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="bEnemyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="bEnemyForm.Designer.cs">
-      <DependentUpon>bEnemyForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="iParticleForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="iParticleForm.Designer.cs">
-      <DependentUpon>iParticleForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="bParticleForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="bParticleForm.Designer.cs">
-      <DependentUpon>bParticleForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="models\JsonFloat.cs" />
-    <Compile Include="models\JsonVector2.cs" />
-    <Compile Include="models\Bullet.cs" />
-    <Compile Include="models\CreateEvent.cs" />
-    <Compile Include="models\ParticleMoveEvent.cs" />
-    <Compile Include="models\MoveEvent.cs" />
-    <Compile Include="models\Script.cs" />
-    <Compile Include="models\ShootEvent.cs" />
-    <Compile Include="models\SpellLine.cs" />
-    <Compile Include="models\Target.cs" />
+    <Compile Include="models\ScriptInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="spell_maker\evaluators\SpellCompiler.cs" />
-    <Compile Include="spell_maker\evaluators\SpellEvaluatorHelper.cs" />
-    <Compile Include="spell_maker\models\BehaviorEndArgs.cs" />
-    <Compile Include="spell_maker\models\BehaviorBeginArgs.cs" />
-    <Compile Include="spell_maker\models\LoopGetterArgs.cs" />
-    <Compile Include="spell_maker\models\CaseArgs.cs" />
-    <Compile Include="spell_maker\models\CaseConditionArgs.cs" />
-    <Compile Include="spell_maker\models\Delegates.cs" />
-    <Compile Include="spell_maker\models\GrammarArgs.cs" />
-    <Compile Include="spell_maker\evaluators\GrammarEvaluator.cs" />
-    <Compile Include="spell_maker\models\LoopArgs.cs" />
-    <Compile Include="spell_maker\parser\Tokenizer.cs" />
-    <Compile Include="spell_maker\models\Value.cs" />
-    <Compile Include="spell_maker\evaluators\ValueEvaluator.cs" />
-    <Compile Include="spell_maker\evaluators\SpellEvaluator.cs" />
-    <Compile Include="spell_maker\parser\VarsManager.cs" />
-    <Compile Include="utils\DataGridViewHelper.cs" />
-    <Compile Include="utils\JsonGridConverter.cs" />
-    <Compile Include="utils\JsonGridHelper.cs" />
-    <Compile Include="utils\JsonHelper.cs" />
-    <Compile Include="utils\JsonModelHelper.cs" />
-    <Compile Include="utils\StringExtension.cs" />
-    <Compile Include="utils\StringHelper.cs" />
-    <Compile Include="utils\Vector2Extension.cs" />
-    <EmbeddedResource Include="ImageCutterForm.resx">
-      <DependentUpon>ImageCutterForm.cs</DependentUpon>
+    <Compile Include="Script.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <EmbeddedResource Include="AddNewScript.resx">
+      <DependentUpon>AddNewScript.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainControllerForm.resx">
-      <DependentUpon>MainControllerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ManageEnemiesForm.resx">
-      <DependentUpon>ManageEnemiesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NewSpellForm.resx">
-      <DependentUpon>NewSpellForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ManageSpellsForm.resx">
-      <DependentUpon>ManageSpellsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SetArgsDeclarationForm.resx">
-      <DependentUpon>SetArgsDeclarationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="iEnemyForm.resx">
-      <DependentUpon>iEnemyForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="bEnemyForm.resx">
-      <DependentUpon>bEnemyForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="iParticleForm.resx">
-      <DependentUpon>iParticleForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="bParticleForm.resx">
-      <DependentUpon>bParticleForm.cs</DependentUpon>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -230,9 +131,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="conf\tokenizer.conf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="game\Content\alpha\AlphaMap.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -293,20 +191,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="launcher.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="spells\spell.sp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="spells\circle.sp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="game\Content\alpha\AlphaMap.fx">
@@ -376,9 +263,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="game\PeaceGame.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="spell_compiler.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

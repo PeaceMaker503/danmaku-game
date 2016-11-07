@@ -30,4 +30,4 @@ Content\sounds\enemy\enemyDamage.wav
 Content\sounds\menu\selectMenu.wav
 Content\sounds\particle\playerShoot.wav
 Content\sounds\player\playerDead.wav
-script.json
+scripts\Script.cs

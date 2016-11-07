@@ -49,14 +49,9 @@ namespace gameLIB.main
             _graphicEngine.createInGameBackground();
         }
 
-        public void createStageFromPath(String scriptPath)
+        public void createStage(List<string> scriptPaths)
         {
-            _gameEngine.createStageFromPath(scriptPath);
-        }
-
-        public void createStage(String data)
-        {
-            _gameEngine.createStage(data);
+            _gameEngine.createStage(scriptPaths);
         }
 
         public void createPlayer(Rectangle[] imageParts, int lifes, Vector2 position, int nbFramesPerSprite, float scale)

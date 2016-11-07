@@ -3,21 +3,21 @@
   <Class Name="gameLIB.components.characters.Character" Collapsed="true">
     <Position X="8.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>components\characters\Character.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="gameLIB.components.characters.Enemy" Collapsed="true">
     <Position X="7.75" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAADQAAACCABACAAgAAIAAgAgAAAAIAg=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAABAAAAg=</HashCode>
       <FileName>components\characters\Enemy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="gameLIB.components.characters.Player" Collapsed="true">
     <Position X="10" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgEAAAAAAAAQAAAAAgAAAAAAAIAAAAIAwABEAAIAAA=</HashCode>
+      <HashCode>AAAAAJAAAAAAAACAAAkAAAAAAAIAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>components\characters\Player.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -52,7 +52,7 @@
   <Class Name="gameLIB.components.particles.Particle" Collapsed="true">
     <Position X="12.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAgAAAAMAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
       <FileName>components\particles\Particle.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -73,7 +73,7 @@
   <Class Name="gameLIB.components.sprites.Sprite" Collapsed="true">
     <Position X="11" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAIAIAAAEAAAAAgAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAMAIAAAEAAAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>components\sprites\Sprite.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -112,48 +112,6 @@
       <FileName>components\stage\instructions\InstructionShoot.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="gameLIB.components.stage.parser.models.Bullet" Collapsed="true">
-    <Position X="17.25" Y="1" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAABAQAAAAAABAAAAgA=</HashCode>
-      <FileName>components\stage\parser\models\Bullet.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="gameLIB.components.stage.parser.models.CreateEvent" Collapsed="true">
-    <Position X="20.75" Y="1" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>components\stage\parser\models\CreateEvent.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="gameLIB.components.stage.parser.models.MoveEvent" Collapsed="true">
-    <Position X="17.25" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAIQAAAAAAAAAAAAAAAQAAAAAABAAAAAA=</HashCode>
-      <FileName>components\stage\parser\models\MoveEvent.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="gameLIB.components.stage.parser.models.Script" Collapsed="true">
-    <Position X="19" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAEAAAAAACAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
-      <FileName>components\stage\parser\models\Script.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="gameLIB.components.stage.parser.models.ShootEvent" Collapsed="true">
-    <Position X="20.75" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAAQAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
-      <FileName>components\stage\parser\models\ShootEvent.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="gameLIB.components.stage.parser.models.Target" Collapsed="true">
-    <Position X="20.75" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAIAAAAAAAIAAAAAABAQAAABAADAAAAgg=</HashCode>
-      <FileName>components\stage\parser\models\Target.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="gameLIB.components.stage.parser.StageMaker" Collapsed="true">
     <Position X="17.25" Y="4" Width="1.5" />
     <TypeIdentifier>
@@ -164,7 +122,7 @@
   <Class Name="gameLIB.components.stage.Stage" Collapsed="true">
     <Position X="24.25" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAgBAiAAAAAAABEABQkQAAAAAAAAsYABAAAAQJAAABA=</HashCode>
+      <HashCode>AABBAiAAAAAAAFEEBQkAAAAAAAAAIAAFAAAAQJAAABA=</HashCode>
       <FileName>components\stage\Stage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -185,28 +143,28 @@
   <Class Name="gameLIB.main.GameApi" Collapsed="true">
     <Position X="22.5" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAoAAAAAAgBFoBBAgAAAABACEAAAAACACEAAA=</HashCode>
+      <HashCode>AAAYAAAAqAAAAgAgAEoEAAgAAAABACEAAQAACAAEAAA=</HashCode>
       <FileName>main\GameApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="gameLIB.main.GameController" Collapsed="true">
     <Position X="24.25" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACgCAAoAAAgAEgBBoBBAAAAAAJAAEAAAAACCCEAAQ=</HashCode>
+      <HashCode>AAAaACAAqAAAggEgAAoEAAAAAAAJAAEAAQAACCAEAAQ=</HashCode>
       <FileName>main\GameController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="gameLIB.main.engines.GameEngine" Collapsed="true">
     <Position X="17.25" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAJAAAAAAAImRAAAAABGABAEAAQAQAEgAAMEAABAAA=</HashCode>
+      <HashCode>AAAJAAAAqAAAmRAAAAABCAAAEAAAAQAEgQAAEAABAAA=</HashCode>
       <FileName>main\engines\GameEngine.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="gameLIB.main.engines.GraphicEngine" Collapsed="true">
     <Position X="19" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAADAABAAAgCAAABABIAAEBAACSFCAEYCIgACACAQAA=</HashCode>
+      <HashCode>AAATAABAAAgCAgABABIEAABAACSFCAEYAIgACAAAQAA=</HashCode>
       <FileName>main\engines\GraphicEngine.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -234,7 +192,7 @@
   <Class Name="gameLIB.utils.Vector2Extension" Collapsed="true">
     <Position X="24.25" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABAAAAIAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAQAAABAAAAIAAAA=</HashCode>
       <FileName>utils\Vector2Extension.cs</FileName>
     </TypeIdentifier>
   </Class>

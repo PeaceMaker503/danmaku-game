@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace gameLIB.main
 {
@@ -117,14 +118,9 @@ namespace gameLIB.main
             _gameController.createEnemy(typeName, iname, parts, nbFrames, scale);
         }
 
-        public void createStageFromPath(String path)
+        public void createStage(List<string> scriptPaths)
         {
-            _gameController.createStageFromPath(path);
-        }
-
-        public void createStage(String data)
-        {
-            _gameController.createStage(data);
+            _gameController.createStage(scriptPaths);
         }
 
         public void createParticle(String pname, String iname, Rectangle[] parts, float scale)

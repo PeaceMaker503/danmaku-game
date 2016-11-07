@@ -18,14 +18,14 @@ namespace PeaceGame
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        public Game1(string scriptData) : this()
+        public Game1(List<string> scriptPaths) : this()
         {
-            this.scriptData = scriptData;
+            this.scriptPaths = scriptPaths;
         }
 
         GraphicsDeviceManager graphics;
         GameApi api;
-        string scriptData;
+        List<string> scriptPaths;
 
         readonly Rectangle[] PLAYER_PARTS = new Rectangle[] {
                                                     new Rectangle(1, 1, 31, 47),
@@ -154,15 +154,7 @@ namespace PeaceGame
             api.createParticle(YELLOW_KNIFE, BULLETS, YELLOW_KNIFE_PART, KNIFE_SCALE);
             api.createParticle(WHITE_KNIFE, BULLETS, WHITE_KNIFE_PART, KNIFE_SCALE);
             api.createEnemy(FAIRIES, STAGE1_ENM, FAIRIES_PARTS, FAIRIES_FRAMES_IMAGE_COUNT, FAIRIES_SCALE);
-
-            if (scriptData == null)
-            {
-                api.createStageFromPath(@"script.json");
-            }
-            else
-            {
-                api.createStage(scriptData);
-            }
+            api.createStage(scriptPaths);
         }
 
         /// <summary>

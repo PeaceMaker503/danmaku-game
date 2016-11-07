@@ -10,7 +10,9 @@ using gameLIB.components.stage;
 using gameLIB.components.gui;
 using System.IO;
 using System.Text;
-using gameLIB.components.stage.parser;
+using System.CodeDom.Compiler;
+using Newtonsoft.Json;
+using gameLIB.components.stage.models;
 
 namespace gameLIB.main.engines
 {
@@ -194,18 +196,6 @@ namespace gameLIB.main.engines
             _common.currentStage.updateEnemiesPositions();
         }
 
-        public void createStageFromPath(String scriptPath)
-        {
-            StageMaker sm = new StageMaker(_common.currentStage);
-            sm.createStageFromPath(scriptPath);
-        }
-
-        public void createStage(String data)
-        {
-            StageMaker sm = new StageMaker(_common.currentStage);
-            sm.createStage(data);
-        }
-
         public void createPlayer(Image image, Rectangle[] parts, int nbFrames, float scale, int lifes, Vector2 position)
         {
             _common.currentStage.player = new Player(image, position, parts, nbFrames, scale, lifes);
@@ -223,6 +213,16 @@ namespace gameLIB.main.engines
         {
             Particle p = new Particle(image, parts, scale);
             _common.currentStage.addNewParticlePrototype(particleName, p);
+        }
+
+        public void createStage(List<string> scriptPaths)
+        {
+            List<string> referencedAssemblies = new List<string> { "gameLIB.dll", "System.dll", "Microsoft.Xna.Framework.dll" };
+            foreach (string path in scriptPaths)
+            {
+                CompilerResults cp = CSharpCompiler.compileCSharp(path, referencedAssemblies);
+                _common.currentStage.setScript(cp);
+            }
         }
 
         public void createEnemy(String enemyName, Image image, Rectangle[] parts, int nbFrames, float scale)

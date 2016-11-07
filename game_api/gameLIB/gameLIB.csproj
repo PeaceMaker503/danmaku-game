@@ -65,21 +65,13 @@
   <ItemGroup>
     <Compile Include="components\characters\Player.cs" />
     <Compile Include="components\sprites\MoveableSprite.cs" />
-    <Compile Include="components\stage\instructions\InstructionParticleMove.cs" />
-    <Compile Include="components\stage\parser\models\JsonVector2.cs" />
-    <Compile Include="components\stage\parser\models\MoveEvent.cs" />
-    <Compile Include="components\stage\parser\models\ParticleMoveEvent.cs" />
-    <Compile Include="utils\JsonHelper.cs" />
+    <Compile Include="components\stage\models\ScriptInfo.cs" />
+    <Compile Include="components\stage\models\ScriptResult.cs" />
+    <Compile Include="components\stage\Condition.cs" />
+    <Compile Include="components\stage\StageApi.cs" />
+    <Compile Include="components\stage\Params.cs" />
+    <Compile Include="CSharpCompiler.cs" />
     <Compile Include="utils\Vector2Extension.cs" />
-    <Compile Include="components\stage\parser\models\Bullet.cs" />
-    <Compile Include="components\stage\parser\models\CreateEvent.cs" />
-    <Compile Include="components\stage\instructions\Instruction.cs" />
-    <Compile Include="components\stage\instructions\InstructionMove.cs" />
-    <Compile Include="components\stage\instructions\InstructionShoot.cs" />
-    <Compile Include="components\stage\instructions\InstructionCreate.cs" />
-    <Compile Include="components\stage\parser\models\Script.cs" />
-    <Compile Include="components\stage\parser\models\ShootEvent.cs" />
-    <Compile Include="components\stage\parser\models\Target.cs" />
     <Compile Include="main\GameApi.cs" />
     <Compile Include="main\CommonComponents.cs" />
     <Compile Include="main\engines\GameEngine.cs" />
@@ -100,9 +92,7 @@
     <Compile Include="components\stage\Stage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="main\engines\KeyboardEventEmitter.cs" />
-    <Compile Include="components\stage\parser\StageMaker.cs" />
     <Compile Include="utils\StringExtension.cs" />
-    <Compile Include="components\stage\Task.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

@@ -1,4 +1,8 @@
+using gameLIB.components.stage.models;
+using Newtonsoft.Json;
 using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 
 namespace PeaceGame
@@ -11,21 +15,14 @@ namespace PeaceGame
         /// </summary>
         static void Main(string[] args)
         {
-            string scriptData = Environment.GetEnvironmentVariable("scriptData");
-            if (scriptData != null)
+            string[] fileNames = Directory.GetFiles(@"scripts");
+            List<string> scriptPaths = new List<string>();
+            for (int i = 0; i < fileNames.Length; i++)
+                scriptPaths.Add(Path.GetFullPath(fileNames[i]));
+
+            using (Game1 game = new Game1(scriptPaths))
             {
-                //File.WriteAllText(@"test", scriptData);
-                using (Game1 game = new Game1(scriptData))
-                {
-                    game.Run();
-                }
-            }
-            else
-            {
-                using (Game1 game = new Game1())
-                {
-                    game.Run();
-                }
+                game.Run();
             }
         }
     }

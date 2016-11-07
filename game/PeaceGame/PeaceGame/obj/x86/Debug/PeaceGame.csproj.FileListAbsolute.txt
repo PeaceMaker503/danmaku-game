@@ -103,4 +103,4 @@ D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.dll
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Newtonsoft.Json.dll
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\gameLIB.pdb
 D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\Newtonsoft.Json.xml
-D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\script.json
+D:\git\danmaku-game\game\PeaceGame\PeaceGame\bin\x86\Debug\scripts\Script.cs

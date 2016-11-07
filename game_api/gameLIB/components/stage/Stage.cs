@@ -5,23 +5,31 @@ using gameLIB.components.particles;
 using Microsoft.Xna.Framework;
 using gameLIB.main;
 using gameLIB.utils;
-using gameLIB.components.stage.parser.models;
 using Newtonsoft.Json;
+using System.Linq;
+using System.CodeDom.Compiler;
+using System.Reflection;
+using gameLIB.components.stage.models;
 
 namespace gameLIB.components.stage
 {
     public class Stage
     {
         public double time;
-        private List<Task> tasks;
         public Player player { get; set; }
         private double timerPlayerRespawn;
         public Dictionary<string, Particle> particlesPrototypes { get; set; }
         public Dictionary<string, Enemy> enemiesPrototypes { get; set; }
         public Dictionary<string, Dictionary<long, Enemy>> enemies { get; set; }
         public Dictionary<string, Dictionary<long, Particle>> particles { get; set; }
-        private List<Task> initTasks;
+        private Dictionary<MethodInfo, Params> scripts;
+        private Dictionary<MethodInfo, long> scriptsCount;
+        private Dictionary<MethodInfo, MethodInfo> scriptsConditions;
         private long playerParticlesId;
+        private long idEnemy;
+        private long idParticle;
+        private StageApi stageApi;
+        private object[] methodArgs;
 
         public Stage()
         {
@@ -29,21 +37,62 @@ namespace gameLIB.components.stage
             particlesPrototypes = new Dictionary<string, Particle>();
             enemiesPrototypes = new Dictionary<string, Enemy>();
             particles = new Dictionary<string, Dictionary<long, Particle>>();
-            tasks = new List<Task>();
+            scriptsCount = new Dictionary<MethodInfo, long>();
+            scriptsConditions = new Dictionary<MethodInfo, MethodInfo>();
             time = 0;
+            scripts = new Dictionary<MethodInfo, Params>();
+            this.idEnemy = 0;
+            this.idParticle = 0;
             timerPlayerRespawn = 0;
             playerParticlesId = 0;
-        }
-
-        public void addTask(Task task)
-        {
-            tasks.Add(task);
+            stageApi = new StageApi(this);
+            methodArgs = new object[] { stageApi };
         }
 
         public void addNewParticlePrototype(String name, Particle part)
         {
             particlesPrototypes[name] = part;
             particles[part.image.name] = new Dictionary<long, Particle>();
+        }
+
+        public void setScript(CompilerResults cp)
+        {
+            Type tScript = cp.CompiledAssembly.GetType("Game.Script");
+            MethodInfo[] mis = tScript.GetMethods(BindingFlags.NonPublic | BindingFlags.Static);
+            Dictionary<string, MethodInfo> misConds = new Dictionary<string, MethodInfo>();
+            for(int i=0;i<mis.Length;i++)
+            {
+                object[] o = mis[i].GetCustomAttributes(typeof(Condition), false);
+                if (o.Length == 1)
+                    misConds[((Condition)o[0]).Name] = mis[i];
+            }
+
+            mis = tScript.GetMethods(BindingFlags.Public | BindingFlags.Static);
+            for(int i=0;i<mis.Length;i++)
+            {
+                MethodInfo mi = mis[i];
+                Params p = (Params)mi.GetCustomAttributes(typeof(Params), false)[0];
+
+                if (p.Condition != null)
+                {
+                    MethodInfo mCond;
+                    if (misConds.TryGetValue(p.Condition, out mCond))
+                        scriptsConditions[mi] = mCond;
+                    else
+                        throw new Exception("Condition does not exist.");
+                }
+
+                if (p.Begin < 0)
+                    throw new Exception("Begin time cannot be negative.");
+
+                if (p.End <= 0 || p.Each <= 0)
+                    throw new Exception("Cadence or end time cannot be equal to zero nor negative.");
+
+                if(p.End > 0 && p.Each > 0 && !p.OnlyOnce)
+                    scriptsCount[mi] = 0;
+
+                scripts[mi] = p;
+            }
         }
 
         public void addNewEnemyPrototype(String name, Enemy enemy)
@@ -54,14 +103,6 @@ namespace gameLIB.components.stage
 
         public void run()
         {
-            foreach (Task task in tasks)
-            {
-                if (time >= task.time)
-                {
-                    task.run(this);
-                }
-            }
-            tasks.RemoveAll(item => item.hasRun == true);
             if (timerPlayerRespawn == 0 && player.isAlive == false) //player vient de mourir
             {
                 timerPlayerRespawn = time;
@@ -71,6 +112,42 @@ namespace gameLIB.components.stage
                 player.isAlive = true;
                 timerPlayerRespawn = 0;
             }
+
+            foreach (MethodInfo mi in scripts.Keys)
+            {
+                MethodInfo mCond;
+                bool conditionExists = scriptsConditions.TryGetValue(mi, out mCond);
+                Params p = scripts[mi];
+
+                if (p.OnlyOnce)
+                {
+                    if (time >= p.Begin)
+                    {
+                        if(!conditionExists || (bool)mCond.Invoke(null, methodArgs))
+                            mi.Invoke(null, methodArgs);
+                    }
+                }
+                else
+                {
+                    if (time >= p.Begin && time <= p.End)
+                    {
+                        long count = scriptsCount[mi];
+                        double nextTime = p.Begin + (count * p.Each);
+                        if (Math.Abs(time - nextTime) <= 0.01)
+                        {
+                            if (!conditionExists || (bool)mCond.Invoke(null, methodArgs))
+                                mi.Invoke(null, methodArgs);
+
+                            scriptsCount[mi]++;
+                        }
+                    }
+                }
+            }
+
+            IEnumerable<KeyValuePair<MethodInfo, Params>> newScripts = scripts.Where(item => !((item.Value.OnlyOnce && time >= item.Value.Begin) ||  (!item.Value.OnlyOnce && time >= item.Value.Begin && time >= item.Value.End)));
+            scripts = newScripts.ToDictionary(item => item.Key, item => item.Value);
+            IEnumerable<KeyValuePair<MethodInfo, long>> newScriptsCount = scriptsCount.Where(item => scripts.ContainsKey(item.Key));
+            scriptsCount = newScriptsCount.ToDictionary(item => item.Key, item => item.Value);
         }
 
         public void initialize()
@@ -84,47 +161,6 @@ namespace gameLIB.components.stage
             player.initialize();
             time = 0;
             timerPlayerRespawn = 0;
-            if(initTasks == null)
-            {
-                initTasks = new List<Task>(tasks);
-            }
-            else
-            {
-                tasks = new List<Task>(initTasks);
-                foreach (Task task in tasks)
-                {
-                    task.hasRun = false;
-                }
-            }
-        }
-
-        public Vector2 parseValueV(string value)
-        {
-            if (value == null)
-            {
-                return new Vector2(float.NaN, float.NaN);
-            }
-
-            if (value.StartsWith("%") && value.EndsWith("%"))
-            {
-                value = value.Replace("%", String.Empty);
-                if(value == "PLAYER_POSITION")
-                    return new Vector2(player.position.X, player.position.Y);
-
-                if(value.StartsWith("PARTICLE_POSITION_"))
-                {
-                    value = value.Replace("PARTICLE_POSITION_", String.Empty);
-                    long id = long.Parse(value);
-                    Particle p = findParticle(id);
-                    if (p != null)
-                        return new Vector2(p.position.X, p.position.Y);
-                    else
-                        return new Vector2(float.NaN, float.NaN);
-                }
-            }
-
-            JsonVector2 v = JsonConvert.DeserializeObject<JsonVector2>(value);
-            return new Vector2(v.X, v.Y);
         }
 
         private Particle findParticle(long particleId)
@@ -151,134 +187,43 @@ namespace gameLIB.components.stage
             return null;
         }
 
-        public void instantiateEnemy(String enemyType, long id, string position, string direction, string destination, string fdirection, long health, float speed, float fspeed)
+        public long instantiateEnemy(String enemyType, long health, Vector2 position, out Enemy eout)
         {
             Enemy e = this.getEnemyInstanceOf(enemyType);
             e.health = health;
-            e.speed = speed;
-
-            Vector2 vPosition = parseValueV(position);
-            Vector2 vDirection = parseValueV(direction);
-            Vector2 vDestination = parseValueV(destination);
-            Vector2 vFDirection = parseValueV(fdirection);
-
-            if (Vector2Extension.isNaN(vPosition))
-                vPosition = Vector2.Zero ;
-
-            if (float.IsNaN(speed))
-                speed = 0f;
-
-            if (float.IsNaN(fspeed))
-                fspeed = 0f;
-
-            e.position = vPosition;
-
-            if (Vector2Extension.isNaN(vDirection) && !Vector2Extension.isNaN(vDestination))
-                e.setDestination(vDestination, speed);
-            else if (Vector2Extension.isNaN(vDestination) && !Vector2Extension.isNaN(vDirection))
-                e.setDirection(vDirection, speed);
-            else
-                e.setDestination(Vector2.Zero, speed);
-
-            e.fdirection = vFDirection;
-            e.fspeed = fspeed;
-
-            enemies[e.image.name].Add(id, e);
+            e.position = position;
+            e.speed = 0;
+            enemies[e.image.name].Add(idEnemy++, e);
+            eout = e;
+            return idEnemy-1;
         }
 
-        public void orderToMove(long id, string destination, string direction, float speed, string fdirection, float fspeed)
+        public long instantiateParticle(String particleType, Vector2 position, out Particle pout)
         {
-            Enemy e = findEnemy(id);
-            if (e != null)
-            {
-                if (float.IsNaN(speed))
-                    speed = 0f;
-
-                if (float.IsNaN(fspeed))
-                    fspeed = 0f;
-
-                Vector2 vDirection = parseValueV(direction);
-                Vector2 vDestination = parseValueV(destination);
-                Vector2 vFDirection = parseValueV(fdirection);
-
-                if (Vector2Extension.isNaN(vDirection) && !Vector2Extension.isNaN(vDestination))
-                    e.setDestination(vDestination, speed);
-                else if (Vector2Extension.isNaN(vDestination) && !Vector2Extension.isNaN(vDirection))
-                    e.setDirection(vDirection, speed);
-                else
-                    e.setDestination(Vector2.Zero, speed);
-
-                e.fdirection = vFDirection;
-                e.fspeed = fspeed;
-            }
+            Particle p = this.getParticleInstanceOf(particleType);
+            p.position = position;
+            p.speed = 0;
+            particles[p.image.name].Add(idParticle++, p);
+            pout = p;
+            return idParticle - 1;
         }
 
-        public void orderToParticleMove(long id, string position, string destination, string direction, float speed)
+        public long instantiateParticle(String particleType, long enemyId, out Particle pout)
         {
-            Particle p = findParticle(id);
-            if(p!= null)
+            Enemy e = this.findEnemy(enemyId);
+            if(e != null)
             {
-                if (!float.IsNaN(speed))
-                    p.speed = speed;
-                else
-                    speed = p.speed;
-
-                Vector2 vPosition = parseValueV(position);
-
-                if (!Vector2Extension.isNaN(vPosition))
-                    p.position = vPosition;
-
-                Vector2 vDirection = parseValueV(direction);
-                Vector2 vDestination = parseValueV(destination);
-
-                if (Vector2Extension.isNaN(vDirection) && !Vector2Extension.isNaN(vDestination))
-                    p.setDestination(vDestination, speed);
-                else if (Vector2Extension.isNaN(vDestination) && !Vector2Extension.isNaN(vDirection))
-                    p.setDirection(vDirection, speed);
-            }
-        }
-
-        public void orderToShoot(long enemyId, string particleType, long particleId, string position, string destination, string direction, float speed)
-        {
-            Particle p = null;
-
-            Vector2 vDirection = parseValueV(direction);
-            Vector2 vDestination = parseValueV(destination);
-
-            if (enemyId < 0)
-            {
-                p = this.getParticleInstanceOf(particleType);
-
-                Vector2 vPosition = parseValueV(position);
-
-                if (Vector2Extension.isNaN(vPosition))
-                    vPosition = Vector2.Zero;
-
-                p.position = vPosition;
+                Particle p = this.getParticleInstanceOf(particleType);
+                p.position = e.position;
+                p.speed = 0;
+                particles[p.image.name].Add(idParticle++, p);
+                pout = p;
+                return idParticle - 1;
             }
             else
             {
-                Enemy e = findEnemy(enemyId);
-                if (e != null && e.isAlive)
-                {
-                    p = this.getParticleInstanceOf(particleType);
-                    p.position = e.position;
-                }
-            }
-
-            if (p != null)
-            {
-                if (float.IsNaN(speed))
-                    speed = 0f;
-
-                if (Vector2Extension.isNaN(vDirection) && !Vector2Extension.isNaN(vDestination))
-                    p.setDestination(vDestination, speed);
-                else if (Vector2Extension.isNaN(vDestination) && !Vector2Extension.isNaN(vDirection))
-                    p.setDirection(vDirection, speed);
-                else
-                    p.setDestination(Vector2.Zero, speed);
-
-                particles[p.image.name].Add(particleId, p);
+                pout = null;
+                return -1;
             }
         }
 

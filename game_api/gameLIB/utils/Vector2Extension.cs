@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using gameLIB.components.stage.parser.models;
 
 namespace gameLIB.utils
 {
