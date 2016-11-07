@@ -56,6 +56,11 @@ namespace gameLIB.components.sprites
         {
             this.fdirection = fdirection;
             this.fspeed = fspeed;
+            if(destination == Vector2.Zero && direction == Vector2.Zero)
+            {
+                this.direction = fdirection;
+                this.speed = fspeed;
+            }
         }
 
         public void updatePosition()

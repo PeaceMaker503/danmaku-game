@@ -18,18 +18,23 @@ namespace gameLIB.components.stage
         public double time;
         public Player player { get; set; }
         private double timerPlayerRespawn;
+
         public Dictionary<string, Particle> particlesPrototypes { get; set; }
         public Dictionary<string, Enemy> enemiesPrototypes { get; set; }
         public Dictionary<string, Dictionary<long, Enemy>> enemies { get; set; }
         public Dictionary<string, Dictionary<long, Particle>> particles { get; set; }
-        private Dictionary<MethodInfo, Params> scripts;
-        private Dictionary<MethodInfo, long> scriptsCount;
-        private Dictionary<MethodInfo, MethodInfo> scriptsConditions;
+        private Dictionary<CompilerResults, Dictionary<string, MethodInfo>> cpBehavs;
+        private Dictionary<CompilerResults, Dictionary<string, MethodInfo>> cpConds;
+        private List<ScriptInfo> scripts;
+        private List<ScriptInfo> behaviorsToAdd;
+
         private long playerParticlesId;
         private long idEnemy;
         private long idParticle;
         private StageApi stageApi;
         private object[] methodArgs;
+        public object Arg { get; private set; }
+        public ScriptInfo Si { get; private set; }
 
         public Stage()
         {
@@ -37,16 +42,43 @@ namespace gameLIB.components.stage
             particlesPrototypes = new Dictionary<string, Particle>();
             enemiesPrototypes = new Dictionary<string, Enemy>();
             particles = new Dictionary<string, Dictionary<long, Particle>>();
-            scriptsCount = new Dictionary<MethodInfo, long>();
-            scriptsConditions = new Dictionary<MethodInfo, MethodInfo>();
+            scripts = new List<ScriptInfo>();
+            cpBehavs = new Dictionary<CompilerResults, Dictionary<string, MethodInfo>>();
+            cpConds = new Dictionary<CompilerResults, Dictionary<string, MethodInfo>>();
+            behaviorsToAdd = new List<ScriptInfo>();
             time = 0;
-            scripts = new Dictionary<MethodInfo, Params>();
             this.idEnemy = 0;
             this.idParticle = 0;
             timerPlayerRespawn = 0;
             playerParticlesId = 0;
             stageApi = new StageApi(this);
             methodArgs = new object[] { stageApi };
+        }
+
+        public void addBehavior(string behavior, object value)
+        {
+            CompilerResults cp = Si.cp;
+            Dictionary<string, MethodInfo> mBehavs = cpBehavs[cp];
+            Dictionary<string, MethodInfo> mConds = cpConds[cp];
+            MethodInfo mBehav = mBehavs[behavior];
+            object[] attributes = mBehav.GetCustomAttributes(typeof(Params), false);
+            if (attributes.Length == 1)
+            {
+                ScriptInfo si = new ScriptInfo();
+                object attribute = attributes[0];
+                Params p = (Params)attribute;
+                checkParams(p, mConds);
+                p.Begin = time + p.Begin;
+                si.p = p;
+                si.returnValue = value;
+                si.count = 0;
+                si.mScript = mBehav;
+                if (p.Condition != null)
+                    si.mCond = mConds[p.Condition];
+
+                si.cp = cp;
+                behaviorsToAdd.Add(si);
+            }
         }
 
         public void addNewParticlePrototype(String name, Particle part)
@@ -58,41 +90,75 @@ namespace gameLIB.components.stage
         public void setScript(CompilerResults cp)
         {
             Type tScript = cp.CompiledAssembly.GetType("Game.Script");
-            MethodInfo[] mis = tScript.GetMethods(BindingFlags.NonPublic | BindingFlags.Static);
-            Dictionary<string, MethodInfo> misConds = new Dictionary<string, MethodInfo>();
-            for(int i=0;i<mis.Length;i++)
-            {
-                object[] o = mis[i].GetCustomAttributes(typeof(Condition), false);
-                if (o.Length == 1)
-                    misConds[((Condition)o[0]).Name] = mis[i];
-            }
+            Dictionary<string, MethodInfo> mConds = new Dictionary<string, MethodInfo>();
+            Dictionary<string, MethodInfo> mBehavs = new Dictionary<string, MethodInfo>();
 
-            mis = tScript.GetMethods(BindingFlags.Public | BindingFlags.Static);
-            for(int i=0;i<mis.Length;i++)
+            MethodInfo[] mis = tScript.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < mis.Length; i++)
             {
                 MethodInfo mi = mis[i];
-                Params p = (Params)mi.GetCustomAttributes(typeof(Params), false)[0];
-
-                if (p.Condition != null)
+                object[] attributes = mi.GetCustomAttributes(false);
+                if (attributes.Length > 0)
                 {
-                    MethodInfo mCond;
-                    if (misConds.TryGetValue(p.Condition, out mCond))
-                        scriptsConditions[mi] = mCond;
-                    else
-                        throw new Exception("Condition does not exist.");
+                    for (int j = 0; j < attributes.Length; j++)
+                    {
+                        object attribute = attributes[j];
+                        if (attribute.GetType() == typeof(Condition))
+                        {
+                            Condition c = (Condition)attribute;
+                            mConds[c.Name] = mi;
+                        }
+                        else if(attribute.GetType() == typeof(Behavior))
+                        {
+                            Behavior b = (Behavior)attribute;
+                            mBehavs[b.Name] = mi;
+                        }
+                    }
                 }
-
-                if (p.Begin < 0)
-                    throw new Exception("Begin time cannot be negative.");
-
-                if (p.End <= 0 || p.Each <= 0)
-                    throw new Exception("Cadence or end time cannot be equal to zero nor negative.");
-
-                if(p.End > 0 && p.Each > 0 && !p.OnlyOnce)
-                    scriptsCount[mi] = 0;
-
-                scripts[mi] = p;
             }
+            cpBehavs[cp] = mBehavs;
+            cpConds[cp] = mConds;
+
+            for (int i = 0; i < mis.Length; i++)
+            {
+                MethodInfo mi = mis[i];
+                object[] attributes = mi.GetCustomAttributes(false);
+                if (attributes.Length == 1)
+                {
+                    ScriptInfo si = new ScriptInfo();
+                    object attribute = attributes[0];
+                    if(attribute.GetType() == typeof(Params))
+                    {
+                        Params p = (Params)attribute;
+                        checkParams(p, mConds);
+                        si.p = p;
+                        si.returnValue = null;
+                        si.count = 0;
+
+                        if (p.Condition != null)
+                            si.mCond = mConds[p.Condition];
+
+                        si.cp = cp;
+                        si.mScript = mi;
+                        scripts.Add(si);
+                    }
+                }
+            }
+        }
+
+        private void checkParams(Params p, Dictionary<string, MethodInfo> mConds)
+        {
+            if (p.Condition != null)
+            {
+                if (!mConds.ContainsKey(p.Condition))
+                    throw new Exception("Condition does not exist.");
+            }
+
+            if (p.Begin < 0)
+                throw new Exception("Begin time cannot be negative.");
+
+            if (!p.OnlyOnce && p.Count <= 0 && p.Each <= 0)
+                p.OnlyOnce = true;
         }
 
         public void addNewEnemyPrototype(String name, Enemy enemy)
@@ -113,41 +179,70 @@ namespace gameLIB.components.stage
                 timerPlayerRespawn = 0;
             }
 
-            foreach (MethodInfo mi in scripts.Keys)
+            foreach (ScriptInfo si in scripts)
             {
-                MethodInfo mCond;
-                bool conditionExists = scriptsConditions.TryGetValue(mi, out mCond);
-                Params p = scripts[mi];
-
-                if (p.OnlyOnce)
+                MethodInfo mi = si.mScript;
+                if (si.p.OnlyOnce)
                 {
-                    if (time >= p.Begin)
+                    if (time >= si.p.Begin)
                     {
-                        if(!conditionExists || (bool)mCond.Invoke(null, methodArgs))
-                            mi.Invoke(null, methodArgs);
+                        if(si.mCond == null || (bool)si.mCond.Invoke(null, methodArgs))
+                        {
+                            if (mi.ReturnType != typeof(void))
+                            {
+                                object arg = si.returnValue;
+                                Arg = arg;
+                            }
+
+                            Si = si;
+                            object o = mi.Invoke(null, methodArgs);
+
+                            if (mi.ReturnType != typeof(void))
+                                si.returnValue = o;
+
+                            Arg = null;
+                        }
                     }
                 }
                 else
                 {
-                    if (time >= p.Begin && time <= p.End)
+                    if (time >= si.p.Begin && time <= si.p.Begin + (si.p.Count*si.p.Each))
                     {
-                        long count = scriptsCount[mi];
-                        double nextTime = p.Begin + (count * p.Each);
+                        long count = si.count;
+                        double nextTime = si.p.Begin + (count * si.p.Each);
                         if (Math.Abs(time - nextTime) <= 0.01)
                         {
-                            if (!conditionExists || (bool)mCond.Invoke(null, methodArgs))
-                                mi.Invoke(null, methodArgs);
+                            if (si.mCond == null || (bool)si.mCond.Invoke(null, methodArgs))
+                            {
+                                if (mi.ReturnType != typeof(void))
+                                {
+                                    object arg = si.returnValue;
+                                    Arg = arg;
+                                }
 
-                            scriptsCount[mi]++;
+                                Si = si;
+                                object o = mi.Invoke(null, methodArgs);
+
+                                if(mi.ReturnType != typeof(void))
+                                    si.returnValue = o;
+
+                                Arg = null;
+                            }
+                            si.count++;
                         }
                     }
                 }
             }
 
-            IEnumerable<KeyValuePair<MethodInfo, Params>> newScripts = scripts.Where(item => !((item.Value.OnlyOnce && time >= item.Value.Begin) ||  (!item.Value.OnlyOnce && time >= item.Value.Begin && time >= item.Value.End)));
-            scripts = newScripts.ToDictionary(item => item.Key, item => item.Value);
-            IEnumerable<KeyValuePair<MethodInfo, long>> newScriptsCount = scriptsCount.Where(item => scripts.ContainsKey(item.Key));
-            scriptsCount = newScriptsCount.ToDictionary(item => item.Key, item => item.Value);
+            scripts.RemoveAll(item => (item.p.OnlyOnce && time >= item.p.Begin) ||  (!item.p.OnlyOnce && time >= item.p.Begin + (item.p.Count * item.p.Each)));
+
+            if(behaviorsToAdd.Count > 0)
+            {
+                foreach (ScriptInfo si in behaviorsToAdd)
+                    scripts.Add(si);
+
+                behaviorsToAdd.Clear();
+            }
         }
 
         public void initialize()
@@ -206,6 +301,17 @@ namespace gameLIB.components.stage
             particles[p.image.name].Add(idParticle++, p);
             pout = p;
             return idParticle - 1;
+        }
+
+        public long instantiateParticle(String particleType, Enemy e, out Particle pout)
+        {
+            if (e.isAlive)
+                return instantiateParticle(particleType, e.position, out pout);
+            else
+            {
+                pout = null;
+                return -1;
+            }
         }
 
         public long instantiateParticle(String particleType, long enemyId, out Particle pout)

@@ -65,9 +65,11 @@
   <ItemGroup>
     <Compile Include="components\characters\Player.cs" />
     <Compile Include="components\sprites\MoveableSprite.cs" />
+    <Compile Include="components\stage\Behavior.cs" />
     <Compile Include="components\stage\models\ScriptInfo.cs" />
     <Compile Include="components\stage\models\ScriptResult.cs" />
     <Compile Include="components\stage\Condition.cs" />
+    <Compile Include="components\stage\ScriptInfo.cs" />
     <Compile Include="components\stage\StageApi.cs" />
     <Compile Include="components\stage\Params.cs" />
     <Compile Include="CSharpCompiler.cs" />
