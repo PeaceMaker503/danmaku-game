@@ -29,6 +29,8 @@ namespace gameLIB.components.characters
 
         public void move(Vector2 value)
         {
+            lastPosition = position;
+            Console.WriteLine(lastPosition);
             this.position += value;
         }
     }

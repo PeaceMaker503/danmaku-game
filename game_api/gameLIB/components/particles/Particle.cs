@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using gameLIB.components.sprites;
+using gameLIB.utils;
 
 namespace gameLIB.components.particles
 {
@@ -22,9 +23,12 @@ namespace gameLIB.components.particles
             spriteBatch.Draw(this.image.texture, this.position, this.parts[0], Color.White, anglerad, new Vector2(parts[0].Width/2, parts[0].Height/2), this.scale, SpriteEffects.None, 1f);
         }
 
-        public new void updatePosition()
+        public new void updatePosition(double time)
         {
-            position += direction * speed;
+            lastPosition = position;
+            Vector2[] vectors = moveHandler(position, direction, speed, time);
+            position = vectors[0];
+            direction = vectors[1];
         }
 
         public override void initialize()

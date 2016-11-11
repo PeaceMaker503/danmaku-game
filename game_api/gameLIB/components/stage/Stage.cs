@@ -210,7 +210,7 @@ namespace gameLIB.components.stage
                     {
                         long count = si.count;
                         double nextTime = si.p.Begin + (count * si.p.Each);
-                        if (Math.Abs(time - nextTime) <= 0.01)
+                        if (time >= nextTime)
                         {
                             if (si.mCond == null || (bool)si.mCond.Invoke(null, methodArgs))
                             {
@@ -221,10 +221,17 @@ namespace gameLIB.components.stage
                                 }
 
                                 Si = si;
-                                object o = mi.Invoke(null, methodArgs);
+                                try
+                                {
+                                    object o = mi.Invoke(null, methodArgs);
 
-                                if(mi.ReturnType != typeof(void))
-                                    si.returnValue = o;
+                                    if (mi.ReturnType != typeof(void))
+                                        si.returnValue = o;
+                                }
+                                catch(Exception ex)
+                                {
+
+                                }
 
                                 Arg = null;
                             }
@@ -363,7 +370,7 @@ namespace gameLIB.components.stage
             {
                 foreach (Enemy enemy in this.enemies[key].Values)
                 {
-                    enemy.updatePosition();
+                    enemy.updatePosition(time);
                 }
             }
         }
@@ -374,7 +381,7 @@ namespace gameLIB.components.stage
             {
                 foreach (Particle particle in particles[key].Values)
                 {
-                    particle.updatePosition();
+                    particle.updatePosition(time);
                 }
             }
         }
